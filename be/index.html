@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>tankuj100 - Administrace</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+    h1 { margin-bottom: 15px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; }
+    th { background: #eee; }
+    tr:nth-child(even) { background: #fafafa; }
+    input[type="text"] { width: 100%; border: none; background: transparent; }
+    button { margin: 2px; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
+    button.add { background: #4caf50; color: white; }
+    button.delete { background: #e74c3c; color: white; }
+    button.save { background: #3498db; color: white; }
+    .controls { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>tankuj100 Admin</h1>
+
+<div class="controls">
+  <button class="add" onclick="addRow()">➕ Přidat řádek</button>
+  <button class="delete" onclick="deleteSelected()">🗑️ Smazat vybrané</button>
+  <button class="save" onclick="saveToServer()">💾 Uložit změny</button>
+</div>
+
+<table id="dataTable"></table>
+
+<script>
+  let data = [];
+  const table = document.getElementById("dataTable");
+
+  async function loadData() {
+    const res = await fetch("/api/stations");
+    data = await res.json();
+    renderTable();
+  }
+
+  function renderTable() {
+    table.innerHTML = "";
+    if (data.length === 0) return;
+
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = "<th></th>" + Object.keys(data[0]).map(k => `<th>${k}</th>`).join("");
+    table.appendChild(headerRow);
+
+    data.forEach((row, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><input type="checkbox" data-index="${idx}"></td>` +
+        Object.entries(row).map(([k, v]) =>
+          `<td><input type="text" value="${v ?? ''}" oninput="updateCell(${idx}, '${k}', this.value)"></td>`
+        ).join("");
+      table.appendChild(tr);
+    });
+  }
+
+  function updateCell(index, key, value) {
+    data[index][key] = value;
+  }
+
+  function addRow() {
+    if (data.length === 0) return;
+    const newRow = {};
+    Object.keys(data[0]).forEach(k => newRow[k] = "");
+    data.push(newRow);
+    renderTable();
+  }
+
+  async function deleteSelected() {
+  const checkboxes = table.querySelectorAll("input[type=checkbox]:checked");
+  const indexesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.dataset.index));
+  
+  if (indexesToDelete.length === 0) {
+    alert("Není vybrán žádný řádek ke smazání.");
+    return;
+  }
+
+  // Získání ID pro smazání
+  const idsToDelete = indexesToDelete.map(index => data[index].id);
+
+  // Potvrzení od uživatele
+  if (!confirm(`Opravdu chcete smazat ${idsToDelete.length} vybraný/ch řádek/řádky?`)) {
+    return;
+  }
+
+  let successCount = 0;
+  let errorOccurred = false;
+
+  for (const id of idsToDelete) {
+    try {
+      const res = await fetch(`/api/stations/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        successCount++;
+      } else {
+        errorOccurred = true;
+        console.error(`Failed to delete station with ID ${id}`);
+      }
+    } catch (error) {
+      errorOccurred = true;
+      console.error(`Error during delete request for ID ${id}:`, error);
+    }
+  }
+
+  // Po dokončení všech požadavků, znova načteme data
+  if (successCount > 0) {
+    alert(`✅ Úspěšně smazáno ${successCount} řádků.`);
+    loadData(); // Načtení dat po smazání, aby se tabulka synchronizovala s DB
+  } else if (!errorOccurred) {
+     alert("❌ Žádné řádky nebyly smazány.");
+  }
+}
+
+  async function saveToServer() {
+    for (const row of data) {
+      await fetch("/api/stations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(row)
+      });
+    }
+    alert("✅ Změny uloženy do databáze");
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
