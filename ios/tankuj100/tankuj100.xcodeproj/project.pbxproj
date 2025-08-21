@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		247632B42E4FAC1D00282F8C /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = 247632B32E4FAC1D00282F8C /* ClusterMap */; };
-		247632B62E4FAC1D00282F8C /* ClusterMapSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 247632B52E4FAC1D00282F8C /* ClusterMapSwiftUI */; };
+		244FDD1D2E5770AF00258003 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = 244FDD1C2E5770AF00258003 /* ClusterMap */; };
+		244FDD1F2E5770AF00258003 /* ClusterMapSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 244FDD1E2E5770AF00258003 /* ClusterMapSwiftUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,8 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				247632B62E4FAC1D00282F8C /* ClusterMapSwiftUI in Frameworks */,
-				247632B42E4FAC1D00282F8C /* ClusterMap in Frameworks */,
+				244FDD1F2E5770AF00258003 /* ClusterMapSwiftUI in Frameworks */,
+				244FDD1D2E5770AF00258003 /* ClusterMap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,8 +72,8 @@
 			);
 			name = tankuj100;
 			packageProductDependencies = (
-				247632B32E4FAC1D00282F8C /* ClusterMap */,
-				247632B52E4FAC1D00282F8C /* ClusterMapSwiftUI */,
+				244FDD1C2E5770AF00258003 /* ClusterMap */,
+				244FDD1E2E5770AF00258003 /* ClusterMapSwiftUI */,
 			);
 			productName = tankuj100;
 			productReference = 247632A42E4FAA3E00282F8C /* tankuj100.app */;
@@ -104,7 +104,7 @@
 			mainGroup = 2476329B2E4FAA3E00282F8C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				247632B22E4FAC1D00282F8C /* XCRemoteSwiftPackageReference "ClusterMap" */,
+				244FDD1B2E5770AF00258003 /* XCRemoteSwiftPackageReference "ClusterMap" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 247632A52E4FAA3E00282F8C /* Products */;
@@ -348,7 +348,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		247632B22E4FAC1D00282F8C /* XCRemoteSwiftPackageReference "ClusterMap" */ = {
+		244FDD1B2E5770AF00258003 /* XCRemoteSwiftPackageReference "ClusterMap" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vospennikov/ClusterMap";
 			requirement = {
@@ -359,14 +359,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		247632B32E4FAC1D00282F8C /* ClusterMap */ = {
+		244FDD1C2E5770AF00258003 /* ClusterMap */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 247632B22E4FAC1D00282F8C /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			package = 244FDD1B2E5770AF00258003 /* XCRemoteSwiftPackageReference "ClusterMap" */;
 			productName = ClusterMap;
 		};
-		247632B52E4FAC1D00282F8C /* ClusterMapSwiftUI */ = {
+		244FDD1E2E5770AF00258003 /* ClusterMapSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 247632B22E4FAC1D00282F8C /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			package = 244FDD1B2E5770AF00258003 /* XCRemoteSwiftPackageReference "ClusterMap" */;
 			productName = ClusterMapSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */

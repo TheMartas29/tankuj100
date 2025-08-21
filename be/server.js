@@ -70,8 +70,14 @@ app.get('/api/stations', (req, res) => {
   res.json(rows);
 });
 
+// GET záznamy pro mapu na mobilu
+app.get('/api/map/', (req, res) => {
+  const rows = db.prepare('SELECT id, lat, lon, brand_name, brand_id FROM station').all();
+  res.json(rows);
+});
+
 // GET konkrétní záznam podle ID
-app.get('/api/stations/:id', (req, res) => {
+app.get('/api/detail/:id', (req, res) => {
   const row = db.prepare('SELECT * FROM station WHERE id = ?').get(req.params.id);
   if (!row) return res.status(404).json({ error: 'Station not found' });
   res.json(row);

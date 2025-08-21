@@ -11,7 +11,7 @@ import SwiftUI
 struct tankuj100App: App {
     var body: some Scene {
         WindowGroup {
-            ClusterMapView()
+            ContentView()
         }
     }
 }
