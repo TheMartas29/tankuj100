@@ -72,7 +72,7 @@ app.get('/api/stations', (req, res) => {
 
 // GET záznamy pro mapu na mobilu
 app.get('/api/map/', (req, res) => {
-  const rows = db.prepare('SELECT id, lat, lon, brand_name, brand_id FROM station').all();
+  const rows = db.prepare('SELECT id, lat, lon, brand_name, brand_id, station_id FROM station').all();
   res.json(rows);
 });
 

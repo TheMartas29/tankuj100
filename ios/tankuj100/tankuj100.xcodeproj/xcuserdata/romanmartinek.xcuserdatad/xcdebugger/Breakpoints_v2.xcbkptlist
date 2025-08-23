@@ -7,48 +7,94 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "44C3E72A-3B80-41BD-B2DE-718629C233E7"
+            uuid = "19BAF537-9D76-470F-9D28-0E0322B01250"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "tankuj100/NetworkClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "getCurrentPrices(id:)"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "mapData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C61474D1-78D2-4244-9C49-6B45F3CFB696"
+            uuid = "A8305478-EB52-40C6-AF32-1C6DD6FC2B70"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "tankuj100/NetworkClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "getCurrentPrices(id:)"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "mapData()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A8305478-EB52-40C6-AF32-1C6DD6FC2B70 - e7791a8ae1bd69a0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for tankuj100.NetworkClient.mapData() async -&gt; Swift.Result&lt;Swift.Array&lt;tankuj100.GasStation&gt;, Swift.Error&gt;"
+                  moduleName = "tankuj100.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/romanmartinek/dev/tankuj100/ios/tankuj100/tankuj100/NetworkClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26">
+               </Location>
+               <Location
+                  uuid = "A8305478-EB52-40C6-AF32-1C6DD6FC2B70 - 344c412f85918ba7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for tankuj100.NetworkClient.mapData() async -&gt; Swift.Result&lt;Swift.Array&lt;tankuj100.GasStation&gt;, Swift.Error&gt;"
+                  moduleName = "tankuj100.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/romanmartinek/dev/tankuj100/ios/tankuj100/tankuj100/NetworkClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0F63B127-9A74-4298-9E9E-F8253CED4C26"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "tankuj100/NetworkClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "mapData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B16F16F5-2927-4B87-8201-7F6FE9E7175D"
+            uuid = "7B0E4292-9765-495B-99F3-4CBFA30A45D5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "tankuj100/NetworkClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "getCurrentPrices(id:)"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "mapData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

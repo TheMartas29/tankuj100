@@ -26,7 +26,7 @@ struct GasStationDetailView: View {
                     
                     HStack {
                         Text("\(response.city), \(response.address), \(response.zip)")
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(.orange)
                             .font(.footnote)
                             .underline()
                             .onTapGesture {
@@ -42,7 +42,7 @@ struct GasStationDetailView: View {
                                 HStack {
                                     Text(item.name)
                                     Spacer()
-                                    Text(item.price.formatted(.currency(code: "CZK")))
+                                    Text(item.price.formatted(.currency(code: item.currency)))
                                         .bold()
                                 }
                             }
@@ -65,7 +65,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(phone)
                                     .underline()
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(.orange)
                             }
                         }
                         if let worktime = response.worktime, !worktime.isEmpty {
@@ -81,7 +81,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(services)
                                     .underline()
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(.orange)
                             }
                         }
                         if let payments = response.payments, !payments.isEmpty {
@@ -90,7 +90,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(payments)
                                     .underline()
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(.orange)
                             }
                         }
                     }, header: {
@@ -110,7 +110,7 @@ struct GasStationDetailView: View {
                 Task {
                     if let selectedBenzinka = selectedBenzinka {
                         self.benzinkaDetailResult = await NetworkClient().gasStationDetail(id: selectedBenzinka.gasStation.id.description)
-                        self.currentPricesResult = await NetworkClient().getCurrentPrices(id: selectedBenzinka.gasStation.id.description)
+                        self.currentPricesResult = await NetworkClient().getCurrentPrices(id: selectedBenzinka.gasStation.stationId.description)
                     }
                 }
             }
@@ -144,5 +144,5 @@ struct GasStationDetailView: View {
 }
 
 #Preview {
-    GasStationDetailView(selectedBenzinka: .constant(.init(coordinate: .init(latitude: 1, longitude: 1), gasStation: .init(id: 5085, lat: 1, lon: 1, brandName: "název benzínky", brandId: 1))))
+    GasStationDetailView(selectedBenzinka: .constant(.init(coordinate: .init(latitude: 1, longitude: 1), gasStation: .init(id: 100, lat: 1, lon: 1, brandName: "název benzínky", brandId: 1, stationId: 5085))))
 }

@@ -108,6 +108,7 @@ struct GasStation: Codable, Identifiable {
     let lon: Double
     let brandName: String?
     let brandId: Int?
+    let stationId: Int
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: lat, longitude: lon)
@@ -117,5 +118,6 @@ struct GasStation: Codable, Identifiable {
         case id, lat, lon
         case brandName = "brand_name"
         case brandId = "brand_id"
+        case stationId = "station_id"
     }
 }

@@ -39,13 +39,7 @@ class MapViewModel: NSObject, MKLocalSearchCompleterDelegate {
         switch result {
         case .success(let fetchedData):
             await clusterManager.removeAll()
-            /*await clusterManager.add(fetchedData.map { if #available(iOS 26.0, *) {
-                MKMapItem.init(location: CLLocation(latitude: $0.lat, longitude: $0.lon), address: nil)
-            } else {
-                MKMapItem.init(placemark: .init(coordinate: $0.coordinate))
-            } })*/
             await clusterManager.add(fetchedData.map { BenzinkaAnnotation(coordinate: $0.coordinate, gasStation: $0) })
-            
             await reloadAnnotations()
         case .failure(let failure):
             print (failure)
