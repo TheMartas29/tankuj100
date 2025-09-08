@@ -31,7 +31,7 @@ class MapViewModel: NSObject, MKLocalSearchCompleterDelegate {
         completer.delegate = self
     }
 
-    func load() async {
+    func load() async -> CustomError? {
         let request = MKLocalSearch.Request()
         request.region = currentRegion
 
@@ -42,8 +42,9 @@ class MapViewModel: NSObject, MKLocalSearchCompleterDelegate {
             await clusterManager.add(fetchedData.map { BenzinkaAnnotation(coordinate: $0.coordinate, gasStation: $0) })
             await reloadAnnotations()
         case .failure(let failure):
-            print (failure)
+            return CustomError.defaultError(message: failure.localizedDescription)
         }
+        return nil
     }
 
     func reloadAnnotations() async {

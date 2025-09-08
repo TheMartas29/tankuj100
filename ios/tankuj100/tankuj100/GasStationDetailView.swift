@@ -26,7 +26,7 @@ struct GasStationDetailView: View {
                     
                     HStack {
                         Text("\(response.city), \(response.address), \(response.zip)")
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.accent)
                             .font(.footnote)
                             .underline()
                             .onTapGesture {
@@ -65,7 +65,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(phone)
                                     .underline()
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(.accent)
                             }
                         }
                         if let worktime = response.worktime, !worktime.isEmpty {
@@ -81,7 +81,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(services)
                                     .underline()
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(.accent)
                             }
                         }
                         if let payments = response.payments, !payments.isEmpty {
@@ -90,7 +90,7 @@ struct GasStationDetailView: View {
                                 Spacer()
                                 Text(payments)
                                     .underline()
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(.accent)
                             }
                         }
                     }, header: {
@@ -114,7 +114,8 @@ struct GasStationDetailView: View {
                     }
                 }
             }
-            .toolbar {
+            
+             .toolbar {
                 ToolbarItem(placement: .topBarLeading, content: {
                     Button {
                         withAnimation {
@@ -124,6 +125,8 @@ struct GasStationDetailView: View {
                         Image(systemName: "xmark")
                     }
                 })
+                 
+                /** TODO: doimplementovat
                 ToolbarItem(placement: .topBarTrailing, content: {
                     Button {
                         //přidat do oblíbených?
@@ -138,6 +141,7 @@ struct GasStationDetailView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                 })
+                 */
             }
         }
     }

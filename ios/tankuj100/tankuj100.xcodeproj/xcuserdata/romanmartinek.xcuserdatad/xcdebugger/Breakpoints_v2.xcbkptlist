@@ -34,36 +34,6 @@
             endingLineNumber = "26"
             landmarkName = "mapData()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "A8305478-EB52-40C6-AF32-1C6DD6FC2B70 - e7791a8ae1bd69a0"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for tankuj100.NetworkClient.mapData() async -&gt; Swift.Result&lt;Swift.Array&lt;tankuj100.GasStation&gt;, Swift.Error&gt;"
-                  moduleName = "tankuj100.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/romanmartinek/dev/tankuj100/ios/tankuj100/tankuj100/NetworkClient.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26">
-               </Location>
-               <Location
-                  uuid = "A8305478-EB52-40C6-AF32-1C6DD6FC2B70 - 344c412f85918ba7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(4) suspend resume partial function for tankuj100.NetworkClient.mapData() async -&gt; Swift.Result&lt;Swift.Array&lt;tankuj100.GasStation&gt;, Swift.Error&gt;"
-                  moduleName = "tankuj100.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/romanmartinek/dev/tankuj100/ios/tankuj100/tankuj100/NetworkClient.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "26"
-                  endingLineNumber = "26">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

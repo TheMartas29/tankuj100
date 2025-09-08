@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var selectedBenzinka: BenzinkaAnnotation?
     @State private var showMenuSheet: Bool = false
     @State private var showAddBenzinkaSheet: Bool = false
+    @State private var error: CustomError?
 
     var body: some View {
         ZStack {
@@ -27,13 +28,13 @@ struct ContentView: View {
                         systemImage: "fuelpump",
                         coordinate: item.coordinate
                     )
-                    .tint(.orange)
+                    .tint(.accent)
                     .annotationTitles(.automatic)
                     .tag(item)
                 }
                 ForEach(viewModel.clusters) { item in
                     Marker("", monogram: Text("\(item.count)"), coordinate: item.coordinate)
-                        .tint(.orange.opacity(0.5))
+                        .tint(.accent.opacity(0.5))
                 }
             }
             .sheet(item: $selectedBenzinka, content: { _ in
@@ -50,7 +51,9 @@ struct ContentView: View {
             }
             .onAppear {
                 viewModel.setup()
-                Task.detached { await viewModel.load() }
+                Task.detached {
+                    self.error = await viewModel.load()
+                }
             }
             
             VStack {
@@ -63,24 +66,24 @@ struct ContentView: View {
                                     self.showAddBenzinkaSheet = true
                                 } label: {
                                     Image(systemName: "plus")
-                                        .tint(.orange)
+                                        .tint(.accent)
                                         .frame(width: 60, height: 60)
                                         .font(.system(size: 30))
                                         .fontWeight(.semibold)
                                 }
-                                .glassEffect(.clear.tint(.yellow.opacity(0.3)))
+                                .glassEffect(.clear.tint(.accent.opacity(0.2)))
                                 .glassEffectTransition(.matchedGeometry)
 
                                 Button {
                                     self.showMenuSheet = true
                                 } label: {
                                     Image(systemName: "line.3.horizontal")
-                                        .tint(.orange)
+                                        .tint(.accent)
                                         .frame(width: 60, height: 60)
                                         .font(.system(size: 30))
                                         .fontWeight(.semibold)
                                 }
-                                .glassEffect(.clear.tint(.yellow.opacity(0.3)))
+                                .glassEffect(.clear.tint(.accent.opacity(0.2)))
                                 .offset(x: 0.0, y: -30.0)
                             }
                         }
@@ -100,7 +103,7 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "info.circle")
                             .bold()
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.accent)
                             .font(.title2)
                         Text("O aplikaci")
                             .bold()
@@ -120,7 +123,7 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "hand.thumbsup")
                             .bold()
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.accent)
                             .font(.title2)
                         Text("Hodnotit aplikaci")
                             .bold()
@@ -140,7 +143,7 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "person.2")
                             .bold()
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.accent)
                             .font(.title2)
                         Text("Doporučit přátelům")
                             .bold()
@@ -169,7 +172,7 @@ struct ContentView: View {
                     }
                     .padding(.horizontal, 30)
                     
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis justo semper, sodales ipsum id, fringilla nunc. In malesuada aliquet lacinia. Proin condimentum velit sollicitudin mauris blandit, id accumsan elit condimentum. Donec faucibus felis non cursus bibendum. Suspendisse eu erat massa. Donec condimentum tortor ut mi malesuada, in ultricies velit lobortis. Integer sed placerat dui. Proin eget convallis tellus, aliquet consequat odio.")
+                    Text("Tato funkce bude k dispozici v další verzi aplikace.")
                         .font(.headline)
                         .fontWeight(.regular)
                         .padding(.horizontal, 30)
@@ -181,15 +184,16 @@ struct ContentView: View {
                             Text("Pokračovat")
                                 .font(.title3)
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.gray)
                                 .frame(height: 38)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(.orange.opacity(0.8))
+                                .background(.gray.opacity(0.3))
                                 .cornerRadius(50)
                                 .padding(5)
                         }
                         .padding(.horizontal, 20)
+                        .disabled(true)
 
                     }
                 }
@@ -198,6 +202,7 @@ struct ContentView: View {
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         })
+        .errorAlert($error)
     }
 }
 
