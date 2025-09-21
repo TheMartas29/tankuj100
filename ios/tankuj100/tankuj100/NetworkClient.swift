@@ -12,7 +12,7 @@ import SwiftUI
 
 struct NetworkClient {
     
-    let BASE_URL = "http://localhost:3000"
+    let BASE_URL = "http://80.211.200.128:3000"
     
     public init() {}
     

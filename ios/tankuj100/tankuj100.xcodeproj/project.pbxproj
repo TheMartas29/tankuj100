@@ -17,9 +17,22 @@
 		24A70CD52E6F70F40053678E /* tankuj100.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = tankuj100.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		24A5BA042E8071AC0081435F /* Exceptions for "tankuj100" folder in "tankuj100" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 247632A32E4FAA3E00282F8C /* tankuj100 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		247632A62E4FAA3E00282F8C /* tankuj100 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				24A5BA042E8071AC0081435F /* Exceptions for "tankuj100" folder in "tankuj100" target */,
+			);
 			path = tankuj100;
 			sourceTree = "<group>";
 		};
@@ -272,6 +285,7 @@
 				DEVELOPMENT_TEAM = 8NHCRJ3HZC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = tankuj100/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -305,6 +319,7 @@
 				DEVELOPMENT_TEAM = 8NHCRJ3HZC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = tankuj100/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
