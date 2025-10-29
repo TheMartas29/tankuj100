@@ -1,5 +1,5 @@
 //
-//  MapViewModel.swift
+//  MapManager.swift
 //  tankuj100
 //
 //  Created by Roman Martínek on 21.08.2025.
@@ -18,7 +18,7 @@ struct BenzinkaClusterAnnotation: Identifiable {
 }
 
 @Observable
-class MapViewModel: NSObject, MKLocalSearchCompleterDelegate {
+class MapManager: NSObject, MKLocalSearchCompleterDelegate {
     private let completer = MKLocalSearchCompleter()
     private let clusterManager = ClusterManager<BenzinkaAnnotation>()
 

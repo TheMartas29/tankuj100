@@ -12,12 +12,45 @@
 		24A70CD62E6F70F40053678E /* tankuj100.icon in Resources */ = {isa = PBXBuildFile; fileRef = 24A70CD52E6F70F40053678E /* tankuj100.icon */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		24323BF22EAACC6F00BC55E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2476329C2E4FAA3E00282F8C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 247632A32E4FAA3E00282F8C;
+			remoteInfo = tankuj100;
+		};
+		24323C062EAACD9100BC55E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2476329C2E4FAA3E00282F8C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 247632A32E4FAA3E00282F8C;
+			remoteInfo = tankuj100;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		24323BEE2EAACC6F00BC55E4 /* tankuj100Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tankuj100Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		24323C002EAACD9100BC55E4 /* tankuj100UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tankuj100UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		247632A42E4FAA3E00282F8C /* tankuj100.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tankuj100.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24A70CD52E6F70F40053678E /* tankuj100.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = tankuj100.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		24323C0B2EAACD9D00BC55E4 /* Exceptions for "tankuj100UITests" folder in "tankuj100Tests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				tankuj100UITests.swift,
+			);
+			target = 24323BED2EAACC6F00BC55E4 /* tankuj100Tests */;
+		};
+		24323C0C2EAACD9D00BC55E4 /* Exceptions for "tankuj100UITests" folder in "tankuj100UITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				tankuj100UITests.swift,
+			);
+			target = 24323BFF2EAACD9100BC55E4 /* tankuj100UITests */;
+		};
 		24A5BA042E8071AC0081435F /* Exceptions for "tankuj100" folder in "tankuj100" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -28,6 +61,20 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		24323BEF2EAACC6F00BC55E4 /* tankuj100Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = tankuj100Tests;
+			sourceTree = "<group>";
+		};
+		24323C012EAACD9100BC55E4 /* tankuj100UITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				24323C0B2EAACD9D00BC55E4 /* Exceptions for "tankuj100UITests" folder in "tankuj100Tests" target */,
+				24323C0C2EAACD9D00BC55E4 /* Exceptions for "tankuj100UITests" folder in "tankuj100UITests" target */,
+			);
+			path = tankuj100UITests;
+			sourceTree = "<group>";
+		};
 		247632A62E4FAA3E00282F8C /* tankuj100 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -39,6 +86,20 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		24323BEB2EAACC6F00BC55E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24323BFD2EAACD9100BC55E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		247632A12E4FAA3E00282F8C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,6 +117,8 @@
 			children = (
 				24A70CD52E6F70F40053678E /* tankuj100.icon */,
 				247632A62E4FAA3E00282F8C /* tankuj100 */,
+				24323BEF2EAACC6F00BC55E4 /* tankuj100Tests */,
+				24323C012EAACD9100BC55E4 /* tankuj100UITests */,
 				247632A52E4FAA3E00282F8C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -64,6 +127,8 @@
 			isa = PBXGroup;
 			children = (
 				247632A42E4FAA3E00282F8C /* tankuj100.app */,
+				24323BEE2EAACC6F00BC55E4 /* tankuj100Tests.xctest */,
+				24323C002EAACD9100BC55E4 /* tankuj100UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -71,6 +136,52 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		24323BED2EAACC6F00BC55E4 /* tankuj100Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24323BF42EAACC6F00BC55E4 /* Build configuration list for PBXNativeTarget "tankuj100Tests" */;
+			buildPhases = (
+				24323BEA2EAACC6F00BC55E4 /* Sources */,
+				24323BEB2EAACC6F00BC55E4 /* Frameworks */,
+				24323BEC2EAACC6F00BC55E4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24323BF32EAACC6F00BC55E4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				24323BEF2EAACC6F00BC55E4 /* tankuj100Tests */,
+			);
+			name = tankuj100Tests;
+			packageProductDependencies = (
+			);
+			productName = tankuj100Tests;
+			productReference = 24323BEE2EAACC6F00BC55E4 /* tankuj100Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		24323BFF2EAACD9100BC55E4 /* tankuj100UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24323C082EAACD9100BC55E4 /* Build configuration list for PBXNativeTarget "tankuj100UITests" */;
+			buildPhases = (
+				24323BFC2EAACD9100BC55E4 /* Sources */,
+				24323BFD2EAACD9100BC55E4 /* Frameworks */,
+				24323BFE2EAACD9100BC55E4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24323C072EAACD9100BC55E4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				24323C012EAACD9100BC55E4 /* tankuj100UITests */,
+			);
+			name = tankuj100UITests;
+			packageProductDependencies = (
+			);
+			productName = tankuj100UITests;
+			productReference = 24323C002EAACD9100BC55E4 /* tankuj100UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		247632A32E4FAA3E00282F8C /* tankuj100 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 247632AF2E4FAA3F00282F8C /* Build configuration list for PBXNativeTarget "tankuj100" */;
@@ -102,9 +213,17 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					24323BED2EAACC6F00BC55E4 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 247632A32E4FAA3E00282F8C;
+					};
+					24323BFF2EAACD9100BC55E4 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 247632A32E4FAA3E00282F8C;
+					};
 					247632A32E4FAA3E00282F8C = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -128,11 +247,27 @@
 			projectRoot = "";
 			targets = (
 				247632A32E4FAA3E00282F8C /* tankuj100 */,
+				24323BED2EAACC6F00BC55E4 /* tankuj100Tests */,
+				24323BFF2EAACD9100BC55E4 /* tankuj100UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		24323BEC2EAACC6F00BC55E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24323BFE2EAACD9100BC55E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		247632A22E4FAA3E00282F8C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -144,6 +279,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		24323BEA2EAACC6F00BC55E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24323BFC2EAACD9100BC55E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		247632A02E4FAA3E00282F8C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,7 +302,106 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		24323BF32EAACC6F00BC55E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 247632A32E4FAA3E00282F8C /* tankuj100 */;
+			targetProxy = 24323BF22EAACC6F00BC55E4 /* PBXContainerItemProxy */;
+		};
+		24323C072EAACD9100BC55E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 247632A32E4FAA3E00282F8C /* tankuj100 */;
+			targetProxy = 24323C062EAACD9100BC55E4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		24323BF52EAACC6F00BC55E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B63NCXYEXK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.silkroad.tankuj100Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tankuj100.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/tankuj100";
+			};
+			name = Debug;
+		};
+		24323BF62EAACC6F00BC55E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B63NCXYEXK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.silkroad.tankuj100Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tankuj100.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/tankuj100";
+			};
+			name = Release;
+		};
+		24323C092EAACD9100BC55E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B63NCXYEXK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.silkroad.tankuj100UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = tankuj100;
+			};
+			name = Debug;
+		};
+		24323C0A2EAACD9100BC55E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = B63NCXYEXK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.silkroad.tankuj100UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = tankuj100;
+			};
+			name = Release;
+		};
 		247632AD2E4FAA3F00282F8C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -346,6 +594,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		24323BF42EAACC6F00BC55E4 /* Build configuration list for PBXNativeTarget "tankuj100Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24323BF52EAACC6F00BC55E4 /* Debug */,
+				24323BF62EAACC6F00BC55E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24323C082EAACD9100BC55E4 /* Build configuration list for PBXNativeTarget "tankuj100UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24323C092EAACD9100BC55E4 /* Debug */,
+				24323C0A2EAACD9100BC55E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2476329F2E4FAA3E00282F8C /* Build configuration list for PBXProject "tankuj100" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

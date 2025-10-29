@@ -12,16 +12,11 @@ import ClusterMap
 
 struct ContentView: View {
     
-    @State private var viewModel = MapViewModel()
-    @State private var isSheetPresented = true
-    @State private var selectedBenzinka: BenzinkaAnnotation?
-    @State private var showMenuSheet: Bool = false
-    @State private var showAddBenzinkaSheet: Bool = false
-    @State private var error: CustomError?
+    @StateObject private var viewModel = ContentViewModel()
 
     var body: some View {
         ZStack {
-            Map(initialPosition: .region(viewModel.currentRegion), interactionModes: .all, selection: $selectedBenzinka) {
+            Map(initialPosition: .region(viewModel.currentRegion), interactionModes: .all, selection: $viewModel.selectedBenzinka) {
                 ForEach(viewModel.annotations) { item in
                     Marker(
                         item.gasStation.brandName ?? "",
@@ -37,24 +32,17 @@ struct ContentView: View {
                         .tint(.accent.opacity(0.5))
                 }
             }
-            .sheet(item: $selectedBenzinka, content: { _ in
-                GasStationDetailView(selectedBenzinka: $selectedBenzinka)
+            .sheet(item: $viewModel.selectedBenzinka, content: { _ in
+                GasStationDetailView(selectedBenzinka: $viewModel.selectedBenzinka)
             })
-            .readSize(onChange: { newValue in
-                viewModel.mapSize = newValue
-            })
+            .readSize(onChange: { newValue in viewModel.mapSizeChanged(newValue) })
             .onMapCameraChange { context in
-                viewModel.currentRegion = context.region
+                viewModel.cameraRegionChanged(context.region)
             }
-            .onMapCameraChange(frequency: .onEnd) { context in
-                Task.detached { await viewModel.reloadAnnotations() }
+            .onMapCameraChange(frequency: .onEnd) { _ in
+                viewModel.cameraRegionChangeEnded()
             }
-            .onAppear {
-                viewModel.setup()
-                Task.detached {
-                    self.error = await viewModel.load()
-                }
-            }
+            .onAppear { viewModel.onAppear() }
             
             VStack {
                 Spacer()
@@ -63,7 +51,7 @@ struct ContentView: View {
                         GlassEffectContainer(spacing: 30) {
                             VStack(spacing: 30) {
                                 Button {
-                                    self.showAddBenzinkaSheet = true
+                                    viewModel.openAddBenzinka()
                                 } label: {
                                     Image(systemName: "plus")
                                         .tint(.accent)
@@ -75,7 +63,7 @@ struct ContentView: View {
                                 .glassEffectTransition(.matchedGeometry)
 
                                 Button {
-                                    self.showMenuSheet = true
+                                    viewModel.openMenu()
                                 } label: {
                                     Image(systemName: "line.3.horizontal")
                                         .tint(.accent)
@@ -95,7 +83,7 @@ struct ContentView: View {
                 .padding(.leading, 20)
             }
         }
-        .sheet(isPresented: $showMenuSheet, content: {
+        .sheet(isPresented: $viewModel.showMenuSheet, content: {
             List {
                 Button {
                     //TODO: doimplementovat
@@ -161,7 +149,7 @@ struct ContentView: View {
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         })
-        .sheet(isPresented: $showAddBenzinkaSheet, content: {
+        .sheet(isPresented: $viewModel.showAddBenzinkaSheet, content: {
             ScrollView {
                 VStack(alignment: .leading, spacing: 15) {
                     HStack {
@@ -202,7 +190,7 @@ struct ContentView: View {
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         })
-        .errorAlert($error)
+        .errorAlert($viewModel.error)
     }
 }
 
