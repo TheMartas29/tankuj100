@@ -47,9 +47,35 @@ class MapManager: NSObject, MKLocalSearchCompleterDelegate {
         return nil
     }
 
+    /// Zavolá se po každé změně `annotations`/`clusters`. `ContentViewModel` sem připojí
+    /// `objectWillChange`, protože jinak SwiftUI (kvůli kombinaci ObservableObject + vnořené
+    /// @Observable třídy) změnu anotací nezaregistruje a značky se zobrazí až po pohybu mapou.
+    var onAnnotationsChanged: (() -> Void)?
+
+    /// Serializace reloadů. `clusterManager.reload` vrací ROZDÍL proti poslednímu stavu;
+    /// když by běžely dva naráz (na startu se spouští z načtení dat, změny velikosti mapy
+    /// i změny kamery), rozdíly se navzájem vynulují a body v mapě se nevykreslí. Proto
+    /// každý reload čeká na dokončení předchozího.
+    @MainActor private var reloadTask: Task<Void, Never>?
+
+    @MainActor
     func reloadAnnotations() async {
-        async let changes = clusterManager.reload(mapViewSize: mapSize, coordinateRegion: currentRegion)
-        await applyChanges(changes)
+        let previous = reloadTask
+        let task = Task { @MainActor in
+            _ = await previous?.value
+            await self.performReload()
+        }
+        reloadTask = task
+        await task.value
+    }
+
+    @MainActor
+    private func performReload() async {
+        // Při startu nemusí být velikost mapy z GeometryReaderu ještě známá (mapSize == .zero).
+        // Použijeme rozumný fallback; přesná velikost dorazí vzápětí přes mapSizeChanged.
+        let size = mapSize == .zero ? CGSize(width: 400, height: 800) : mapSize
+        let changes = await clusterManager.reload(mapViewSize: size, coordinateRegion: currentRegion)
+        applyChanges(changes)
     }
 
     @MainActor
@@ -78,6 +104,7 @@ class MapManager: NSObject, MKLocalSearchCompleterDelegate {
                 fatalError()
             }
         }
+        onAnnotationsChanged?()
     }
 }
 

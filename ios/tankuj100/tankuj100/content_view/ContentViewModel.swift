@@ -15,16 +15,40 @@ public class ContentViewModel: ObservableObject {
     var currentRegion: MKCoordinateRegion { mapManager.currentRegion }
     var annotations: [BenzinkaAnnotation] { mapManager.annotations }
     var clusters: [BenzinkaClusterAnnotation] { mapManager.clusters }
-    
+
+    private let locationManager = CLLocationManager()
+
+    init() {
+        // Přemostění: MapManager (@Observable) sám o sobě nepřekreslí view, které pozoruje
+        // tento ObservableObject. Při každé změně anotací proto ručně vydáme objectWillChange.
+        mapManager.onAnnotationsChanged = { [weak self] in
+            self?.objectWillChange.send()
+        }
+    }
+
     func onAppear() {
         mapManager.setup()
+        requestLocationPermission()
         Task {
             self.error = await mapManager.load()
         }
     }
+
+    /// Požádá o oprávnění k poloze (jen když ještě nebylo rozhodnuto), aby šla zobrazit
+    /// poloha uživatele a fungovalo tlačítko „na mě".
+    func requestLocationPermission() {
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+    }
     
     func mapSizeChanged(_ newValue: CGSize) {
+        let wasZero = mapManager.mapSize == .zero
         mapManager.mapSize = newValue
+        // Jakmile poprvé známe skutečnou velikost mapy, přepočítáme anotace pro přesné shlukování.
+        if wasZero && newValue != .zero {
+            Task { await mapManager.reloadAnnotations() }
+        }
     }
     
     func cameraRegionChanged(_ region: MKCoordinateRegion) {

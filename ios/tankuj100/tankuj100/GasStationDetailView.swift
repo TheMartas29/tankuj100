@@ -59,13 +59,16 @@ struct GasStationDetailView: View {
                     
                     
                     Section(content: {
-                        if let phone = response.phone {
+                        if let phone = response.phone, !phone.isEmpty {
                             HStack {
                                 Text("Telefon")
                                 Spacer()
-                                Text(phone)
-                                    .underline()
-                                    .foregroundStyle(.accent)
+                                if let telURL = URL(string: "tel://\(phone.filter { !$0.isWhitespace })") {
+                                    Link(phone, destination: telURL)
+                                        .foregroundStyle(.accent)
+                                } else {
+                                    Text(phone)
+                                }
                             }
                         }
                         if let worktime = response.worktime, !worktime.isEmpty {
@@ -73,24 +76,25 @@ struct GasStationDetailView: View {
                                 Text("Pracovní doba")
                                 Spacer()
                                 Text(worktime)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                         if let services = response.services, !services.isEmpty {
-                            HStack {
+                            HStack(alignment: .top) {
                                 Text("Služby")
                                 Spacer()
                                 Text(services)
-                                    .underline()
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.trailing)
                             }
                         }
                         if let payments = response.payments, !payments.isEmpty {
-                            HStack {
+                            HStack(alignment: .top) {
                                 Text("Možnosti platby")
                                 Spacer()
                                 Text(payments)
-                                    .underline()
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.trailing)
                             }
                         }
                     }, header: {

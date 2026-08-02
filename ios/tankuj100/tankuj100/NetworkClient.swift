@@ -12,7 +12,9 @@ import SwiftUI
 
 struct NetworkClient {
     
-    let BASE_URL = "http://80.211.200.128:3000"
+    // Produkční server (HTTPS – nutné pro App Store / ATS).
+    // Pro lokální testování lze dočasně přepnout na "http://localhost:3000".
+    let BASE_URL = "https://tankuj100.silkroadbrand.eu"
     
     public init() {}
     
@@ -65,7 +67,7 @@ struct FuelPrice: Codable, Identifiable {
     let price: Double
     let currency: String
     let unit: String
-    
+
     private enum CodingKeys: String, CodingKey { //vynecháme id
         case name
         case price

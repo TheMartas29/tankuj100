@@ -8,11 +8,17 @@
 import MapKit
 import SwiftUI
 import Foundation
+import StoreKit
 import ClusterMap
 
 struct ContentView: View {
-    
+
     @StateObject private var viewModel = ContentViewModel()
+    @Environment(\.requestReview) private var requestReview
+    @State private var showAbout = false
+
+    /// Odkaz sdílený přes "Doporučit přátelům". Až bude appka na App Store, doplň App Store URL.
+    private let shareURL = URL(string: "https://tankuj100.cz")!
 
     var body: some View {
         ZStack {
@@ -31,6 +37,11 @@ struct ContentView: View {
                     Marker("", monogram: Text("\(item.count)"), coordinate: item.coordinate)
                         .tint(.accent.opacity(0.5))
                 }
+                UserAnnotation()
+            }
+            .mapControls {
+                MapUserLocationButton()
+                MapCompass()
             }
             .sheet(item: $viewModel.selectedBenzinka, content: { _ in
                 GasStationDetailView(selectedBenzinka: $viewModel.selectedBenzinka)
@@ -86,69 +97,30 @@ struct ContentView: View {
         .sheet(isPresented: $viewModel.showMenuSheet, content: {
             List {
                 Button {
-                    //TODO: doimplementovat
+                    showAbout = true
                 } label: {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .bold()
-                            .foregroundStyle(.accent)
-                            .font(.title2)
-                        Text("O aplikaci")
-                            .bold()
-                            .foregroundStyle(.black)
-                            .font(.title2)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.gray)
-                            .fontWeight(.bold)
-                    }
+                    MenuRow(icon: "info.circle", title: "O aplikaci")
                 }
-                .listRowBackground(EmptyView())
-                
+
                 Button {
-                    //TODO: doimplementovat
+                    viewModel.closeSheets()
+                    requestReview()
                 } label: {
-                    HStack {
-                        Image(systemName: "hand.thumbsup")
-                            .bold()
-                            .foregroundStyle(.accent)
-                            .font(.title2)
-                        Text("Hodnotit aplikaci")
-                            .bold()
-                            .foregroundStyle(.black)
-                            .font(.title2)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.gray)
-                            .fontWeight(.bold)
-                    }
+                    MenuRow(icon: "hand.thumbsup", title: "Hodnotit aplikaci")
                 }
-                .listRowBackground(EmptyView())
-                
-                Button {
-                    //TODO: doimplementovat
-                } label: {
-                    HStack {
-                        Image(systemName: "person.2")
-                            .bold()
-                            .foregroundStyle(.accent)
-                            .font(.title2)
-                        Text("Doporučit přátelům")
-                            .bold()
-                            .foregroundStyle(.black)
-                            .font(.title2)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.gray)
-                            .fontWeight(.bold)
-                    }
+
+                ShareLink(item: shareURL) {
+                    MenuRow(icon: "person.2", title: "Doporučit přátelům")
                 }
-                .listRowBackground(EmptyView())
             }
-            .scrollContentBackground(.hidden)
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
         })
+        .sheet(isPresented: $showAbout) {
+            AboutView()
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
         .sheet(isPresented: $viewModel.showAddBenzinkaSheet, content: {
             ScrollView {
                 VStack(alignment: .leading, spacing: 15) {
@@ -191,6 +163,74 @@ struct ContentView: View {
             .presentationDragIndicator(.visible)
         })
         .errorAlert($viewModel.error)
+    }
+}
+
+/// Řádek v menu se sjednoceným vzhledem (ikona + název + šipka).
+private struct MenuRow: View {
+    let icon: String
+    let title: String
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .bold()
+                .foregroundStyle(.accent)
+                .font(.title2)
+            Text(title)
+                .bold()
+                .foregroundStyle(.primary)
+                .font(.title2)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.gray)
+                .fontWeight(.bold)
+        }
+    }
+}
+
+/// Obrazovka "O aplikaci".
+struct AboutView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    private var version: String {
+        let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let b = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return "\(v) (\(b))"
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    VStack(spacing: 8) {
+                        Image(systemName: "fuelpump.circle.fill")
+                            .font(.system(size: 56))
+                            .foregroundStyle(.accent)
+                        Text("tankuj100")
+                            .font(.title).bold()
+                        Text("Verze \(version)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.clear)
+                }
+
+                Section("O co jde") {
+                    Text("Najdi benzínky, které nabízejí prémiové palivo – ideální pro starší vozy, kterým vadí vyšší podíl etanolu v běžném palivu.")
+                        .font(.subheadline)
+                }
+            }
+            .navigationTitle("O aplikaci")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Hotovo") { dismiss() }
+                }
+            }
+        }
     }
 }
 
