@@ -81,12 +81,13 @@ struct GasStationDetailView: View {
                             latitude: response.lat, longitude: response.lon,
                             name: response.brandName ?? "")
                     } label: {
-                        Label("Navigovat", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
+                        Text("Navigovat")
                             .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .buttonStyle(.borderedProminent)
-                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                    .controlSize(.large)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
                 Section("Ceny paliv") {

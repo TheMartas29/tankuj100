@@ -13,7 +13,6 @@ import ClusterMap
 struct ContentView: View {
 
     @StateObject private var viewModel = ContentViewModel()
-    @State private var showAbout = false
 
     /// Odkaz sdílený přes "Doporučit přátelům". Až bude appka na App Store, doplň App Store URL.
     private let shareURL = URL(string: "https://tankuj100.cz")!
@@ -97,25 +96,25 @@ struct ContentView: View {
             }
         }
         .sheet(isPresented: $viewModel.showMenuSheet, content: {
-            List {
-                Button {
-                    showAbout = true
-                } label: {
-                    MenuRow(icon: "info.circle", title: "O aplikaci")
-                }
+            NavigationStack {
+                List {
+                    NavigationLink {
+                        AboutView()
+                    } label: {
+                        MenuRow(icon: "info.circle", title: "O aplikaci")
+                    }
 
-                ShareLink(item: shareURL) {
-                    MenuRow(icon: "person.2", title: "Doporučit přátelům")
+                    ShareLink(item: shareURL) {
+                        MenuRow(icon: "person.2", title: "Doporučit přátelům")
+                    }
+                    .buttonStyle(.plain)
                 }
+                .navigationTitle("Menu")
+                .navigationBarTitleDisplayMode(.inline)
             }
-            .presentationDetents([.medium])
+            .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         })
-        .sheet(isPresented: $showAbout) {
-            AboutView()
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
         .sheet(isPresented: $viewModel.showStationsList) {
             StationsListView(
                 stations: viewModel.allStations,
@@ -168,7 +167,7 @@ struct ContentView: View {
     }
 }
 
-/// Řádek v menu se sjednoceným vzhledem (ikona + název + šipka).
+/// Řádek v menu se sjednoceným vzhledem (ikona červená, text černý/adaptivní).
 private struct MenuRow: View {
     let icon: String
     let title: String
@@ -184,17 +183,12 @@ private struct MenuRow: View {
                 .foregroundStyle(.primary)
                 .font(.title2)
             Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundStyle(.gray)
-                .fontWeight(.bold)
         }
     }
 }
 
-/// Obrazovka "O aplikaci".
+/// Obrazovka "O aplikaci" – pushuje se do menu NavigationStacku.
 struct AboutView: View {
-    @Environment(\.dismiss) private var dismiss
-
     private var version: String {
         let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         let b = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
@@ -202,37 +196,30 @@ struct AboutView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    VStack(spacing: 8) {
-                        Image(systemName: "fuelpump.circle.fill")
-                            .font(.system(size: 56))
-                            .foregroundStyle(.accent)
-                        Text("tankuj100")
-                            .font(.title).bold()
-                        Text("Verze \(version)")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .listRowBackground(Color.clear)
+        List {
+            Section {
+                VStack(spacing: 8) {
+                    Image(systemName: "fuelpump.circle.fill")
+                        .font(.system(size: 56))
+                        .foregroundStyle(.accent)
+                    Text("tankuj100")
+                        .font(.title).bold()
+                    Text("Verze \(version)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
-
-                Section("O co jde") {
-                    Text("Najdi benzínky, které nabízejí prémiové palivo – ideální pro starší vozy, kterým vadí vyšší podíl etanolu v běžném palivu.")
-                        .font(.subheadline)
-                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .listRowBackground(Color.clear)
             }
-            .navigationTitle("O aplikaci")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Hotovo") { dismiss() }
-                }
+
+            Section("O co jde") {
+                Text("Najdi benzínky, které nabízejí prémiové palivo – ideální pro starší vozy, kterým vadí vyšší podíl etanolu v běžném palivu.")
+                    .font(.subheadline)
             }
         }
+        .navigationTitle("O aplikaci")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
