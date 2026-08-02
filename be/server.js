@@ -5,7 +5,8 @@ const cheerio = require('cheerio');
 const Database = require('better-sqlite3');
 
 const app = express();
-const PORT = 3000;
+// Port z prostředí (nastavuje PM2 přes tankuj100.config.cjs), fallback 3000.
+const PORT = process.env.PORT || 3000;
 
 // 👉 připojení k SQLite
 const db = new Database(path.join(__dirname, 'db/tankuj100db.sqlite'));

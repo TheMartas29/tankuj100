@@ -1,0 +1,19 @@
+# === Node / backend ===
+be/node_modules/
+node_modules/
+be/.env
+npm-debug.log*
+
+# Živá databáze + zálohy (mimo git, přežijí git pull i deploy).
+# Seed se drží v gitu jako be/db/seed.sqlite a deploy z něj DB naseeduje, když chybí.
+be/db/tankuj100db.sqlite
+be/db/_backups/
+
+# === macOS ===
+.DS_Store
+
+# === Xcode / iOS ===
+ios/**/xcuserdata/
+ios/**/*.xcuserstate
+ios/**/DerivedData/
+build/

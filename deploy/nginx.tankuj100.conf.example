@@ -1,0 +1,31 @@
+# tankuj100 – nginx server blok (reverzní proxy na Node/PM2 API).
+#
+# Backend (be/server.js) obsluhuje jak API (/api/...), tak jednoduché admin UI (/).
+# nginx jen proxuje vše na Node na 127.0.0.1:3000 (musí sedět s PORT v PM2 configu).
+#
+# 1) Zkopíruj do /etc/nginx/sites-available/tankuj100 a nahraď __DOMENA__ svojí doménou.
+# 2) Aktivuj:  sudo ln -s /etc/nginx/sites-available/tankuj100 /etc/nginx/sites-enabled/
+#    Test:     sudo nginx -t
+#    Reload:   sudo systemctl reload nginx
+# 3) HTTPS:    sudo certbot --nginx -d __DOMENA__   (doplní TLS + redirect na 443)
+#
+# HTTPS je nutné pro App Store build iOS aplikace (ATS). Po nasazení TLS změň
+# v iOS `NetworkClient.BASE_URL` na https://__DOMENA__.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMENA__;
+
+    client_max_body_size 5M;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+    }
+}
