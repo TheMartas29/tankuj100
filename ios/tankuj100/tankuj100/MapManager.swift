@@ -26,6 +26,8 @@ class MapManager: NSObject, MKLocalSearchCompleterDelegate {
     var currentRegion: MKCoordinateRegion = .init(center: .init(latitude: 50.073658, longitude: 14.418540), span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1))
     var annotations = [BenzinkaAnnotation]()
     var clusters = [BenzinkaClusterAnnotation]()
+    /// Kompletní seznam všech stanic (pro seznam nejbližších / oblíbené), ne jen viditelné clustery.
+    var allStations = [GasStation]()
 
     func setup() {
         completer.delegate = self
@@ -38,6 +40,7 @@ class MapManager: NSObject, MKLocalSearchCompleterDelegate {
         let result = await NetworkClient().mapData()
         switch result {
         case .success(let fetchedData):
+            allStations = fetchedData
             await clusterManager.removeAll()
             await clusterManager.add(fetchedData.map { BenzinkaAnnotation(coordinate: $0.coordinate, gasStation: $0) })
             await reloadAnnotations()

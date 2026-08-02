@@ -24,13 +24,12 @@ struct ContentView: View {
         ZStack {
             Map(initialPosition: .region(viewModel.currentRegion), interactionModes: .all, selection: $viewModel.selectedBenzinka) {
                 ForEach(viewModel.annotations) { item in
-                    Marker(
+                    Annotation(
                         item.gasStation.brandName ?? "",
-                        systemImage: "fuelpump",
                         coordinate: item.coordinate
-                    )
-                    .tint(.accent)
-                    .annotationTitles(.automatic)
+                    ) {
+                        StationMarkerView(brandName: item.gasStation.brandName)
+                    }
                     .tag(item)
                 }
                 ForEach(viewModel.clusters) { item in
@@ -43,8 +42,15 @@ struct ContentView: View {
                 MapUserLocationButton()
                 MapCompass()
             }
-            .sheet(item: $viewModel.selectedBenzinka, content: { _ in
-                GasStationDetailView(selectedBenzinka: $viewModel.selectedBenzinka)
+            .sheet(item: $viewModel.selectedBenzinka, content: { annotation in
+                NavigationStack {
+                    GasStationDetailView(
+                        gasStation: annotation.gasStation,
+                        userLocation: viewModel.userLocation,
+                        favorites: viewModel.favorites,
+                        onClose: { viewModel.selectedBenzinka = nil }
+                    )
+                }
             })
             .readSize(onChange: { newValue in viewModel.mapSizeChanged(newValue) })
             .onMapCameraChange { context in
@@ -59,19 +65,18 @@ struct ContentView: View {
                 Spacer()
                 HStack {
                     if #available(iOS 26.0, *) {
-                        GlassEffectContainer(spacing: 30) {
-                            VStack(spacing: 30) {
+                        GlassEffectContainer(spacing: 18) {
+                            VStack(spacing: 18) {
                                 Button {
-                                    viewModel.openAddBenzinka()
+                                    viewModel.openStationsList()
                                 } label: {
-                                    Image(systemName: "plus")
+                                    Image(systemName: "list.bullet")
                                         .tint(.accent)
                                         .frame(width: 60, height: 60)
-                                        .font(.system(size: 30))
+                                        .font(.system(size: 26))
                                         .fontWeight(.semibold)
                                 }
                                 .glassEffect(.clear.tint(.accent.opacity(0.2)))
-                                .glassEffectTransition(.matchedGeometry)
 
                                 Button {
                                     viewModel.openMenu()
@@ -83,7 +88,6 @@ struct ContentView: View {
                                         .fontWeight(.semibold)
                                 }
                                 .glassEffect(.clear.tint(.accent.opacity(0.2)))
-                                .offset(x: 0.0, y: -30.0)
                             }
                         }
                         .shadow(radius: 3)
@@ -120,6 +124,13 @@ struct ContentView: View {
             AboutView()
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $viewModel.showStationsList) {
+            StationsListView(
+                stations: viewModel.allStations,
+                userLocation: viewModel.userLocation,
+                favorites: viewModel.favorites
+            )
         }
         .sheet(isPresented: $viewModel.showAddBenzinkaSheet, content: {
             ScrollView {
@@ -226,6 +237,128 @@ struct AboutView: View {
             .navigationTitle("O aplikaci")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Hotovo") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+/// Marker na mapě jako "mini náhled" – logo značky v bílém kolečku s pointerem.
+private struct StationMarkerView: View {
+    let brandName: String?
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack {
+                Circle()
+                    .fill(.white)
+                    .overlay(Circle().stroke(Color.accentColor, lineWidth: 1.5))
+                    .shadow(radius: 1.5)
+                BrandLogo(brandName: brandName, size: 20)
+                    .padding(3)
+            }
+            .frame(width: 30, height: 30)
+            // špička pointeru dolů
+            Image(systemName: "triangle.fill")
+                .resizable()
+                .rotationEffect(.degrees(180))
+                .frame(width: 9, height: 6)
+                .foregroundStyle(Color.accentColor)
+                .offset(y: -1.5)
+        }
+    }
+}
+
+/// Řádek seznamu benzínek (logo + značka + vzdálenost + indikátor oblíbené).
+private struct StationRow: View {
+    let station: GasStation
+    var distance: CLLocationDistance?
+    var isFavorite: Bool
+
+    private var distanceText: String? {
+        guard let distance else { return nil }
+        return distance < 1000 ? "\(Int(distance)) m" : String(format: "%.1f km", distance / 1000)
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            BrandLogo(brandName: station.brandName, size: 34)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(station.brandName ?? "Benzínka").fontWeight(.medium)
+                if let distanceText {
+                    Label(distanceText, systemImage: "location.fill")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            if isFavorite {
+                Image(systemName: "heart.fill").foregroundStyle(.accent).font(.footnote)
+            }
+        }
+    }
+}
+
+/// Seznam benzínek – segment Nejbližší / Oblíbené, řazeno dle vzdálenosti.
+struct StationsListView: View {
+    let stations: [GasStation]
+    var userLocation: CLLocation?
+    @ObservedObject var favorites: FavoritesStore
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var mode: Mode = .nearest
+
+    enum Mode: String, CaseIterable {
+        case nearest = "Nejbližší"
+        case favorites = "Oblíbené"
+    }
+
+    private func distance(_ s: GasStation) -> CLLocationDistance? {
+        guard let userLocation else { return nil }
+        return userLocation.distance(from: CLLocation(latitude: s.lat, longitude: s.lon))
+    }
+
+    private var displayed: [GasStation] {
+        var list = mode == .favorites ? stations.filter { favorites.contains($0.id) } : stations
+        if userLocation != nil {
+            list.sort { (distance($0) ?? .greatestFiniteMagnitude) < (distance($1) ?? .greatestFiniteMagnitude) }
+        }
+        if mode == .nearest { list = Array(list.prefix(50)) }
+        return list
+    }
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if mode == .favorites && displayed.isEmpty {
+                    ContentUnavailableView("Žádné oblíbené", systemImage: "heart",
+                        description: Text("Přidej si benzínku do oblíbených srdíčkem v detailu."))
+                } else if mode == .nearest && userLocation == nil {
+                    ContentUnavailableView("Poloha není dostupná", systemImage: "location.slash",
+                        description: Text("Povol přístup k poloze pro seznam nejbližších benzínek."))
+                } else {
+                    List(displayed) { station in
+                        NavigationLink(value: station) {
+                            StationRow(station: station,
+                                       distance: distance(station),
+                                       isFavorite: favorites.contains(station.id))
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Benzínky")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: GasStation.self) { station in
+                GasStationDetailView(gasStation: station, userLocation: userLocation, favorites: favorites)
+            }
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("", selection: $mode) {
+                        ForEach(Mode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Hotovo") { dismiss() }
                 }

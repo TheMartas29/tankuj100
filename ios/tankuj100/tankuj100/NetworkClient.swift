@@ -61,6 +61,21 @@ struct NetworkClient {
     }
 }
 
+extension String {
+    /// Slug loga na fuelo.net: bez diakritiky, malá písmena, jen alfanumerické znaky.
+    var fueloLogoSlug: String {
+        folding(options: .diacriticInsensitive, locale: Locale(identifier: "en"))
+            .lowercased()
+            .filter { $0.isLetter || $0.isNumber }
+    }
+}
+
+/// URL loga značky na fuelo.net (fallback řeší AsyncImage, když logo neexistuje).
+func fueloLogoURL(brandName: String?) -> URL? {
+    guard let slug = brandName?.fueloLogoSlug, !slug.isEmpty else { return nil }
+    return URL(string: "https://fuelo.net/img/logos/\(slug).png")
+}
+
 struct FuelPrice: Codable, Identifiable {
     var id = UUID()
     let name: String
@@ -104,7 +119,7 @@ struct GasStationDetail: Codable, Identifiable {
     }
 }
 
-struct GasStation: Codable, Identifiable {
+struct GasStation: Codable, Identifiable, Hashable {
     let id: Int
     let lat: Double
     let lon: Double
