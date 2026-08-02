@@ -21,6 +21,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// 👉 Zásady ochrany soukromí (URL pro App Store Connect)
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'privacy.html'));
+});
+
 // ------------------ SCRAPER ENDPOINT ------------------
 function parseFuelPrices(html) {
   const $ = cheerio.load(html);
