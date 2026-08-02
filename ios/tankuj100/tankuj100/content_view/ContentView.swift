@@ -8,13 +8,11 @@
 import MapKit
 import SwiftUI
 import Foundation
-import StoreKit
 import ClusterMap
 
 struct ContentView: View {
 
     @StateObject private var viewModel = ContentViewModel()
-    @Environment(\.requestReview) private var requestReview
     @State private var showAbout = false
 
     /// Odkaz sdílený přes "Doporučit přátelům". Až bude appka na App Store, doplň App Store URL.
@@ -104,13 +102,6 @@ struct ContentView: View {
                     showAbout = true
                 } label: {
                     MenuRow(icon: "info.circle", title: "O aplikaci")
-                }
-
-                Button {
-                    viewModel.closeSheets()
-                    requestReview()
-                } label: {
-                    MenuRow(icon: "hand.thumbsup", title: "Hodnotit aplikaci")
                 }
 
                 ShareLink(item: shareURL) {
@@ -360,7 +351,7 @@ struct StationsListView: View {
                     .pickerStyle(.segmented)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Hotovo") { dismiss() }
+                    Button { dismiss() } label: { Image(systemName: "xmark") }
                 }
             }
         }

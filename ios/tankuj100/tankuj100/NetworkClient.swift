@@ -76,6 +76,21 @@ func fueloLogoURL(brandName: String?) -> URL? {
     return URL(string: "https://fuelo.net/img/logos/\(slug).png")
 }
 
+/// Naformátuje české telefonní číslo na "+420 732 443 612" a vrátí i tel: URL.
+func formatCzechPhone(_ raw: String) -> (display: String, dialURL: URL?) {
+    var digits = raw.filter(\.isNumber)
+    if digits.hasPrefix("420") { digits = String(digits.dropFirst(3)) }
+    if digits.count == 9 {
+        let a = digits.prefix(3)
+        let b = digits.dropFirst(3).prefix(3)
+        let c = digits.dropFirst(6)
+        return ("+420 \(a) \(b) \(c)", URL(string: "tel://+420\(digits)"))
+    }
+    // Neznámý formát – zobraz původní, vytoč holé číslice.
+    let onlyDigits = raw.filter(\.isNumber)
+    return (raw, onlyDigits.isEmpty ? nil : URL(string: "tel://\(onlyDigits)"))
+}
+
 struct FuelPrice: Codable, Identifiable {
     var id = UUID()
     let name: String

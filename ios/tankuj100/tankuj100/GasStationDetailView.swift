@@ -118,13 +118,18 @@ struct GasStationDetailView: View {
 
                 Section("Další informace") {
                     if let phone = response.phone, !phone.isEmpty {
+                        let formatted = formatCzechPhone(phone)
                         HStack {
                             Text("Telefon")
                             Spacer()
-                            if let telURL = URL(string: "tel://\(phone.filter { !$0.isWhitespace })") {
-                                Link(phone, destination: telURL).foregroundStyle(.accent)
+                            if let telURL = formatted.dialURL {
+                                Link(destination: telURL) {
+                                    Text(formatted.display)
+                                        .foregroundStyle(.primary)
+                                        .underline()
+                                }
                             } else {
-                                Text(phone)
+                                Text(formatted.display)
                             }
                         }
                     }
