@@ -43,6 +43,15 @@ public class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDele
         }
     }
 
+    /// Opětovné načtení benzínek – když první pokus selhal (offline apod.).
+    ///
+    /// Chybu tady schválně nevystavujeme do `error`: alert by zavřel seznam,
+    /// ve kterém uživatel na „Zkusit znovu“ klepnul. Neúspěch pozná tak, že
+    /// tam zůstane hláška „Benzínky se nenačetly“.
+    func reloadStations() async {
+        _ = await mapManager.load()
+    }
+
     /// Požádá o oprávnění k poloze (jen když ještě nebylo rozhodnuto) a spustí sledování polohy.
     func requestLocationPermission() {
         if locationManager.authorizationStatus == .notDetermined {

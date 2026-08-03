@@ -18,46 +18,18 @@ struct NetworkClient {
     
     public init() {}
     
+    /// Body pro mapu. Chyby chodí přes společnou vrstvu (viz FeedbackAPI.send),
+    /// takže uživatel vidí českou hlášku, ne systémový text.
     public func mapData() async -> Result<[GasStation], Error> {
-        if let url = URL(string: "\(BASE_URL)/api/map/") {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let decodedData = try JSONDecoder().decode([GasStation].self, from: data)
-                return .success(decodedData)
-            } catch {
-                return .failure(CustomError.defaultError(message: error.localizedDescription))
-            }
-        } else {
-            return .failure(CustomError.defaultError(message: "Neplatná URL"))
-        }
+        await send(path: "/api/map/", as: [GasStation].self)
     }
-    
+
     public func gasStationDetail(id: String) async -> Result<GasStationDetail, Error> {
-        if let url = URL(string: "\(BASE_URL)/api/detail/\(id)") {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let decodedData = try JSONDecoder().decode(GasStationDetail.self, from: data)
-                return .success(decodedData)
-            } catch {
-                return .failure(CustomError.defaultError(message: error.localizedDescription))
-            }
-        } else {
-            return .failure(CustomError.defaultError(message: "Neplatná URL"))
-        }
+        await send(path: "/api/detail/\(id)", as: GasStationDetail.self)
     }
-    
+
     public func getCurrentPrices(id: String) async -> Result<[FuelPrice], Error> {
-        if let url = URL(string: "\(BASE_URL)/api/fuel-prices/\(id)") {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let decodedData = try JSONDecoder().decode([FuelPrice].self, from: data)
-                return .success(decodedData)
-            } catch {
-                return .failure(CustomError.defaultError(message: error.localizedDescription))
-            }
-        } else {
-            return .failure(CustomError.defaultError(message: "Neplatná URL"))
-        }
+        await send(path: "/api/fuel-prices/\(id)", as: [FuelPrice].self)
     }
 }
 

@@ -109,7 +109,8 @@
   .tag.resolved { background: var(--green-soft); color: var(--green); }
   .tag.rejected { background: #eceef1; color: var(--muted); }
   .tag.type { background: var(--blue-soft); color: var(--blue); }
-  .tag.hidden { background: #eceef1; color: var(--muted); }
+  /* Pozor: nesmí se jmenovat "hidden" – tu třídu používáme jako utilitu display:none. */
+  .tag.muted { background: #eceef1; color: var(--muted); }
   .stars { color: #e0a800; letter-spacing: 1px; white-space: nowrap; }
   .stars .off { color: #d5d8dc; }
   .price-note { background: var(--amber-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: 14px; }
@@ -208,6 +209,13 @@ const $ = (id) => document.getElementById(id);
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/** České skloňování podle počtu: 1 / 2–4 / 5+. */
+function plural(count, one, few, many) {
+  if (count === 1) return one;
+  if (count >= 2 && count <= 4) return few;
+  return many;
 }
 
 function toast(message, isError = false) {
@@ -388,7 +396,7 @@ function reportedComment(r) {
   if (!r.reported_comment && !r.reported_author) {
     return `<div class="admin-note">Nahlášené hodnocení #${r.review_id} už neexistuje.</div>`;
   }
-  const state = r.reported_status === 'hidden' ? ' <span class="tag hidden">už skryté</span>' : '';
+  const state = r.reported_status === 'hidden' ? ' <span class="tag muted">už skryté</span>' : '';
   return `<div class="price-note">
       <div>${stars(r.reported_rating || 0)} <strong>${esc(r.reported_author || 'Anonym')}</strong>${state}</div>
       <div style="margin-top:4px">${esc(r.reported_comment || '(bez komentáře)')}</div>
@@ -474,7 +482,7 @@ function reviewItem(r) {
     <div>
       <div class="head">
         ${stars(r.rating)}
-        ${isHidden ? '<span class="tag hidden">skryté</span>' : ''}
+        ${isHidden ? '<span class="tag muted">skryté</span>' : ''}
         <span class="station">${stationLabel(r)}</span>
       </div>
       <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))} • stanice ${r.station_id}
@@ -535,7 +543,7 @@ function renderStations() {
 
   $('stationCount').textContent = query
     ? `${rows.length} z ${stations.length}`
-    : `${stations.length} benzínek`;
+    : plural(stations.length, '1 benzínka', `${stations.length} benzínky`, `${stations.length} benzínek`);
 
   // Bez filtru je 400+ řádků – ukážeme prvních 100, ať prohlížeč nestrádá.
   const shown = rows.slice(0, 100);
@@ -583,7 +591,7 @@ async function saveDirtyStations() {
   renderStations();
   button.disabled = dirtyIds.size === 0;
   if (failed.length) toast(`Uloženo ${saved}, selhalo ${failed.length}. ${failed[0]}`, true);
-  else toast(`Uloženo ${saved} benzínek.`);
+  else toast(plural(saved, 'Uložena 1 benzínka.', `Uloženy ${saved} benzínky.`, `Uloženo ${saved} benzínek.`));
 }
 
 async function deleteStation(id) {

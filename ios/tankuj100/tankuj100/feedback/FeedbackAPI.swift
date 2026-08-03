@@ -87,7 +87,9 @@ extension NetworkClient {
 
     /// Jedno místo pro síťování: sestaví request, přeloží HTTP i síťové chyby
     /// na hlášky, které jde ukázat uživateli, a dekóduje odpověď.
-    private func send<T: Decodable>(
+    /// Používají to i endpointy pro mapu a detail (NetworkClient.swift), aby uživatel
+    /// nikde nedostal systémovou anglickou chybu.
+    func send<T: Decodable>(
         path: String,
         method: String = "GET",
         body: [String: Any]? = nil,
@@ -134,7 +136,7 @@ extension NetworkClient {
 
     /// Backend posílá u chyb `{ "error": ..., "message": "…" }` – hlášku umíme
     /// ukázat rovnou. Když chybí, doplníme vlastní podle stavového kódu.
-    private static func serverMessage(from data: Data, status: Int) -> String {
+    static func serverMessage(from data: Data, status: Int) -> String {
         if let payload = try? JSONDecoder().decode(ServerErrorPayload.self, from: data),
            let message = payload.message, !message.isEmpty {
             return message
@@ -147,7 +149,7 @@ extension NetworkClient {
         }
     }
 
-    private static func networkMessage(for error: Error) -> String {
+    static func networkMessage(for error: Error) -> String {
         guard let urlError = error as? URLError else {
             return "Nepodařilo se spojit se serverem. Zkus to prosím znovu."
         }
@@ -163,7 +165,7 @@ extension NetworkClient {
         }
     }
 
-    private struct ServerErrorPayload: Decodable {
+    struct ServerErrorPayload: Decodable {
         let error: String?
         let message: String?
     }

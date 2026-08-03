@@ -130,7 +130,10 @@ struct ReportSheet: View {
         return Double(normalized)
     }
 
+    /// Hlídáme jen když je pole s cenou vidět – jinak by po přepnutí typu zůstalo
+    /// tlačítko Odeslat zašedlé kvůli hodnotě, kterou už uživatel nevidí.
     private var priceValidationMessage: String? {
+        guard type == .price else { return nil }
         guard !priceText.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
         guard let price = parsedPrice else { return "Zadej cenu jako číslo, např. 36,90." }
         guard price > 0, price <= 200 else { return "Cena musí být mezi 0 a 200 Kč/l." }

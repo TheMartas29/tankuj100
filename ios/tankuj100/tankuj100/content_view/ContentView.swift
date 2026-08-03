@@ -114,12 +114,15 @@ struct ContentView: View {
             }
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
+            // Bez plného pozadí prosvítá mapa a rozmazané barvy vypadají jako artefakt.
+            .presentationBackground(Color(.systemGroupedBackground))
         })
         .sheet(isPresented: $viewModel.showStationsList) {
             StationsListView(
                 stations: viewModel.allStations,
                 userLocation: viewModel.userLocation,
-                favorites: viewModel.favorites
+                favorites: viewModel.favorites,
+                onRetry: { await viewModel.reloadStations() }
             )
         }
         .sheet(isPresented: $viewModel.showAddBenzinkaSheet, content: {
@@ -162,6 +165,7 @@ struct ContentView: View {
             }
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
+            .presentationBackground(Color(.systemGroupedBackground))
         })
         .errorAlert($viewModel.error)
     }
@@ -216,6 +220,34 @@ struct AboutView: View {
             Section("O co jde") {
                 Text("Najdi benzínky, které nabízejí prémiové palivo – ideální pro starší vozy, kterým vadí vyšší podíl etanolu v běžném palivu.")
                     .font(.subheadline)
+            }
+
+            Section {
+                Text("Jestli se na stanici čepuje E5, se z veřejných dat zjistit nedá – oktanové číslo o podílu etanolu nic neříká. Proto to hlásí sami řidiči: u pumpy klepneš v detailu benzínky na E5 nebo E10 a odznak se objeví ostatním.")
+                    .font(.subheadline)
+                Text("Odznak „Potvrzené E5“ se zobrazí, když se shodnou aspoň dva řidiči. Je to vodítko, ne záruka – u pumpy si to vždycky zkontroluj.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Odkud víme o E5")
+            }
+
+            Section {
+                Text("Ceny paliv a informace o stanicích přebíráme z veřejných zdrojů (fuelo.net). Můžou být zastaralé – když něco nesedí, nahlas to v detailu benzínky a opravíme to.")
+                    .font(.subheadline)
+            } header: {
+                Text("Data")
+            }
+
+            Section {
+                Link(destination: URL(string: "https://tankuj100.silkroadbrand.eu/privacy")!) {
+                    Label("Zásady ochrany soukromí", systemImage: "hand.raised")
+                }
+                Link(destination: URL(string: "mailto:info@silkroadbrand.eu")!) {
+                    Label("Napsat nám", systemImage: "envelope")
+                }
+            } footer: {
+                Text("Aplikace nevyžaduje registraci a nesbírá osobní údaje.")
             }
         }
         .navigationTitle("O aplikaci")
@@ -312,6 +344,10 @@ struct StationsListView: View {
     let stations: [GasStation]
     var userLocation: CLLocation?
     @ObservedObject var favorites: FavoritesStore
+    /// Zkusit znovu načíst benzínky, když se seznam nestáhl (offline při startu).
+    var onRetry: (() async -> Void)? = nil
+
+    @State private var isRetrying = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var mode: Mode = .nearest
@@ -344,7 +380,28 @@ struct StationsListView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if mode == .favorites && displayed.isEmpty {
+                // Nic nemáme ani v paměti – typicky se nepodařilo načíst data ze serveru.
+                // Bez tohohle by uživatel viděl jen prázdnou bílou obrazovku.
+                if stations.isEmpty {
+                    ContentUnavailableView {
+                        Label("Benzínky se nenačetly", systemImage: "wifi.exclamationmark")
+                    } description: {
+                        Text("Zkontroluj připojení k internetu. Bez dat ti seznam nemáme co zobrazit.")
+                    } actions: {
+                        Button {
+                            guard let onRetry, !isRetrying else { return }
+                            isRetrying = true
+                            Task {
+                                await onRetry()
+                                isRetrying = false
+                            }
+                        } label: {
+                            if isRetrying { ProgressView() } else { Text("Zkusit znovu") }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(onRetry == nil || isRetrying)
+                    }
+                } else if mode == .favorites && displayed.isEmpty {
                     ContentUnavailableView("Žádné oblíbené", systemImage: "heart",
                         description: Text("Přidej si benzínku do oblíbených srdíčkem v detailu."))
                 } else if mode == .e5 && displayed.isEmpty {
