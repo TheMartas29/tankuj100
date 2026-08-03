@@ -141,15 +141,26 @@ struct GasStation: Codable, Identifiable, Hashable {
     let brandName: String?
     let brandId: Int?
     let stationId: Int
+    /// Agregované hodnocení a ověřený typ benzínu posílá /api/map, ať je seznam
+    /// můžeme zobrazit bez dotahování detailu každé stanice.
+    var ratingAvg: Double? = nil
+    var ratingCount: Int? = nil
+    var fuelVerdict: FuelVerdict? = nil
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: lat, longitude: lon)
     }
+
+    /// Má stanice potvrzené E5? Kvůli tomu appka existuje, tak to jde vidět i v seznamu.
+    var hasConfirmedE5: Bool { fuelVerdict == .e5 }
 
     enum CodingKeys: String, CodingKey {
         case id, lat, lon
         case brandName = "brand_name"
         case brandId = "brand_id"
         case stationId = "station_id"
+        case ratingAvg = "rating_avg"
+        case ratingCount = "rating_count"
+        case fuelVerdict = "fuel_verdict"
     }
 }

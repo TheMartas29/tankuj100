@@ -25,7 +25,7 @@ struct ContentView: View {
                         item.gasStation.brandName ?? "",
                         coordinate: item.coordinate
                     ) {
-                        StationMarkerView(brandName: item.gasStation.brandName)
+                        StationMarkerView(station: item.gasStation)
                     }
                     .tag(item)
                 }
@@ -224,32 +224,42 @@ struct AboutView: View {
 }
 
 /// Marker na mapě jako "mini náhled" – logo značky v bílém kolečku s pointerem.
+/// U benzínek s potvrzeným E5 přidáme zelenou fajfku, ať jsou na mapě hned vidět.
 private struct StationMarkerView: View {
-    let brandName: String?
+    let station: GasStation
 
     var body: some View {
         VStack(spacing: 0) {
-            ZStack {
-                Circle()
-                    .fill(.white)
-                    .overlay(Circle().stroke(Color.accentColor, lineWidth: 1.5))
-                    .shadow(radius: 1.5)
-                BrandLogo(brandName: brandName, size: 20)
-                    .padding(3)
+            ZStack(alignment: .topTrailing) {
+                ZStack {
+                    Circle()
+                        .fill(.white)
+                        .overlay(Circle().stroke(station.hasConfirmedE5 ? Color.green : Color.accentColor, lineWidth: 1.5))
+                        .shadow(radius: 1.5)
+                    BrandLogo(brandName: station.brandName, size: 20)
+                        .padding(3)
+                }
+                .frame(width: 30, height: 30)
+
+                if station.hasConfirmedE5 {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.green, .white)
+                        .offset(x: 3, y: -3)
+                }
             }
-            .frame(width: 30, height: 30)
             // špička pointeru dolů
             Image(systemName: "triangle.fill")
                 .resizable()
                 .rotationEffect(.degrees(180))
                 .frame(width: 9, height: 6)
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(station.hasConfirmedE5 ? Color.green : Color.accentColor)
                 .offset(y: -1.5)
         }
     }
 }
 
-/// Řádek seznamu benzínek (logo + značka + vzdálenost + indikátor oblíbené).
+/// Řádek seznamu benzínek (logo + značka + vzdálenost + hodnocení + odznak E5).
 private struct StationRow: View {
     let station: GasStation
     var distance: CLLocationDistance?
@@ -263,11 +273,30 @@ private struct StationRow: View {
     var body: some View {
         HStack(spacing: 12) {
             BrandLogo(brandName: station.brandName, size: 34)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(station.brandName ?? "Benzínka").fontWeight(.medium)
-                if let distanceText {
-                    Label(distanceText, systemImage: "location.fill")
-                        .font(.caption).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(station.brandName ?? "Benzínka").fontWeight(.medium)
+                    if station.hasConfirmedE5 {
+                        Text("E5")
+                            .font(.caption2.weight(.bold))
+                            .padding(.horizontal, 5).padding(.vertical, 1)
+                            .background(.green.opacity(0.18))
+                            .foregroundStyle(.green)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                }
+                HStack(spacing: 10) {
+                    if let distanceText {
+                        Label(distanceText, systemImage: "location.fill")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    if let average = station.ratingAvg, let count = station.ratingCount, count > 0 {
+                        HStack(spacing: 3) {
+                            StarsView(rating: average, size: 9)
+                            Text("(\(count))")
+                                .font(.caption2).foregroundStyle(.secondary)
+                        }
+                    }
                 }
             }
             Spacer()
@@ -289,6 +318,7 @@ struct StationsListView: View {
 
     enum Mode: String, CaseIterable {
         case nearest = "Nejbližší"
+        case e5 = "S E5"
         case favorites = "Oblíbené"
     }
 
@@ -298,7 +328,12 @@ struct StationsListView: View {
     }
 
     private var displayed: [GasStation] {
-        var list = mode == .favorites ? stations.filter { favorites.contains($0.id) } : stations
+        var list: [GasStation]
+        switch mode {
+        case .favorites: list = stations.filter { favorites.contains($0.id) }
+        case .e5: list = stations.filter(\.hasConfirmedE5)
+        case .nearest: list = stations
+        }
         if userLocation != nil {
             list.sort { (distance($0) ?? .greatestFiniteMagnitude) < (distance($1) ?? .greatestFiniteMagnitude) }
         }
@@ -312,6 +347,9 @@ struct StationsListView: View {
                 if mode == .favorites && displayed.isEmpty {
                     ContentUnavailableView("Žádné oblíbené", systemImage: "heart",
                         description: Text("Přidej si benzínku do oblíbených srdíčkem v detailu."))
+                } else if mode == .e5 && displayed.isEmpty {
+                    ContentUnavailableView("Žádné potvrzené E5", systemImage: "checkmark.seal",
+                        description: Text("Typ benzínu hlásí sami řidiči. Až u pumpy zkontroluj, co tam mají, a dej to vědět v detailu benzínky."))
                 } else if mode == .nearest && userLocation == nil {
                     ContentUnavailableView("Poloha není dostupná", systemImage: "location.slash",
                         description: Text("Povol přístup k poloze pro seznam nejbližších benzínek."))

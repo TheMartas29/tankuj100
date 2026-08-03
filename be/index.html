@@ -1,133 +1,616 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <title>tankuj100 - Administrace</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
-    h1 { margin-bottom: 15px; }
-    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-    th, td { border: 1px solid #ccc; padding: 6px 10px; }
-    th { background: #eee; }
-    tr:nth-child(even) { background: #fafafa; }
-    input[type="text"] { width: 100%; border: none; background: transparent; }
-    button { margin: 2px; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
-    button.add { background: #4caf50; color: white; }
-    button.delete { background: #e74c3c; color: white; }
-    button.save { background: #3498db; color: white; }
-    .controls { margin-bottom: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>tankuj100 – administrace</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --line: #e3e6ea;
+    --text: #1c1f23;
+    --muted: #6b7280;
+    --accent: #d7263d;
+    --accent-soft: #fdeaec;
+    --green: #12855b;
+    --green-soft: #e6f5ee;
+    --amber: #9a6700;
+    --amber-soft: #fff4d6;
+    --blue: #1256a0;
+    --blue-soft: #e7f0fb;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  header {
+    background: var(--card); border-bottom: 1px solid var(--line);
+    padding: 14px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 20;
+  }
+  header h1 { font-size: 18px; margin: 0; letter-spacing: -0.2px; }
+  header h1 span { color: var(--accent); }
+  header .spacer { flex: 1; }
+  main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+
+  button {
+    font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--card);
+    color: var(--text); padding: 7px 13px; border-radius: 8px; transition: background .12s, border-color .12s;
+  }
+  button:hover:not(:disabled) { background: #f0f1f3; }
+  button:disabled { opacity: .5; cursor: default; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover:not(:disabled) { background: #b81f33; }
+  button.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+  button.ghost:hover:not(:disabled) { background: #eceef1; color: var(--text); }
+  button.small { padding: 4px 9px; font-size: 13px; }
+  button.danger { color: var(--accent); border-color: #f0c5cb; }
+  button.danger:hover:not(:disabled) { background: var(--accent-soft); }
+
+  /* --- statistiky --- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+  .card .value { font-size: 26px; font-weight: 650; margin-top: 4px; letter-spacing: -0.5px; }
+  .card .value small { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .card.attention { border-color: #f0c5cb; background: var(--accent-soft); }
+  .card.attention .value { color: var(--accent); }
+
+  /* --- záložky --- */
+  nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 18px; flex-wrap: wrap; }
+  nav.tabs button {
+    border: none; background: transparent; border-radius: 0; padding: 10px 16px;
+    color: var(--muted); font-weight: 550; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  nav.tabs button:hover { background: transparent; color: var(--text); }
+  nav.tabs button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  nav.tabs .badge {
+    display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 6px;
+    background: var(--accent); color: #fff; border-radius: 20px; font-size: 11px; font-weight: 700;
+  }
+
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px; border: 1px solid var(--line); background: var(--card);
+    font-size: 13px; cursor: pointer;
+  }
+  .chip.active { background: var(--text); border-color: var(--text); color: #fff; }
+  input[type="search"], input[type="text"], textarea, select {
+    font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); color: var(--text);
+  }
+  input[type="search"] { min-width: 240px; }
+
+  /* --- seznamy --- */
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .item {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px;
+    display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: start;
+  }
+  .item.resolved { opacity: .62; }
+  .item .head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .item .station { font-weight: 620; }
+  .item .meta { color: var(--muted); font-size: 13px; }
+  .item .body { margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .item .actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .tag {
+    font-size: 11.5px; font-weight: 650; padding: 2px 8px; border-radius: 6px;
+    text-transform: uppercase; letter-spacing: .3px; white-space: nowrap;
+  }
+  .tag.new { background: var(--accent-soft); color: var(--accent); }
+  .tag.in_review { background: var(--amber-soft); color: var(--amber); }
+  .tag.resolved { background: var(--green-soft); color: var(--green); }
+  .tag.rejected { background: #eceef1; color: var(--muted); }
+  .tag.type { background: var(--blue-soft); color: var(--blue); }
+  .tag.hidden { background: #eceef1; color: var(--muted); }
+  .stars { color: #e0a800; letter-spacing: 1px; white-space: nowrap; }
+  .stars .off { color: #d5d8dc; }
+  .price-note { background: var(--amber-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: 14px; }
+  .admin-note { border-left: 3px solid var(--line); padding-left: 10px; margin-top: 8px; color: var(--muted); font-size: 13.5px; }
+  a { color: var(--blue); }
+
+  /* --- tabulka stanic --- */
+  .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 7px 10px; text-align: left; white-space: nowrap; }
+  th { background: #fafbfc; position: sticky; top: 0; font-size: 12px; text-transform: uppercase; color: var(--muted); }
+  td input { width: 100%; min-width: 90px; border: 1px solid transparent; background: transparent; padding: 3px 5px; border-radius: 5px; font: inherit; }
+  td input:focus { border-color: var(--accent); background: #fff; outline: none; }
+  tr.dirty td { background: #fffbe6; }
+
+  .empty { text-align: center; padding: 44px 20px; color: var(--muted); background: var(--card); border: 1px dashed var(--line); border-radius: var(--radius); }
+  .empty strong { display: block; font-size: 16px; color: var(--text); margin-bottom: 4px; }
+  .hidden { display: none !important; }
+
+  #toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(140%);
+    background: var(--text); color: #fff; padding: 11px 18px; border-radius: 10px;
+    box-shadow: 0 8px 26px rgba(0,0,0,.22); z-index: 60; max-width: 90vw;
+    opacity: 0; pointer-events: none; transition: transform .22s ease, opacity .22s ease;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  #toast.error { background: var(--accent); }
+
+  @media (max-width: 620px) {
+    .item { grid-template-columns: 1fr; }
+    .item .actions { justify-content: flex-start; }
+  }
+</style>
 </head>
 <body>
 
-<h1>tankuj100 Admin</h1>
+<header>
+  <h1>tankuj100 <span>admin</span></h1>
+  <div class="spacer"></div>
+  <span id="mailState" class="meta"></span>
+  <button class="small" onclick="sendTestMail(this)">✉️ Test e-mailu</button>
+  <button class="small" onclick="refreshAll()">↻ Obnovit</button>
+</header>
 
-<div class="controls">
-  <button class="add" onclick="addRow()">➕ Přidat řádek</button>
-  <button class="delete" onclick="deleteSelected()">🗑️ Smazat vybrané</button>
-  <button class="save" onclick="saveToServer()">💾 Uložit změny</button>
-</div>
+<main>
+  <section class="cards" id="cards"></section>
 
-<table id="dataTable"></table>
+  <nav class="tabs" id="tabs">
+    <button data-tab="reports" class="active">Hlášení <span class="badge hidden" id="reportsBadge">0</span></button>
+    <button data-tab="reviews">Hodnocení</button>
+    <button data-tab="stations">Benzínky</button>
+  </nav>
+
+  <!-- ------------------------------------------------------ hlášení -->
+  <section id="tab-reports">
+    <div class="toolbar" id="reportFilters"></div>
+    <div class="list" id="reportsList"></div>
+  </section>
+
+  <!-- ------------------------------------------------------ hodnocení -->
+  <section id="tab-reviews" class="hidden">
+    <div class="toolbar" id="reviewFilters"></div>
+    <div class="list" id="reviewsList"></div>
+  </section>
+
+  <!-- ------------------------------------------------------ benzínky -->
+  <section id="tab-stations" class="hidden">
+    <div class="toolbar">
+      <input type="search" id="stationSearch" placeholder="Hledat značku, město, adresu…" oninput="renderStations()">
+      <span class="meta" id="stationCount"></span>
+      <div class="spacer" style="flex:1"></div>
+      <button class="small" onclick="saveDirtyStations()" id="saveStationsBtn" disabled>💾 Uložit změny</button>
+    </div>
+    <div class="table-wrap"><table id="stationsTable"></table></div>
+  </section>
+</main>
+
+<div id="toast"></div>
 
 <script>
-  let data = [];
-  const table = document.getElementById("dataTable");
+// ============================================================ pomůcky
 
-  async function loadData() {
-    const res = await fetch("/api/stations");
-    data = await res.json();
-    renderTable();
-  }
+const REPORT_TYPES = {
+  price:    'špatná cena',
+  closed:   'zavřeno / nefunguje',
+  fuel:     'palivo',
+  location: 'poloha / adresa',
+  other:    'jiné',
+};
+const REPORT_STATUSES = { new: 'nové', in_review: 'v řešení', resolved: 'vyřešeno', rejected: 'zamítnuto' };
+const FUEL_VERDICTS = { e5: 'E5 potvrzeno', e10: 'E10', disputed: 'rozporné', unconfirmed: 'nepotvrzeno' };
 
-  function renderTable() {
-    table.innerHTML = "";
-    if (data.length === 0) return;
+const $ = (id) => document.getElementById(id);
 
-    const headerRow = document.createElement("tr");
-    headerRow.innerHTML = "<th></th>" + Object.keys(data[0]).map(k => `<th>${k}</th>`).join("");
-    table.appendChild(headerRow);
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
 
-    data.forEach((row, idx) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td><input type="checkbox" data-index="${idx}"></td>` +
-        Object.entries(row).map(([k, v]) =>
-          `<td><input type="text" value="${v ?? ''}" oninput="updateCell(${idx}, '${k}', this.value)"></td>`
-        ).join("");
-      table.appendChild(tr);
+function toast(message, isError = false) {
+  const el = $('toast');
+  el.textContent = message;
+  el.classList.toggle('error', isError);
+  el.classList.add('show');
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => el.classList.remove('show'), 3600);
+}
+
+/** Fetch s jednotným zpracováním chyb – vždy vrátí data, nebo vyhodí čitelnou chybu. */
+async function api(path, options = {}) {
+  // URL skládáme z origin, ne relativně: kdyby si někdo admin otevřel s údaji
+  // v adrese (https://user:pass@…), relativní fetch by prohlížeč odmítl.
+  const url = new URL(path, location.origin).toString();
+  let res;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     });
+  } catch {
+    throw new Error('Server neodpovídá. Zkontroluj připojení.');
   }
+  if (res.status === 401) throw new Error('Přihlášení vypršelo – obnov stránku.');
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { /* HTML chybová stránka */ }
+  if (!res.ok) throw new Error(data?.message || `Chyba serveru (${res.status}).`);
+  return data;
+}
 
-  function updateCell(index, key, value) {
-    data[index][key] = value;
-  }
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
 
-  function addRow() {
-    if (data.length === 0) return;
-    const newRow = {};
-    Object.keys(data[0]).forEach(k => newRow[k] = "");
-    data.push(newRow);
-    renderTable();
-  }
+function stars(n) {
+  const full = '★'.repeat(n);
+  const empty = '☆'.repeat(5 - n);
+  return `<span class="stars">${full}<span class="off">${empty}</span></span>`;
+}
 
-  async function deleteSelected() {
-  const checkboxes = table.querySelectorAll("input[type=checkbox]:checked");
-  const indexesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.dataset.index));
-  
-  if (indexesToDelete.length === 0) {
-    alert("Není vybrán žádný řádek ke smazání.");
-    return;
-  }
+function stationLabel(row) {
+  const brand = row.brand_name || 'Neznámá značka';
+  const place = [row.city, row.station_name].filter(Boolean).join(' – ');
+  return `${esc(brand)}${place ? ` <span class="meta">${esc(place)}</span>` : ''}`;
+}
 
-  // Získání ID pro smazání
-  const idsToDelete = indexesToDelete.map(index => data[index].id);
+function emptyState(title, hint) {
+  return `<div class="empty"><strong>${esc(title)}</strong>${esc(hint)}</div>`;
+}
 
-  // Potvrzení od uživatele
-  if (!confirm(`Opravdu chcete smazat ${idsToDelete.length} vybraný/ch řádek/řádky?`)) {
-    return;
-  }
+function errorState(message, retryFn) {
+  return `<div class="empty"><strong>Nepodařilo se načíst data</strong>${esc(message)}<br><br>
+          <button class="small" onclick="${retryFn}">Zkusit znovu</button></div>`;
+}
 
-  let successCount = 0;
-  let errorOccurred = false;
+// ============================================================ přehled
 
-  for (const id of idsToDelete) {
-    try {
-      const res = await fetch(`/api/stations/${id}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        successCount++;
-      } else {
-        errorOccurred = true;
-        console.error(`Failed to delete station with ID ${id}`);
-      }
-    } catch (error) {
-      errorOccurred = true;
-      console.error(`Error during delete request for ID ${id}:`, error);
-    }
-  }
-
-  // Po dokončení všech požadavků, znova načteme data
-  if (successCount > 0) {
-    alert(`✅ Úspěšně smazáno ${successCount} řádků.`);
-    loadData(); // Načtení dat po smazání, aby se tabulka synchronizovala s DB
-  } else if (!errorOccurred) {
-     alert("❌ Žádné řádky nebyly smazány.");
+async function loadStats() {
+  try {
+    const s = await api('/api/admin/stats');
+    const needsAttention = s.reportsNew + s.reportsInReview;
+    $('cards').innerHTML = `
+      ${card('K vyřízení', needsAttention, needsAttention > 0 ? 'attention' : '', `${s.reportsNew} nových`)}
+      ${card('Benzínky', s.stations)}
+      ${card('Hodnocení', s.reviews, '', s.ratingAverage ? `⌀ ${s.ratingAverage} ★` : 'bez hodnocení')}
+      ${card('Hlášení celkem', s.reportsTotal, '', `${s.last7dReports} za 7 dní`)}
+      ${card('Potvrzené E5', s.stationsWithE5, '', `${s.fuelVotes} hlasů`)}
+    `;
+    $('reportsBadge').textContent = s.reportsNew;
+    $('reportsBadge').classList.toggle('hidden', s.reportsNew === 0);
+    $('mailState').innerHTML = s.mail_configured
+      ? '✉️ notifikace zapnuté'
+      : '<span style="color:var(--accent)">✉️ notifikace VYPNUTÉ</span>';
+  } catch (err) {
+    $('cards').innerHTML = `<div class="card attention"><div class="label">Přehled</div><div class="value" style="font-size:15px">${esc(err.message)}</div></div>`;
   }
 }
 
-  async function saveToServer() {
-    for (const row of data) {
-      await fetch("/api/stations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(row)
-      });
-    }
-    alert("✅ Změny uloženy do databáze");
-  }
+function card(label, value, cls = '', sub = '') {
+  return `<div class="card ${cls}">
+    <div class="label">${esc(label)}</div>
+    <div class="value">${value ?? '–'}${sub ? ` <small>${esc(sub)}</small>` : ''}</div>
+  </div>`;
+}
 
-  loadData();
+// ============================================================ hlášení
+
+let reportFilter = 'open';
+
+const REPORT_FILTERS = [
+  ['open', 'K vyřízení'],
+  ['new', 'Nová'],
+  ['in_review', 'V řešení'],
+  ['resolved', 'Vyřešená'],
+  ['rejected', 'Zamítnutá'],
+  ['all', 'Vše'],
+];
+
+function renderReportFilters() {
+  $('reportFilters').innerHTML = REPORT_FILTERS
+    .map(([key, label]) =>
+      `<button class="chip ${reportFilter === key ? 'active' : ''}" onclick="setReportFilter('${key}')">${esc(label)}</button>`)
+    .join('');
+}
+
+function setReportFilter(key) {
+  reportFilter = key;
+  renderReportFilters();
+  loadReports();
+}
+
+async function loadReports() {
+  $('reportsList').innerHTML = '<div class="empty">Načítám…</div>';
+  try {
+    // "K vyřízení" = nová + v řešení, takže si vytáhneme vše a profiltrujeme lokálně.
+    const query = reportFilter === 'open' || reportFilter === 'all' ? 'all' : reportFilter;
+    let rows = await api(`/api/admin/reports?status=${query}`);
+    if (reportFilter === 'open') rows = rows.filter((r) => r.status === 'new' || r.status === 'in_review');
+
+    if (rows.length === 0) {
+      $('reportsList').innerHTML = emptyState(
+        reportFilter === 'open' ? 'Nic k vyřízení' : 'Žádná hlášení',
+        reportFilter === 'open' ? 'Všechna hlášení od uživatelů jsou vyřešená.' : 'V tomhle filtru nic není.');
+      return;
+    }
+    $('reportsList').innerHTML = rows.map(reportItem).join('');
+  } catch (err) {
+    $('reportsList').innerHTML = errorState(err.message, 'loadReports()');
+  }
+}
+
+function reportItem(r) {
+  const done = r.status === 'resolved' || r.status === 'rejected';
+  const mapLink = r.lat && r.lon
+    ? `<a href="https://maps.apple.com/?ll=${r.lat},${r.lon}&q=${encodeURIComponent(r.brand_name || 'benzínka')}" target="_blank" rel="noopener">mapa</a>`
+    : '';
+  const detail = [];
+  if (r.fuel_name) detail.push(`Palivo: <strong>${esc(r.fuel_name)}</strong>`);
+  if (r.claimed_price != null) detail.push(`Cena podle uživatele: <strong>${esc(r.claimed_price)} Kč/l</strong>`);
+
+  return `<article class="item ${done ? 'resolved' : ''}">
+    <div>
+      <div class="head">
+        <span class="tag ${r.status}">${esc(REPORT_STATUSES[r.status] || r.status)}</span>
+        <span class="tag type">${esc(REPORT_TYPES[r.type] || r.type)}</span>
+        <span class="station">${stationLabel(r)}</span>
+      </div>
+      <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))} • stanice ${r.station_id}
+        ${[r.address, r.zip].filter(Boolean).map(esc).join(', ')} ${mapLink}</div>
+      ${detail.length ? `<div class="price-note">${detail.join(' &nbsp;•&nbsp; ')}</div>` : ''}
+      ${r.note ? `<div class="body">${esc(r.note)}</div>` : ''}
+      ${r.admin_note ? `<div class="admin-note">Moje poznámka: ${esc(r.admin_note)}</div>` : ''}
+    </div>
+    <div class="actions">
+      ${r.status !== 'in_review' && !done ? `<button class="small" onclick="setReportStatus(${r.id},'in_review')">Beru si to</button>` : ''}
+      ${!done ? `<button class="small" onclick="setReportStatus(${r.id},'resolved')">✓ Vyřešeno</button>` : ''}
+      ${!done ? `<button class="small" onclick="setReportStatus(${r.id},'rejected')">Zamítnout</button>` : ''}
+      ${done ? `<button class="small" onclick="setReportStatus(${r.id},'new')">↩︎ Zpět na nové</button>` : ''}
+      <button class="small ghost" onclick="addReportNote(${r.id})">Poznámka</button>
+      <button class="small danger" onclick="deleteReport(${r.id})">Smazat</button>
+    </div>
+  </article>`;
+}
+
+async function setReportStatus(id, status) {
+  try {
+    await api(`/api/admin/reports/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    toast(`Hlášení #${id}: ${REPORT_STATUSES[status]}`);
+    loadReports(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function addReportNote(id) {
+  const note = prompt('Poznámka k hlášení (uvidíš ji jen ty):');
+  if (note === null) return;
+  try {
+    const current = (await api('/api/admin/reports?status=all')).find((r) => r.id === id);
+    await api(`/api/admin/reports/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: current?.status || 'in_review', admin_note: note }),
+    });
+    toast('Poznámka uložena.');
+    loadReports();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteReport(id) {
+  if (!confirm(`Smazat hlášení #${id}? Tohle nejde vzít zpět.`)) return;
+  try {
+    await api(`/api/admin/reports/${id}`, { method: 'DELETE' });
+    toast('Hlášení smazáno.');
+    loadReports(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================ hodnocení
+
+let reviewFilter = 'all';
+
+function renderReviewFilters() {
+  $('reviewFilters').innerHTML = [['all', 'Vše'], ['published', 'Zveřejněná'], ['hidden', 'Skrytá']]
+    .map(([key, label]) =>
+      `<button class="chip ${reviewFilter === key ? 'active' : ''}" onclick="setReviewFilter('${key}')">${esc(label)}</button>`)
+    .join('');
+}
+
+function setReviewFilter(key) {
+  reviewFilter = key;
+  renderReviewFilters();
+  loadReviews();
+}
+
+async function loadReviews() {
+  $('reviewsList').innerHTML = '<div class="empty">Načítám…</div>';
+  try {
+    const rows = await api(`/api/admin/reviews?status=${reviewFilter}`);
+    if (rows.length === 0) {
+      $('reviewsList').innerHTML = emptyState('Žádná hodnocení', 'Zatím nikdo žádnou benzínku neohodnotil.');
+      return;
+    }
+    $('reviewsList').innerHTML = rows.map(reviewItem).join('');
+  } catch (err) {
+    $('reviewsList').innerHTML = errorState(err.message, 'loadReviews()');
+  }
+}
+
+function reviewItem(r) {
+  const isHidden = r.status === 'hidden';
+  return `<article class="item ${isHidden ? 'resolved' : ''}">
+    <div>
+      <div class="head">
+        ${stars(r.rating)}
+        ${isHidden ? '<span class="tag hidden">skryté</span>' : ''}
+        <span class="station">${stationLabel(r)}</span>
+      </div>
+      <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))} • stanice ${r.station_id}
+        ${r.author ? ` • ${esc(r.author)}` : ' • bez přezdívky'}</div>
+      ${r.comment ? `<div class="body">${esc(r.comment)}</div>` : '<div class="meta body">(bez komentáře)</div>'}
+    </div>
+    <div class="actions">
+      ${isHidden
+        ? `<button class="small" onclick="setReviewStatus(${r.id},'published')">Zveřejnit</button>`
+        : `<button class="small" onclick="setReviewStatus(${r.id},'hidden')">Skrýt</button>`}
+      <button class="small danger" onclick="deleteReview(${r.id})">Smazat</button>
+    </div>
+  </article>`;
+}
+
+async function setReviewStatus(id, status) {
+  try {
+    await api(`/api/admin/reviews/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    toast(status === 'hidden' ? 'Hodnocení skryto.' : 'Hodnocení zveřejněno.');
+    loadReviews(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteReview(id) {
+  if (!confirm(`Smazat hodnocení #${id}? Tohle nejde vzít zpět.`)) return;
+  try {
+    await api(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+    toast('Hodnocení smazáno.');
+    loadReviews(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================ benzínky
+
+let stations = [];
+const dirtyIds = new Set();
+const STATION_COLUMNS = ['id', 'brand_name', 'name', 'city', 'address', 'zip', 'phone', 'worktime', 'lat', 'lon'];
+
+async function loadStations() {
+  try {
+    stations = await api('/api/admin/stations');
+    renderStations();
+  } catch (err) {
+    $('stationsTable').innerHTML = `<tr><td>${esc(err.message)}</td></tr>`;
+  }
+}
+
+/** Bez diakritiky a malými písmeny – data z fuelo.net diakritiku často nemají. */
+function foldText(value) {
+  return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function renderStations() {
+  const query = foldText($('stationSearch').value).trim();
+  const rows = query
+    ? stations.filter((s) => STATION_COLUMNS.some((k) => foldText(s[k]).includes(query)))
+    : stations;
+
+  $('stationCount').textContent = query
+    ? `${rows.length} z ${stations.length}`
+    : `${stations.length} benzínek`;
+
+  // Bez filtru je 400+ řádků – ukážeme prvních 100, ať prohlížeč nestrádá.
+  const shown = rows.slice(0, 100);
+  const head = `<tr><th></th>${STATION_COLUMNS.map((k) => `<th>${esc(k)}</th>`).join('')}</tr>`;
+  const body = shown.map((s) => `
+    <tr id="st-${s.id}" class="${dirtyIds.has(s.id) ? 'dirty' : ''}">
+      <td><button class="small danger" onclick="deleteStation(${s.id})" title="Smazat benzínku">✕</button></td>
+      ${STATION_COLUMNS.map((k) => `<td><input value="${esc(s[k] ?? '')}" ${k === 'id' ? 'readonly' : ''}
+          oninput="editStation(${s.id}, '${k}', this.value)"></td>`).join('')}
+    </tr>`).join('');
+
+  const more = rows.length > shown.length
+    ? `<tr><td colspan="${STATION_COLUMNS.length + 1}" class="meta" style="padding:12px">
+         Zobrazeno prvních ${shown.length} z ${rows.length} – zúž hledání.</td></tr>`
+    : '';
+
+  $('stationsTable').innerHTML = head + (body || `<tr><td colspan="${STATION_COLUMNS.length + 1}" class="meta" style="padding:16px">Nic nenalezeno.</td></tr>`) + more;
+}
+
+function editStation(id, key, value) {
+  const station = stations.find((s) => s.id === id);
+  if (!station) return;
+  station[key] = value;
+  dirtyIds.add(id);
+  document.getElementById(`st-${id}`)?.classList.add('dirty');
+  $('saveStationsBtn').disabled = false;
+}
+
+async function saveDirtyStations() {
+  if (dirtyIds.size === 0) return;
+  const button = $('saveStationsBtn');
+  button.disabled = true;
+  let saved = 0;
+  const failed = [];
+  for (const id of [...dirtyIds]) {
+    const station = stations.find((s) => s.id === id);
+    try {
+      await api('/api/admin/stations', { method: 'POST', body: JSON.stringify(station) });
+      dirtyIds.delete(id);
+      saved += 1;
+    } catch (err) {
+      failed.push(`#${id}: ${err.message}`);
+    }
+  }
+  renderStations();
+  button.disabled = dirtyIds.size === 0;
+  if (failed.length) toast(`Uloženo ${saved}, selhalo ${failed.length}. ${failed[0]}`, true);
+  else toast(`Uloženo ${saved} benzínek.`);
+}
+
+async function deleteStation(id) {
+  const station = stations.find((s) => s.id === id);
+  if (!confirm(`Smazat benzínku „${station?.brand_name || ''} ${station?.city || ''}“ (#${id})?\nSmažou se i její hodnocení a hlášení.`)) return;
+  try {
+    await api(`/api/admin/stations/${id}`, { method: 'DELETE' });
+    stations = stations.filter((s) => s.id !== id);
+    dirtyIds.delete(id);
+    renderStations();
+    toast('Benzínka smazána.');
+    loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================ e-mail + záložky
+
+async function sendTestMail(button) {
+  button.disabled = true;
+  const original = button.textContent;
+  button.textContent = 'Odesílám…';
+  try {
+    const res = await api('/api/admin/test-mail', { method: 'POST' });
+    toast(res.message || 'Odesláno.');
+  } catch (err) {
+    toast(err.message, true);
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+}
+
+const LOADERS = { reports: loadReports, reviews: loadReviews, stations: loadStations };
+
+$('tabs').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-tab]');
+  if (!button) return;
+  const tab = button.dataset.tab;
+  for (const b of $('tabs').querySelectorAll('button[data-tab]')) b.classList.toggle('active', b === button);
+  for (const key of Object.keys(LOADERS)) $(`tab-${key}`).classList.toggle('hidden', key !== tab);
+  LOADERS[tab]();
+});
+
+function refreshAll() {
+  loadStats();
+  const active = $('tabs').querySelector('button.active')?.dataset.tab || 'reports';
+  LOADERS[active]();
+}
+
+renderReportFilters();
+renderReviewFilters();
+loadStats();
+loadReports();
+
+// Přehled se sám osvěží každou minutu, ať je vidět nové hlášení bez klikání.
+setInterval(loadStats, 60000);
 </script>
 
 </body>

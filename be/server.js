@@ -1,153 +1,133 @@
-const express = require('express');
+// tankuj100 – backend (Express + SQLite).
+//
+// Obsluhuje:
+//   * veřejné API pro iOS aplikaci  ......  /api/...      (src/routes/public.routes.js)
+//   * admin API a admin UI  ..............  /admin, /api/admin/...  (basic auth)
+//   * zásady ochrany soukromí  ...........  /privacy
+//
+// Konfigurace se čte z prostředí (PM2 ji předává z tankuj100.config.cjs, lokálně
+// stačí `node --env-file=.env server.js`). Viz .env.example.
+
 const path = require('path');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const Database = require('better-sqlite3');
+const fs = require('fs');
+const express = require('express');
+const basicAuth = require('express-basic-auth');
+
+// .env načteme sami, ať funguje `node server.js` i bez --env-file (Node 18+).
+loadDotEnv(path.join(__dirname, '.env'));
+
+const { DB_PATH } = require('./src/db');
+const publicRoutes = require('./src/routes/public.routes');
+const adminRoutes = require('./src/routes/admin.routes');
+const { isConfigured: mailConfigured } = require('./src/mailer');
 
 const app = express();
-// Port z prostředí (nastavuje PM2 přes tankuj100.config.cjs), fallback 3000.
 const PORT = process.env.PORT || 3000;
 
-// 👉 připojení k SQLite
-const db = new Database(path.join(__dirname, 'db/tankuj100db.sqlite'));
+// Za nginx proxy chceme skutečnou IP klienta (kvůli rate-limitu).
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
 
-app.use(express.json());
+app.use(express.json({ limit: '64kb' }));
 
-// 👉 statické soubory v aktuálním adresáři
-app.use(express.static(path.join(__dirname, '../public')));
+// ------------------------------------------------------------------ admin auth
 
-// 👉 když někdo jde na root "/", pošli mu index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+const ADMIN_USER = process.env.ADMIN_USERNAME || '';
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || '';
+
+/**
+ * Ochrana adminu. Když nejsou nastavené údaje, admin se VŮBEC nezveřejní –
+ * to je bezpečnější než ho nechat otevřený na internetu.
+ */
+const requireAdmin = ADMIN_USER && ADMIN_PASS
+  ? basicAuth({ users: { [ADMIN_USER]: ADMIN_PASS }, challenge: true, realm: 'tankuj100 admin' })
+  : (req, res) =>
+      res.status(503).json({
+        error: 'admin_disabled',
+        message: 'Administrace není nastavená (chybí ADMIN_USERNAME a ADMIN_PASSWORD v .env).',
+      });
+
+if (!ADMIN_USER || !ADMIN_PASS) {
+  console.warn('⚠️  ADMIN_USERNAME / ADMIN_PASSWORD nejsou nastavené – administrace je vypnutá.');
+}
+
+// ------------------------------------------------------------------ routy
+
+// Zdravotní check (hodí se pro monitoring i pro deploy skript).
+app.get('/health', (req, res) => {
+  res.json({ ok: true, mail: mailConfigured(), db: path.basename(DB_PATH) });
 });
 
-// 👉 Zásady ochrany soukromí (URL pro App Store Connect)
 app.get('/privacy', (req, res) => {
   res.sendFile(path.join(__dirname, 'privacy.html'));
 });
 
-// ------------------ SCRAPER ENDPOINT ------------------
-function parseFuelPrices(html) {
-  const $ = cheerio.load(html);
-  const fuels = [];
+// Admin API + admin UI (musí být před veřejným /api, aby si cesty nekolidovaly).
+app.use('/api/admin', requireAdmin, adminRoutes);
+app.get('/', requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+app.get('/admin', requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-  $('tr[itemscope][itemtype="http://schema.org/Product"]').each((_, el) => {
-    const name = $(el).find('[itemprop="name"]').text().trim();
-    const price = $(el).find('[itemprop="price"]').attr('content');
-    const currency = $(el).find('[itemprop="priceCurrency"]').attr('content') || 'CZK';
+// Veřejné API pro aplikaci.
+app.use('/api', publicRoutes);
 
-    if (name && price) {
-      fuels.push({
-        name,
-        price: parseFloat(price),
-        currency,
-        unit: 'CZK/l'
-      });
-    }
+// ------------------------------------------------------------------ chyby
+
+// Neexistující API cesta – ať aplikace nedostane HTML.
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'not_found', message: 'Tenhle endpoint neexistuje.' });
+});
+
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  // Špatný JSON v těle requestu (express.json vyhodí SyntaxError).
+  if (err instanceof SyntaxError && 'body' in err) {
+    return res.status(400).json({ error: 'bad_json', message: 'Data se nepodařilo přečíst.' });
+  }
+  const status = err.statusCode || 500;
+  if (status >= 500) console.error('[error]', err);
+  res.status(status).json({
+    error: err.name === 'ValidationError' ? 'validation_error' : 'server_error',
+    message:
+      status >= 500
+        ? 'Na serveru se něco pokazilo. Zkus to prosím za chvíli.'
+        : err.message,
+    ...(err.field ? { field: err.field } : {}),
   });
+});
 
-  return fuels;
+// ------------------------------------------------------------------ start
+
+const server = app.listen(PORT, () => {
+  console.log(`✅ tankuj100 API běží na http://localhost:${PORT}`);
+  console.log(`   DB:            ${DB_PATH}`);
+  console.log(`   Administrace:  ${ADMIN_USER && ADMIN_PASS ? 'zapnutá (basic auth)' : 'VYPNUTÁ'}`);
+  console.log(`   Notifikace:    ${mailConfigured() ? 'EmailJS' : 'jen do logu'}`);
+});
+
+// Graceful shutdown, ať PM2 restart nezruší běžící požadavek.
+for (const signal of ['SIGTERM', 'SIGINT']) {
+  process.on(signal, () => {
+    console.log(`\n${signal} – ukončuji…`);
+    server.close(() => process.exit(0));
+  });
 }
 
-app.get('/api/fuel-prices/:id', async (req, res) => {
-  const { id } = req.params;
-  const url = `https://be.fuelo.net/gasstation/id/${id}`;
-
-  try {
-    const response = await axios.get(url, { timeout: 10000 });
-    const fuels = parseFuelPrices(response.data);
-
-    if (fuels.length === 0) {
-      return res.status(404).json({ error: 'No fuel prices found for given id' });
+/** Minimalistický .env parser (KEY=value, # komentáře). Nepřepisuje již nastavené proměnné. */
+function loadDotEnv(file) {
+  if (!fs.existsSync(file)) return;
+  for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    let value = trimmed.slice(eq + 1).trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
     }
-
-    res.json(fuels);
-  } catch (err) {
-    console.error('Error fetching page:', err.message);
-    res.status(500).json({ error: 'Failed to fetch or parse data' });
+    if (!(key in process.env)) process.env[key] = value;
   }
-});
-
-// ------------------ ENDPOINTY NA STATION TABULKU ------------------
-
-// GET všechny záznamy
-app.get('/api/stations', (req, res) => {
-  const rows = db.prepare('SELECT * FROM station').all();
-  res.json(rows);
-});
-
-// GET záznamy pro mapu na mobilu
-app.get('/api/map/', (req, res) => {
-  const rows = db.prepare('SELECT id, lat, lon, brand_name, brand_id, station_id FROM station').all();
-  res.json(rows);
-});
-
-// GET konkrétní záznam podle ID
-app.get('/api/detail/:id', (req, res) => {
-  const row = db.prepare('SELECT * FROM station WHERE id = ?').get(req.params.id);
-  if (!row) return res.status(404).json({ error: 'Station not found' });
-  res.json(row);
-});
-
-// DELETE konkrétní záznam podle ID
-app.delete('/api/stations/:id', (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const result = db.prepare('DELETE FROM station WHERE id = ?').run(id);
-
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Station not found or already deleted' });
-    }
-
-    res.json({ success: true, message: `Station with ID ${id} deleted successfully.` });
-  } catch (err) {
-    console.error('DB delete error:', err);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
-
-// INSERT nebo UPDATE záznamu
-app.post('/api/stations', (req, res) => {
-  const {
-    id, lat, lon, brand_name, brand_id, name,
-    city, address, zip, phone, worktime,
-    services, payments, foursquare_id,
-    wikimapia_id, status, error
-  } = req.body;
-
-  try {
-    db.prepare(`
-      INSERT INTO station (
-        id, lat, lon, brand_name, brand_id, name,
-        city, address, zip, phone, worktime,
-        services, payments, foursquare_id,
-        wikimapia_id, status, error
-      )
-      VALUES (@id, @lat, @lon, @brand_name, @brand_id, @name,
-              @city, @address, @zip, @phone, @worktime,
-              @services, @payments, @foursquare_id,
-              @wikimapia_id, @status, @error)
-      ON CONFLICT(id) DO UPDATE SET
-        lat=@lat, lon=@lon, brand_name=@brand_name, brand_id=@brand_id, name=@name,
-        city=@city, address=@address, zip=@zip, phone=@phone, worktime=@worktime,
-        services=@services, payments=@payments, foursquare_id=@foursquare_id,
-        wikimapia_id=@wikimapia_id, status=@status, error=@error
-    `).run({
-      id, lat, lon, brand_name, brand_id, name,
-      city, address, zip, phone, worktime,
-      services, payments, foursquare_id,
-      wikimapia_id, status, error
-    });
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error('DB insert error:', err);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
-
-// ------------------ START SERVERU ------------------
-app.listen(PORT, () => {
-  console.log(`✅ Server běží na http://localhost:${PORT}`);
-});
+}
