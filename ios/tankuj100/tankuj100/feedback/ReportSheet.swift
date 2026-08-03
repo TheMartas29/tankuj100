@@ -91,7 +91,8 @@ struct ReportSheet: View {
                     Text("Hlášení projde člověk a data opraví. Díky, že nám pomáháš držet appku přesnou.")
                 }
             }
-            .navigationTitle("Nahlásit nesrovnalost")
+            // Krátký titulek, ať se v navigation baru neodřízne.
+            .navigationTitle("Nahlásit problém")
             .navigationBarTitleDisplayMode(.inline)
             .interactiveDismissDisabled(viewModel.isSubmitting)
             .toolbar {

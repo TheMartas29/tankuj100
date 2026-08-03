@@ -35,12 +35,20 @@ enum FuelVerdict: String, Codable {
         }
     }
 
-    var detail: String {
+    /// Vysvětlení pod odznakem. U „nepotvrzeno“ záleží na tom, jestli už nějaký hlas máme –
+    /// po vlastním hlasu by bylo „ještě nikdo neověřil“ nesmysl.
+    func detail(votes: Int) -> String {
         switch self {
-        case .e5: "Řidiči tady potvrdili benzín s nižším podílem etanolu (E5) – vhodný pro starší vozy."
-        case .e10: "Podle řidičů se tady čepuje E10. Pro starší vozy nemusí být vhodný."
-        case .disputed: "Hlášení si odporují. Pomoz nám a napiš, co je u pumpy napsané."
-        case .unconfirmed: "Tuhle benzínku ještě nikdo neověřil. Buď první!"
+        case .e5:
+            "Řidiči tady potvrdili benzín s nižším podílem etanolu (E5) – vhodný pro starší vozy."
+        case .e10:
+            "Podle řidičů se tady čepuje E10. Pro starší vozy nemusí být vhodný."
+        case .disputed:
+            "Hlášení si odporují. Pomoz nám a napiš, co je u pumpy napsané."
+        case .unconfirmed:
+            votes == 0
+                ? "Tuhle benzínku ještě nikdo neověřil. Buď první!"
+                : "Na potvrzení potřebujeme aspoň dva shodné hlasy. Řekni o appce dalším řidičům."
         }
     }
 

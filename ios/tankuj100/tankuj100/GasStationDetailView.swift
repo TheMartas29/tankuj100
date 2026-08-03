@@ -113,6 +113,9 @@ struct GasStationDetailView: View {
                 }
             }
         }
+        // Titulek v baru dá navigation baru pozadí – bez něj obsah při scrollování
+        // prosvítá pod plovoucími tlačítky.
+        .navigationTitle(gasStation.brandName ?? "Benzínka")
         .navigationBarTitleDisplayMode(.inline)
         .errorAlert($error)
         .successToast($feedback.successMessage)

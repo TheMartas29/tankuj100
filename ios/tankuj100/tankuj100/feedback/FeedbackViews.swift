@@ -149,7 +149,7 @@ struct FuelKindCard: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text(summary.verdict.detail)
+            Text(summary.verdict.detail(votes: summary.total))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

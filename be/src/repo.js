@@ -10,19 +10,23 @@ const nowISO = () => new Date().toISOString();
 const stations = {
   all: () => db.prepare('SELECT * FROM station ORDER BY brand_name, city').all(),
 
-  /** Odlehčený seznam pro mapu v mobilu + agregované hodnocení a typ paliva. */
+  /** Odlehčený seznam pro mapu v mobilu + agregované hodnocení a typ paliva.
+   *
+   * Agregace jsou schválně korelované podotázky, ne dva LEFT JOINy – ty by se
+   * navzájem vynásobily (4 hodnocení × 2 hlasy = 8 „hodnocení“). */
   forMap: () =>
     db
       .prepare(
         `SELECT s.id, s.lat, s.lon, s.brand_name, s.brand_id, s.station_id,
-                ROUND(AVG(CASE WHEN r.status = 'published' THEN r.rating END), 2) AS rating_avg,
-                COUNT(CASE WHEN r.status = 'published' THEN r.rating END)         AS rating_count,
-                SUM(CASE WHEN v.fuel_kind = 'e5'  THEN 1 ELSE 0 END)             AS e5_votes,
-                SUM(CASE WHEN v.fuel_kind = 'e10' THEN 1 ELSE 0 END)             AS e10_votes
-           FROM station s
-           LEFT JOIN review    r ON r.station_id = s.id
-           LEFT JOIN fuel_vote v ON v.station_id = s.id
-          GROUP BY s.id`
+                (SELECT ROUND(AVG(r.rating), 2) FROM review r
+                  WHERE r.station_id = s.id AND r.status = 'published')      AS rating_avg,
+                (SELECT COUNT(*) FROM review r
+                  WHERE r.station_id = s.id AND r.status = 'published')      AS rating_count,
+                (SELECT COUNT(*) FROM fuel_vote v
+                  WHERE v.station_id = s.id AND v.fuel_kind = 'e5')          AS e5_votes,
+                (SELECT COUNT(*) FROM fuel_vote v
+                  WHERE v.station_id = s.id AND v.fuel_kind = 'e10')         AS e10_votes
+           FROM station s`
       )
       .all(),
 
