@@ -194,7 +194,12 @@ router.post(
       const station = loadStation(stationId);
       const input = parseReport(req.body);
 
-      if (reports.recentCountForDevice(stationId, input.deviceId) >= MAX_REPORTS_PER_STATION_PER_DAY) {
+      // Nahlášení nevhodných komentářů z limitu vyjímáme – u jedné benzínky může být
+      // problematických komentářů víc a moderaci nechceme uživateli blokovat.
+      if (
+        input.type !== 'content' &&
+        reports.recentCountForDevice(stationId, input.deviceId) >= MAX_REPORTS_PER_STATION_PER_DAY
+      ) {
         return res.status(429).json({
           error: 'too_many_reports',
           message: 'Tuhle benzínku už jsi dnes nahlásil. Díky, koukneme na to.',

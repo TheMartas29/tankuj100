@@ -10,32 +10,53 @@
     h2 { font-size: 1.15rem; margin-top: 1.6em; }
     .updated { color: #666; font-size: 0.9rem; }
     footer { margin-top: 2.5em; color: #666; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 1em; }
+    code { background: #f4f4f6; padding: 1px 4px; border-radius: 4px; }
   </style>
 </head>
 <body>
   <h1>Zásady ochrany soukromí – tankuj100</h1>
-  <p class="updated">Poslední aktualizace: 2. 8. 2026</p>
+  <p class="updated">Poslední aktualizace: 3. 8. 2026</p>
 
   <p>Aplikace <strong>tankuj100</strong> pomáhá najít benzínky nabízející prémiové palivo. Ochranu soukromí bereme vážně a snažíme se zpracovávat co nejméně údajů.</p>
 
   <h2>Jaké údaje zpracováváme</h2>
   <ul>
     <li><strong>Poloha zařízení</strong> – používá se výhradně v zařízení k zobrazení benzínek ve vašem okolí a k vycentrování mapy na vaši pozici. Vaše poloha se <strong>neukládá</strong> na naše servery, <strong>neodesílá</strong> třetím stranám a nepoužívá se ke sledování. Přístup k poloze je dobrovolný a aplikace funguje i bez něj.</li>
-    <li><strong>Žádné účty ani osobní údaje</strong> – aplikace nevyžaduje registraci ani přihlášení a nesbírá jméno, e‑mail ani jiné osobní identifikátory.</li>
+    <li><strong>Žádné účty</strong> – aplikace nevyžaduje registraci ani přihlášení a nechce po vás jméno, e‑mail, telefon ani jiný osobní identifikátor.</li>
     <li><strong>Žádné sledování ani reklama</strong> – aplikace neobsahuje reklamní ani analytické sledovací nástroje třetích stran.</li>
+    <li><strong>Oblíbené benzínky</strong> – ukládají se pouze lokálně ve vašem zařízení.</li>
   </ul>
 
+  <h2>Obsah, který přidáte sami</h2>
+  <p>Aplikace umožňuje benzínku ohodnotit, napsat komentář, nahlásit nesrovnalost (např. špatnou cenu) a označit, jaký typ benzínu se na stanici čepuje. Když některou z těchto funkcí použijete, na náš server se odešle a uloží:</p>
+  <ul>
+    <li>počet hvězdiček, text komentáře a nepovinný podpis (přezdívka), který si zvolíte,</li>
+    <li>typ hlášení, případně nahlášená cena a poznámka,</li>
+    <li>váš hlas o typu benzínu (E5 / E10 / nevím),</li>
+    <li><strong>anonymní identifikátor zařízení</strong> – náhodně vygenerované číslo (UUID), které vzniká přímo v zařízení a slouží jen k tomu, abyste mohli své hodnocení později upravit nebo smazat a aby jedno zařízení nemohlo hlasovat opakovaně. Není nijak spojené s vaším Apple ID, telefonním číslem ani reklamními identifikátory a nelze podle něj zjistit vaši totožnost. Po odinstalování aplikace se ztratí a při novém nainstalování vznikne jiný.</li>
+  </ul>
+  <p><strong>Do komentářů a poznámek prosím nepište osobní údaje</strong> – ani své, ani cizí. Komentáře jsou veřejné a vidí je ostatní uživatelé aplikace.</p>
+  <p>IP adresu vašeho zařízení náš server dočasně používá pouze k omezení počtu požadavků (ochrana proti spamu). Neukládáme ji k vašim hodnocením ani hlášením.</p>
+
+  <h2>Moderování a e‑mailová notifikace</h2>
+  <p>O nových hlášeních a komentářích nás informuje e‑mail, aby je mohl zkontrolovat člověk a opravit případné chyby v datech. K odeslání této interní notifikace používáme službu <a href="https://www.emailjs.com/" target="_blank" rel="noopener">EmailJS</a>. E‑mail obsahuje jen obsah vašeho hlášení a informace o dané benzínce – žádné osobní údaje o vás, protože je nemáme.</p>
+  <p>Komentář, který porušuje pravidla (vulgarity, urážky, reklama, osobní údaje), můžeme skrýt nebo smazat.</p>
+
   <h2>Data o benzínkách a cenách paliv</h2>
-  <p>Seznam benzínek a aktuální ceny paliv aplikace načítá z našeho serveru, který agreguje veřejně dostupné údaje (mj. z fuelo.net). Tato data jsou informativní a nemusí být vždy přesná či aktuální.</p>
+  <p>Seznam benzínek a aktuální ceny paliv aplikace načítá z našeho serveru, který agreguje veřejně dostupné údaje (mj. z fuelo.net). Tato data jsou informativní a nemusí být vždy přesná či aktuální. Informace o typu benzínu (E5 / E10) pochází od uživatelů aplikace, není nijak garantovaná a před tankováním si ji vždy ověřte přímo u pumpy.</p>
 
   <h2>Síťová komunikace</h2>
-  <p>Aplikace komunikuje s naším serverem <code>tankuj100.silkroadbrand.eu</code> šifrovaně (HTTPS) pouze za účelem načtení dat o benzínkách a cenách. Neposílá žádné osobní údaje.</p>
+  <p>Aplikace komunikuje s naším serverem <code>tankuj100.silkroadbrand.eu</code> šifrovaně (HTTPS). Kromě dat o benzínkách posílá pouze to, co sami vyplníte v hodnocení nebo hlášení (viz výše).</p>
 
-  <h2>Uchovávání údajů</h2>
-  <p>Protože poloha ani osobní údaje neopouštějí vaše zařízení, žádné takové údaje na naší straně neuchováváme.</p>
+  <h2>Jak dlouho údaje uchováváme</h2>
+  <p>Hodnocení, komentáře a hlášení uchováváme, dokud jsou v aplikaci užitečné, nebo dokud je nesmažete či nepožádáte o jejich smazání. Své hodnocení můžete kdykoli upravit nebo smazat přímo v aplikaci (detail benzínky → <em>Upravit moje hodnocení</em> → <em>Smazat moje hodnocení</em>).</p>
 
   <h2>Vaše práva</h2>
-  <p>Přístup k poloze můžete kdykoli povolit nebo zakázat v Nastavení iOS → Soukromí a zabezpečení → Polohové služby → tankuj100.</p>
+  <ul>
+    <li>Přístup k poloze můžete kdykoli povolit nebo zakázat v Nastavení iOS → Soukromí a zabezpečení → Polohové služby → tankuj100.</li>
+    <li>Své hodnocení a komentář můžete kdykoli upravit nebo smazat v aplikaci.</li>
+    <li>O smazání odeslaného hlášení nebo jakéhokoli jiného obsahu můžete požádat na e‑mailu níže.</li>
+  </ul>
 
   <h2>Kontakt</h2>
   <p>V případě dotazů ohledně soukromí nás kontaktujte na <a href="mailto:info@silkroadbrand.eu">info@silkroadbrand.eu</a>.</p>

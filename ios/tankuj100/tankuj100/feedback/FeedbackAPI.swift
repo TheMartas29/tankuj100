@@ -54,7 +54,8 @@ extension NetworkClient {
         type: ReportType,
         fuelName: String?,
         claimedPrice: Double?,
-        note: String?
+        note: String?,
+        reviewId: Int? = nil
     ) async -> Result<ReportSubmitResponse, Error> {
         var body: [String: Any] = [
             "device_id": DeviceIdentity.current,
@@ -63,6 +64,7 @@ extension NetworkClient {
         ]
         if let fuelName, !fuelName.isEmpty { body["fuel_name"] = fuelName }
         if let claimedPrice { body["claimed_price"] = claimedPrice }
+        if let reviewId { body["review_id"] = reviewId }
 
         return await send(
             path: "/api/stations/\(stationId)/reports",

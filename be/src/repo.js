@@ -139,14 +139,14 @@ const reviews = {
 // ------------------------------------------------------------------ reporty
 
 const reports = {
-  create: ({ stationId, deviceId, type, fuelName, claimedPrice, note }) => {
+  create: ({ stationId, deviceId, type, fuelName, claimedPrice, note, reviewId }) => {
     const ts = nowISO();
     const info = db
       .prepare(
-        `INSERT INTO report (station_id, device_id, type, fuel_name, claimed_price, note, status, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, 'new', ?)`
+        `INSERT INTO report (station_id, device_id, type, fuel_name, claimed_price, note, review_id, status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'new', ?)`
       )
-      .run(stationId, deviceId, type, fuelName ?? null, claimedPrice ?? null, note ?? null, ts);
+      .run(stationId, deviceId, type, fuelName ?? null, claimedPrice ?? null, note ?? null, reviewId ?? null, ts);
     return db.prepare('SELECT * FROM report WHERE id = ?').get(info.lastInsertRowid);
   },
 
@@ -171,8 +171,12 @@ const reports = {
     const params = status && status !== 'all' ? [status, limit] : [limit];
     return db
       .prepare(
-        `SELECT r.*, s.brand_name, s.name AS station_name, s.city, s.address, s.zip, s.lat, s.lon
-           FROM report r LEFT JOIN station s ON s.id = r.station_id
+        `SELECT r.*, s.brand_name, s.name AS station_name, s.city, s.address, s.zip, s.lat, s.lon,
+                rev.comment AS reported_comment, rev.author AS reported_author,
+                rev.rating AS reported_rating, rev.status AS reported_status
+           FROM report r
+           LEFT JOIN station s   ON s.id = r.station_id
+           LEFT JOIN review  rev ON rev.id = r.review_id
            ${where}
           ORDER BY datetime(r.created_at) DESC LIMIT ?`
       )

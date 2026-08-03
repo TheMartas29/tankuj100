@@ -47,7 +47,9 @@ function migrate() {
       status        TEXT    NOT NULL DEFAULT 'new',  -- new | in_review | resolved | rejected
       admin_note    TEXT,
       created_at    TEXT    NOT NULL,
-      resolved_at   TEXT
+      resolved_at   TEXT,
+      -- u type=content: které hodnocení uživatel nahlásil jako nevhodné
+      review_id     INTEGER
     );
     CREATE INDEX IF NOT EXISTS idx_report_status ON report (status, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_report_station ON report (station_id);
@@ -65,6 +67,17 @@ function migrate() {
     );
     CREATE INDEX IF NOT EXISTS idx_fuel_vote_station ON fuel_vote (station_id);
   `);
+
+  // Sloupce doplněné až po prvním nasazení – CREATE TABLE IF NOT EXISTS je nepřidá.
+  addColumnIfMissing('report', 'review_id', 'INTEGER');
+}
+
+/** Idempotentní `ALTER TABLE ... ADD COLUMN` (SQLite neumí IF NOT EXISTS). */
+function addColumnIfMissing(table, column, definition) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (columns.some((c) => c.name === column)) return;
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  console.log(`[db] přidán sloupec ${table}.${column}`);
 }
 
 migrate();

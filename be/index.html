@@ -197,6 +197,7 @@ const REPORT_TYPES = {
   closed:   'zavřeno / nefunguje',
   fuel:     'palivo',
   location: 'poloha / adresa',
+  content:  'nevhodný komentář',
   other:    'jiné',
 };
 const REPORT_STATUSES = { new: 'nové', in_review: 'v řešení', resolved: 'vyřešeno', rejected: 'zamítnuto' };
@@ -363,10 +364,14 @@ function reportItem(r) {
       <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))} • stanice ${r.station_id}
         ${[r.address, r.zip].filter(Boolean).map(esc).join(', ')} ${mapLink}</div>
       ${detail.length ? `<div class="price-note">${detail.join(' &nbsp;•&nbsp; ')}</div>` : ''}
+      ${reportedComment(r)}
       ${r.note ? `<div class="body">${esc(r.note)}</div>` : ''}
       ${r.admin_note ? `<div class="admin-note">Moje poznámka: ${esc(r.admin_note)}</div>` : ''}
     </div>
     <div class="actions">
+      ${r.review_id && r.reported_status === 'published'
+        ? `<button class="small danger" onclick="hideReportedReview(${r.review_id}, ${r.id})">Skrýt komentář</button>`
+        : ''}
       ${r.status !== 'in_review' && !done ? `<button class="small" onclick="setReportStatus(${r.id},'in_review')">Beru si to</button>` : ''}
       ${!done ? `<button class="small" onclick="setReportStatus(${r.id},'resolved')">✓ Vyřešeno</button>` : ''}
       ${!done ? `<button class="small" onclick="setReportStatus(${r.id},'rejected')">Zamítnout</button>` : ''}
@@ -375,6 +380,30 @@ function reportItem(r) {
       <button class="small danger" onclick="deleteReport(${r.id})">Smazat</button>
     </div>
   </article>`;
+}
+
+/** Nahlášený komentář vypíšeme přímo do karty hlášení, ať se nemusí nikam klikat. */
+function reportedComment(r) {
+  if (!r.review_id) return '';
+  if (!r.reported_comment && !r.reported_author) {
+    return `<div class="admin-note">Nahlášené hodnocení #${r.review_id} už neexistuje.</div>`;
+  }
+  const state = r.reported_status === 'hidden' ? ' <span class="tag hidden">už skryté</span>' : '';
+  return `<div class="price-note">
+      <div>${stars(r.reported_rating || 0)} <strong>${esc(r.reported_author || 'Anonym')}</strong>${state}</div>
+      <div style="margin-top:4px">${esc(r.reported_comment || '(bez komentáře)')}</div>
+    </div>`;
+}
+
+/** Skryje nahlášený komentář a hlášení zároveň označí za vyřešené. */
+async function hideReportedReview(reviewId, reportId) {
+  if (!confirm(`Skrýt nahlášený komentář #${reviewId}? Uživatelům se přestane zobrazovat.`)) return;
+  try {
+    await api(`/api/admin/reviews/${reviewId}`, { method: 'PATCH', body: JSON.stringify({ status: 'hidden' }) });
+    await api(`/api/admin/reports/${reportId}`, { method: 'PATCH', body: JSON.stringify({ status: 'resolved' }) });
+    toast('Komentář skryt, hlášení vyřešeno.');
+    loadReports(); loadStats();
+  } catch (err) { toast(err.message, true); }
 }
 
 async function setReportStatus(id, status) {

@@ -132,7 +132,12 @@ struct GasStationDetailView: View {
             ReportSheet(viewModel: feedback, stationTitle: stationTitle, fuelNames: prices.map(\.name))
         }
         .sheet(isPresented: $showAllReviews) {
-            AllReviewsView(reviews: feedback.reviews, summary: feedback.rating, stationTitle: stationTitle)
+            AllReviewsView(
+                reviews: feedback.reviews,
+                summary: feedback.rating,
+                stationTitle: stationTitle,
+                onReport: { reported in Task { await feedback.reportReview(reported) } }
+            )
         }
         .toolbar {
             if let onClose {
@@ -300,11 +305,14 @@ struct GasStationDetailView: View {
                 }
 
                 ForEach(feedback.reviews.prefix(inlineReviewLimit)) { review in
-                    ReviewRowView(review: review)
+                    ReportableReviewRow(review: review) { reported in
+                        Task { await feedback.reportReview(reported) }
+                    }
                 }
 
                 if feedback.reviews.count > inlineReviewLimit {
-                    Button("Zobrazit všech \(feedback.reviews.count) hodnocení") {
+                    // Vyhýbáme se skloňování ("všech 4 hodnocení" by bylo špatně).
+                    Button("Zobrazit všechna hodnocení (\(feedback.reviews.count))") {
                         showAllReviews = true
                     }
                     .font(.subheadline)
@@ -404,6 +412,7 @@ struct AllReviewsView: View {
     let reviews: [StationReview]
     let summary: RatingSummary
     let stationTitle: String
+    var onReport: ((StationReview) -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
 
@@ -412,7 +421,13 @@ struct AllReviewsView: View {
             List {
                 Section { RatingSummaryView(summary: summary) } header: { Text(stationTitle) }
                 Section {
-                    ForEach(reviews) { ReviewRowView(review: $0) }
+                    ForEach(reviews) { review in
+                        ReportableReviewRow(review: review) { reported in
+                            onReport?(reported)
+                        }
+                    }
+                } footer: {
+                    Text("Nevhodný komentář nahlásíš dlouhým stiskem nebo přejetím doleva.")
                 }
             }
             .navigationTitle("Hodnocení")

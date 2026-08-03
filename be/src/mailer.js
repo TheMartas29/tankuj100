@@ -108,6 +108,7 @@ function notifyNewReport({ report, station }) {
     closed: 'zavřeno / nefunguje',
     fuel: 'chybí nebo přebývá palivo',
     location: 'špatná poloha nebo adresa',
+    content: 'NEVHODNÝ KOMENTÁŘ – zkontroluj přednostně',
     other: 'jiná nesrovnalost',
   }[report.type] || report.type;
 
@@ -120,6 +121,7 @@ function notifyNewReport({ report, station }) {
   ];
   if (report.fuel_name) lines.push(`Palivo:   ${report.fuel_name}`);
   if (report.claimed_price != null) lines.push(`Cena dle uživatele: ${report.claimed_price} Kč/l`);
+  if (report.review_id) lines.push(`Nahlášené hodnocení: #${report.review_id}`);
   if (report.note) lines.push('', `Poznámka: ${report.note}`);
   lines.push('', 'Zkontroluj to prosím v adminu.');
 

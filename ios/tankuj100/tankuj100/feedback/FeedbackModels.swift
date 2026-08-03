@@ -206,9 +206,14 @@ enum ReportType: String, Codable, CaseIterable, Identifiable {
     case closed
     case fuel
     case location
+    /// Nahlášení nevhodného komentáře. Nevybírá se v seznamu – posílá se z hodnocení.
+    case content
     case other
 
     var id: String { rawValue }
+
+    /// Typy, které jde vybrat v sheetu (bez `content`, ten má vlastní cestu).
+    static var selectable: [ReportType] { [.price, .closed, .fuel, .location, .other] }
 
     var label: String {
         switch self {
@@ -216,6 +221,7 @@ enum ReportType: String, Codable, CaseIterable, Identifiable {
         case .closed: "Zavřeno nebo nefunguje"
         case .fuel: "Palivo nesouhlasí"
         case .location: "Špatná adresa nebo poloha"
+        case .content: "Nevhodný komentář"
         case .other: "Něco jiného"
         }
     }
@@ -226,6 +232,7 @@ enum ReportType: String, Codable, CaseIterable, Identifiable {
         case .closed: "xmark.octagon"
         case .fuel: "fuelpump"
         case .location: "mappin.slash"
+        case .content: "flag"
         case .other: "ellipsis.bubble"
         }
     }
@@ -236,6 +243,7 @@ enum ReportType: String, Codable, CaseIterable, Identifiable {
         case .closed: "Benzínka je zrušená, zavřená nebo nefunkční?"
         case .fuel: "Chybí nějaké palivo, nebo je tu naopak něco navíc?"
         case .location: "Bod na mapě nebo adresa nesedí."
+        case .content: "Komentář je vulgární, urážlivý nebo je to reklama."
         case .other: "Popiš prosím krátce, co je špatně."
         }
     }

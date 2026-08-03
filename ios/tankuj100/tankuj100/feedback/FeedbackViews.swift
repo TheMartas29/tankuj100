@@ -126,6 +126,44 @@ struct ReviewRowView: View {
     }
 }
 
+/// Komentář, který jde nahlásit – dlouhým stiskem nebo swipem doleva.
+/// Možnost nahlásit cizí obsah je u veřejných komentářů podmínkou App Storu.
+struct ReportableReviewRow: View {
+    let review: StationReview
+    let onReport: (StationReview) -> Void
+
+    @State private var showConfirm = false
+
+    var body: some View {
+        ReviewRowView(review: review)
+            .contextMenu {
+                Button(role: .destructive) {
+                    showConfirm = true
+                } label: {
+                    Label("Nahlásit komentář", systemImage: "flag")
+                }
+            }
+            .swipeActions(edge: .trailing) {
+                Button {
+                    showConfirm = true
+                } label: {
+                    Label("Nahlásit", systemImage: "flag")
+                }
+                .tint(.orange)
+            }
+            .confirmationDialog(
+                "Nahlásit tenhle komentář?",
+                isPresented: $showConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Nahlásit", role: .destructive) { onReport(review) }
+                Button("Zrušit", role: .cancel) {}
+            } message: {
+                Text("Zkontrolujeme ho, a pokud je vulgární, urážlivý nebo je to reklama, smažeme ho.")
+            }
+    }
+}
+
 // MARK: - Karta typu benzínu (E5 / E10)
 
 /// Hlavní přidaná hodnota appky: ověřuje, jestli se na stanici čepuje E5.

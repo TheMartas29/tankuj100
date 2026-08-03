@@ -128,7 +128,8 @@ final class StationFeedbackViewModel: ObservableObject {
         type: ReportType,
         fuelName: String?,
         claimedPrice: Double?,
-        note: String
+        note: String,
+        reviewId: Int? = nil
     ) async -> Bool {
         guard !isSubmitting else { return false }
         isSubmitting = true
@@ -139,7 +140,8 @@ final class StationFeedbackViewModel: ObservableObject {
             type: type,
             fuelName: fuelName,
             claimedPrice: claimedPrice,
-            note: note.trimmingCharacters(in: .whitespacesAndNewlines)
+            note: note.trimmingCharacters(in: .whitespacesAndNewlines),
+            reviewId: reviewId
         )
 
         switch result {
@@ -151,6 +153,17 @@ final class StationFeedbackViewModel: ObservableObject {
             error = customError(from: failure)
             return false
         }
+    }
+
+    /// Nahlášení cizího komentáře jako nevhodného (moderace).
+    func reportReview(_ review: StationReview) async {
+        _ = await submitReport(
+            type: .content,
+            fuelName: nil,
+            claimedPrice: nil,
+            note: "",
+            reviewId: review.id
+        )
     }
 
     // MARK: - Pomůcky

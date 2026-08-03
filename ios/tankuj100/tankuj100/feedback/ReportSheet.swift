@@ -31,7 +31,7 @@ struct ReportSheet: View {
             Form {
                 Section {
                     Picker("Co je špatně", selection: $type) {
-                        ForEach(ReportType.allCases) { option in
+                        ForEach(ReportType.selectable) { option in
                             Label(option.label, systemImage: option.symbol).tag(option)
                         }
                     }
