@@ -12,7 +12,7 @@ před ním **nginx** jako reverzní proxy, deploy jedním skriptem z gitu.
 
 | | tankuj100 |
 |--|--|
-| složka na serveru | `/var/www/tankuj100` (nebo kam je repo naklonované) |
+| složka na serveru | `/root/projects/tankuj100` (nebo kam je repo naklonované) |
 | port (PM2 env) | 3000 |
 | PM2 app | `tankuj100` |
 | deploy skript | `./deploy.sh` |
@@ -21,7 +21,7 @@ před ním **nginx** jako reverzní proxy, deploy jedním skriptem z gitu.
 ## Běžný deploy (po prvním nasazení)
 
 ```bash
-cd /var/www/tankuj100
+cd /root/projects/tankuj100
 ./deploy.sh            # udělá git pull + nasadí (zeptá se na potvrzení)
 ./deploy.sh -y         # bez ptaní
 ./deploy.sh --no-pull  # nasadí aktuální stav bez git pull
@@ -43,6 +43,44 @@ si server vytvoří sám při startu (`be/src/db.js`), migrace jsou idempotentn�
 **Živá DB je mimo git** (`.gitignore`), takže přežije každý `git pull` i deploy –
 úpravy stanic z admin UI ani hodnocení uživatelů se nepřepíšou. `node_modules` se
 do gitu taky necommitují, instalují se přes `npm ci` při deploy.
+
+## Zálohy databáze
+
+Uživatelský obsah (hodnocení, komentáře, hlášení) je **jen v živé DB** – jinde ho
+nemáme, takže zálohy jsou jediná pojistka. Běží automaticky z cronu.
+
+```bash
+be/scripts/backup-db.sh            # záloha + rotace (běží z cronu ve 3:17)
+be/scripts/backup-db.sh --list     # co je zazálohované
+be/scripts/restore-db.sh           # vypíše zálohy k obnovení
+be/scripts/restore-db.sh daily-20260811-031701.sqlite.gz   # obnoví (ptá se)
+be/scripts/pull-backups.sh         # stáhne zálohy ze serveru k sobě (spouštět na Macu)
+```
+
+Jak to funguje:
+- kopie se dělá přes `sqlite3 .backup`, tedy **včetně WAL** a bez rizika, že chytneme
+  rozepsanou transakci (prostý `cp` živé DB tohle nezaručuje),
+- každá kopie se **ověří** (`PRAGMA integrity_check` + kontrola, že v ní jsou stanice)
+  ještě než se uloží – neověřená záloha není záloha,
+- ukládá se zabalená do `be/db/_backups/` jako `daily-*.sqlite.gz` (~30 kB),
+- **retence**: 30 denních + 12 měsíčních (první záloha v měsíci se odloží jako měsíční),
+- průběh se loguje do `be/db/_backups/backup.log`.
+
+Rotace se dívá vždy jen na vlastní předponu, takže si zálohy z cronu, z deploye
+(`deploy-*`) a ruční (`pre-cleanup-*`, `pre-restore-*`) navzájem nemažou.
+
+Cron na serveru (`crontab -e`):
+
+```
+17 3 * * * /root/projects/tankuj100/be/scripts/backup-db.sh >/dev/null 2>&1
+```
+
+Obnova zastaví PM2, **původní DB nesmaže** – jen ji odloží jako `pre-restore-*.sqlite` –
+a nasadí zálohu. Když ověření zálohy selže, živá DB zůstane nedotčená.
+
+⚠️ Zálohy leží na stejném disku jako živá DB, takže chrání před chybou v aplikaci
+nebo omylem v adminu, **ne** před ztrátou serveru. Off-site kopii dělá
+`pull-backups.sh` na Macu (stahuje do `~/Backups/tankuj100`).
 
 ## Konfigurace (`be/.env`)
 
@@ -68,7 +106,7 @@ Data z fuelo.net obsahují i benzínky v Německu, Rakousku a Polsku a u části
 je místo značky azbukou „Бензиностанция“. Skript to vyčistí:
 
 ```bash
-cd /var/www/tankuj100/be
+cd /root/projects/tankuj100/be
 node scripts/cleanup-db.js --dry-run   # jen vypíše, co by udělal
 node scripts/cleanup-db.js             # provede (předtím zazálohuje DB)
 ```
@@ -82,9 +120,9 @@ Předpoklady: Node 18+ (ideálně přes nvm), `pm2` globálně (`npm i -g pm2`),
 build nástroje pro nativní modul `better-sqlite3`
 (`sudo apt-get install -y build-essential python3`), `sqlite3` (kvůli zálohám).
 
-1. **Kód**: `git clone https://github.com/TheMartas29/tankuj100.git /var/www/tankuj100`
+1. **Kód**: `git clone https://github.com/TheMartas29/tankuj100.git /root/projects/tankuj100`
 2. **Konfigurace**: `cp be/.env.example be/.env` a doplň hodnoty (viz tabulka výše).
-3. **Deploy**: `cd /var/www/tankuj100 && ./deploy.sh -y`
+3. **Deploy**: `cd /root/projects/tankuj100 && ./deploy.sh -y`
    (naseeduje DB ze seedu, nainstaluje závislosti, nastartuje PM2)
 4. **Autostart po rebootu** (stačí jednou): `pm2 startup` (spusť vypsaný příkaz),
    pak `pm2 save`.

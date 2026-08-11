@@ -76,15 +76,16 @@ if [ ! -f "$DB" ]; then
   cp "$SEED" "$DB"
 else
   STAMP="$(date +%Y%m%d-%H%M%S)"
-  BK="be/db/_backups/$STAMP.sqlite"
+  BK="be/db/_backups/deploy-$STAMP.sqlite"
   echo "==> [1/3] Záloha živé DB -> $BK"
   if command -v sqlite3 >/dev/null; then
     sqlite3 "$DB" ".backup '$BK'"
   else
     cp "$DB" "$BK"
   fi
-  # rotace: nech posledních 10 záloh
-  ls -1t be/db/_backups/*.sqlite 2>/dev/null | tail -n +11 | xargs -r rm -f
+  # Rotace: nech posledních 10 záloh z deploye. Schválně jen `deploy-*`, ať se
+  # nesmažou denní zálohy z cronu (backup-db.sh) ani ruční pre-cleanup/pre-restore.
+  ls -1t be/db/_backups/deploy-*.sqlite 2>/dev/null | tail -n +11 | xargs -r rm -f
 fi
 
 echo "==> [2/3] Backend: instalace závislostí (npm ci)"
