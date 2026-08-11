@@ -82,7 +82,10 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   set +u; . "$NVM_DIR/nvm.sh"; set -u
 fi
 
-if command -v pm2 >/dev/null && pm2 describe tankuj100 >/dev/null 2>&1; then
+# PM2 zastavujeme jen když obnovujeme opravdu tu databázi, kterou server používá.
+# Při testu s vlastním DB_PATH by shození živého API bylo nechtěné.
+if [ "$DB" = "$ROOT/be/db/tankuj100db.sqlite" ] &&
+   command -v pm2 >/dev/null && pm2 describe tankuj100 >/dev/null 2>&1; then
   echo "==> zastavuji API"
   pm2 stop tankuj100 >/dev/null
   RESTART_PM2=1
