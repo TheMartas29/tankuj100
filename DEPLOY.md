@@ -2,7 +2,7 @@
 
 Backend (`be/`) je Node/Express API, které:
 - servíruje mapová data a detaily benzinek ze SQLite (`be/db/tankuj100db.sqlite`),
-- scrapuje aktuální ceny paliv z fuelo.net (`/api/fuel-prices/:id`),
+  včetně toho, **jaká paliva** stanice čepuje (98 / 100 oktanů, nafta, LPG, …),
 - přijímá **hodnocení, komentáře, hlášení nesrovnalostí a hlasy o typu benzínu** z aplikace,
 - posílá **e-mailové notifikace** o nových hlášeních (EmailJS),
 - obsluhuje **admin UI** na `/` (za basic auth).
@@ -37,8 +37,9 @@ cd /root/projects/tankuj100
 2. `npm ci` v `be/`,
 3. `pm2 startOrReload tankuj100.config.cjs` + `pm2 save`.
 
-Tabulky pro hodnocení (`review`), hlášení (`report`) a hlasy o palivu (`fuel_vote`)
-si server vytvoří sám při startu (`be/src/db.js`), migrace jsou idempotentní.
+Tabulky pro hodnocení (`review`), hlášení (`report`), hlasy o palivu (`fuel_vote`)
+i pro data o stanicích (`station_fuel`, `station_tag`, `station_source`) si server vytvoří sám při startu
+(`be/src/db.js`), migrace jsou idempotentní.
 
 **Živá DB je mimo git** (`.gitignore`), takže přežije každý `git pull` i deploy –
 úpravy stanic z admin UI ani hodnocení uživatelů se nepřepíšou. `node_modules` se
@@ -100,10 +101,97 @@ Po změně `.env` je potřeba `pm2 restart tankuj100 --update-env`.
 Když e-maily nejsou nakonfigurované, aplikace **funguje dál** – hlášení se uloží do DB
 a notifikace se jen zapíše do `pm2 logs`. Nic se neztratí.
 
+## Data o benzínkách: OpenStreetMap (ODbL)
+
+Seznam benzínek pochází z **OpenStreetMap** – držíme jen stanice, které mají v OSM
+`fuel:octane_98=yes` nebo `fuel:octane_100=yes` (~558 v ČR). Ceny paliv **nesledujeme**,
+zobrazuje se jen to, jaká paliva stanice čepuje (`station_fuel`) a co má za vybavení
+(`station_tag`). Původní zdroj (fuelo.net) už se nepoužívá a `station.station_id`
+(staré fuelo ID) je nově vždy `NULL`; identita bodu je `station.osm_id`
+(např. `node/39826162`).
+
+⚠️ **Licence ODbL vyžaduje uvedení zdroje.** Atribuce se musí objevit všude, kde se
+data zobrazují:
+- v aplikaci (obrazovka O aplikaci / detail benzínky): **„Data © přispěvatelé
+  OpenStreetMap, licence ODbL“** s odkazem na <https://www.openstreetmap.org/copyright>,
+- v zásadách soukromí (`be/privacy.html`),
+- u každého záznamu v DB jako `station.data_source` (vyplňuje import).
+
+Import a aktualizace dat:
+
+```bash
+cd /root/projects/tankuj100/be
+node scripts/import-osm.js --dry-run   # jen vypíše, co by se stalo
+node scripts/import-osm.js             # provede (předtím zazálohuje DB)
+```
+
+## Synchronizace se zdroji značek (`sync-brands.js`)
+
+OSM je jen základ – aktuální stav sítě mají značky na svých webech. `sync-brands.js`
+je obejde, data stáhne a nalije do stejných tabulek jako import z OSM.
+
+Zdroje (jeden soubor na značku v `be/src/sources/`, popis endpointů v `data/SOURCES.md`):
+`orlen`, `mol`, `omv`, `shell`, `eurooil` (EuroOil + RoBiN OIL), `km-prona`, `one1`
+(TOP TANK), `tank-ono`. Žádný z nich nepotřebuje klíč ani cookie.
+
+Co skript dělá:
+- **páruje** záznam se stanicí v DB v tomto pořadí: podle uložené vazby
+  `station_source(source, external_id)` → nejbližší stanice stejné značky do 150 m →
+  u zdrojů bez souřadnic (Tank ONO) podle názvu obce. Vazba se ukládá, takže druhý
+  běh už páruje napevno,
+- **zakládá** novou stanici jen tehdy, když čerpá 98 nebo 100 oktanů a má důvěryhodné
+  souřadnice (nula/nula a body mimo ČR se zahazují). Obyčejné pumpy do aplikace nepatří,
+- **aktualizuje** u napárovaných stanic název, adresu, obec, PSČ, telefon, otevírací
+  dobu, paliva a služby – v rámci vlastní sítě je značka autoritativní. Doplní i
+  `station.data_source` (např. `OpenStreetMap (ODbL) + Orlen (orlen.cz)`),
+- **nikdy nic nemaže.** Stanice, kterou zdroj přestal vracet, se jen vypíše v reportu
+  jako „možná zrušená“ – visí na ní hodnocení, hlášení a hlasy uživatelů,
+- **přeskočí zdroj, který vypadá rozbitě.** Když vrátí míň než polovinu stanic, které
+  na něj už máme napárované, změny se za něj neaplikují a jen se to nahlásí. Výpadek
+  jednoho webu neshodí celý běh, chyba se vypíše v reportu.
+
+```bash
+cd /root/projects/tankuj100/be
+node scripts/sync-brands.js --dry-run        # jen vypíše, co by udělal
+node scripts/sync-brands.js                  # provede (předtím zazálohuje DB)
+node scripts/sync-brands.js --source=orlen   # jen jedna značka
+node scripts/sync-brands.js --limit 20       # jen prvních 20 stanic ze zdroje (ladění)
+```
+
+Plný běh trvá ~10 minut a udělá kolem tisícovky requestů – Orlen, Shell, KM-PRONA,
+One1 a Tank ONO se musí doptat na detail každé stanice. Skript je **idempotentní**:
+druhý běh hned po prvním nahlásí nula změn.
+
+Data se mění po měsících, takže **stačí jednou týdně**. Cron na serveru
+(`crontab -e`), schválně mimo čas noční zálohy ve 3:17:
+
+```
+40 3 * * 1 cd /root/projects/tankuj100/be && /usr/bin/env node scripts/sync-brands.js >> db/_backups/sync-brands.log 2>&1
+```
+
+(`node` z nvm nemusí být v cronové `PATH` – pak do crontabu dej plnou cestu, kterou
+vypíše `which node`.)
+
+### Když import nasekal škodu
+
+Před každým ostrým během se dělá záloha do `be/db/_backups/pre-sync-brands-*.sqlite`,
+takže návrat je prostý:
+
+```bash
+pm2 stop tankuj100
+cp be/db/_backups/pre-sync-brands-<časová-značka>.sqlite be/db/tankuj100db.sqlite
+rm -f be/db/tankuj100db.sqlite-wal be/db/tankuj100db.sqlite-shm
+pm2 start tankuj100
+```
+
+Starší stav (denní/měsíční zálohy z cronu) obnoví `be/scripts/restore-db.sh`.
+Když je špatně jen jedna značka, jde po opravě adaptéru pustit `--source=<značka>`
+znovu – hodnoty se přepíšou a stanice se podruhé nezaloží, drží ji `station_source`.
+
 ## Úklid dat (jednorázově / po novém importu)
 
-Data z fuelo.net obsahují i benzínky v Německu, Rakousku a Polsku a u části záznamů
-je místo značky azbukou „Бензиностанция“. Skript to vyčistí:
+Ve starých datech (fuelo.net) byly i benzínky v Německu, Rakousku a Polsku a u části
+záznamů místo značky azbukou „Бензиностанция“. Skript to vyčistí:
 
 ```bash
 cd /root/projects/tankuj100/be
@@ -137,14 +225,13 @@ Veřejné (volá iOS aplikace):
 
 | metoda | cesta | k čemu |
 |--|--|--|
-| GET | `/api/map/` | body do mapy + agregované hodnocení a verdikt E5 |
-| GET | `/api/detail/:id` | detail benzínky |
-| GET | `/api/fuel-prices/:stationId` | ceny paliv z fuelo.net (15 min cache) |
+| GET | `/api/map/` | body do mapy: `id, lat, lon, brand_name, rating_avg, rating_count, has_98, has_100` |
+| GET | `/api/detail/:id` | detail benzínky + `osm_id`, `fuels[]` a `services[{key,value}]` |
 | GET | `/api/stations/:id/feedback?device_id=…` | hodnocení, komentáře, hlasy o palivu, moje odpovědi |
 | POST | `/api/stations/:id/reviews` | uložit/upravit hodnocení (1 na zařízení) |
 | DELETE | `/api/stations/:id/reviews` | smazat vlastní hodnocení |
-| POST | `/api/stations/:id/reports` | nahlásit nesrovnalost → e-mail |
-| POST | `/api/stations/:id/fuel-vote` | hlas E5 / E10 / nevím |
+| POST | `/api/stations/:id/reports` | nahlásit nesrovnalost → e-mail (`closed`, `fuel`, `location`, `content`, `other`) |
+| POST | `/api/stations/:id/fuel-vote` | hlas E5 / E10 |
 | GET | `/health` | monitoring |
 | GET | `/privacy` | zásady soukromí (URL pro App Store Connect) |
 

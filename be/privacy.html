@@ -28,22 +28,24 @@
   </ul>
 
   <h2>Obsah, který přidáte sami</h2>
-  <p>Aplikace umožňuje benzínku ohodnotit, napsat komentář, nahlásit nesrovnalost (např. špatnou cenu) a označit, jaký typ benzínu se na stanici čepuje. Když některou z těchto funkcí použijete, na náš server se odešle a uloží:</p>
+  <p>Aplikace umožňuje benzínku ohodnotit, napsat komentář, nahlásit nesrovnalost (např. že stanice je zavřená nebo že nesedí nabídka paliv) a označit, jaký typ benzínu se na stanici čepuje. Když některou z těchto funkcí použijete, na náš server se odešle a uloží:</p>
   <ul>
     <li>počet hvězdiček, text komentáře a nepovinný podpis (přezdívka), který si zvolíte,</li>
-    <li>typ hlášení, případně nahlášená cena a poznámka,</li>
-    <li>váš hlas o typu benzínu (E5 / E10 / nevím),</li>
-    <li><strong>anonymní identifikátor zařízení</strong> – náhodně vygenerované číslo (UUID), které vzniká přímo v zařízení a slouží jen k tomu, abyste mohli své hodnocení později upravit nebo smazat a aby jedno zařízení nemohlo hlasovat opakovaně. Není nijak spojené s vaším Apple ID, telefonním číslem ani reklamními identifikátory a nelze podle něj zjistit vaši totožnost. Po odinstalování aplikace se ztratí a při novém nainstalování vznikne jiný.</li>
+    <li>typ hlášení a poznámka,</li>
+    <li>váš hlas o typu benzínu (E5 / E10),</li>
+    <li><strong>anonymní identifikátor zařízení</strong> – náhodně vygenerované číslo (UUID), které vzniká přímo v zařízení a slouží jen k tomu, abyste mohli své hodnocení později upravit nebo smazat a aby jedno zařízení nemohlo hlasovat opakovaně. Není nijak spojené s vaším Apple ID, telefonním číslem ani reklamními identifikátory a nelze podle něj zjistit vaši totožnost. Neposkytuje ho operační systém a nejde o žádné výrobní číslo telefonu – vzniká náhodně při prvním spuštění.</li>
   </ul>
   <p><strong>Do komentářů a poznámek prosím nepište osobní údaje</strong> – ani své, ani cizí. Komentáře jsou veřejné a vidí je ostatní uživatelé aplikace.</p>
+  <p>Identifikátor je uložený v systémovém úložišti klíčů (Keychain), takže přežije i odinstalování aplikace – jinak by stačilo aplikaci smazat a znovu nainstalovat a jedno zařízení by mohlo hodnotit stejnou benzínku opakovaně. Zbavíte se ho obnovením zařízení do továrního nastavení; o smazání svých hodnocení nás také můžete kdykoli požádat (viz níže).</p>
   <p>IP adresu vašeho zařízení náš server dočasně používá pouze k omezení počtu požadavků (ochrana proti spamu). Neukládáme ji k vašim hodnocením ani hlášením.</p>
 
   <h2>Moderování a e‑mailová notifikace</h2>
   <p>O nových hlášeních a komentářích nás informuje e‑mail, aby je mohl zkontrolovat člověk a opravit případné chyby v datech. K odeslání této interní notifikace používáme službu <a href="https://www.emailjs.com/" target="_blank" rel="noopener">EmailJS</a>. E‑mail obsahuje jen obsah vašeho hlášení a informace o dané benzínce – žádné osobní údaje o vás, protože je nemáme.</p>
   <p>Komentář, který porušuje pravidla (vulgarity, urážky, reklama, osobní údaje), můžeme skrýt nebo smazat.</p>
 
-  <h2>Data o benzínkách a cenách paliv</h2>
-  <p>Seznam benzínek a aktuální ceny paliv aplikace načítá z našeho serveru, který agreguje veřejně dostupné údaje (mj. z fuelo.net). Tato data jsou informativní a nemusí být vždy přesná či aktuální. Informace o typu benzínu (E5 / E10) pochází od uživatelů aplikace, není nijak garantovaná a před tankováním si ji vždy ověřte přímo u pumpy.</p>
+  <h2>Data o benzínkách</h2>
+  <p>Seznam benzínek, jejich polohu, nabídku paliv, otevírací dobu a další údaje aplikace načítá z našeho serveru. Vycházejí z <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> a jsou dostupné pod licencí <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener">ODbL</a>. Data jsou informativní a nemusí být vždy přesná či aktuální – tvoří je dobrovolníci.</p>
+  <p>Ceny paliv aplikace nezobrazuje. Informace o typu benzínu (E5 / E10) pochází od uživatelů aplikace, není nijak garantovaná a před tankováním si ji vždy ověřte přímo u pumpy.</p>
 
   <h2>Síťová komunikace</h2>
   <p>Aplikace komunikuje s naším serverem <code>tankuj100.silkroadbrand.eu</code> šifrovaně (HTTPS). Kromě dat o benzínkách posílá pouze to, co sami vyplníte v hodnocení nebo hlášení (viz výše).</p>

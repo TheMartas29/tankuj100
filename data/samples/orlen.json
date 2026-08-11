@@ -1,0 +1,424 @@
+{
+  "_source": "https://www.orlen.cz/cs-CZ/api/stations/list  +  https://www.orlen.cz/cs-CZ/api/stations/CZ/{stationId}",
+  "list_sample": {
+    "totalStationCount": 466,
+    "stations": [
+      {
+        "id": {
+          "stationId": 80,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 0.0,
+          "lng": 0.0
+        }
+      },
+      {
+        "id": {
+          "stationId": 81,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 0.0,
+          "lng": 0.0
+        }
+      },
+      {
+        "id": {
+          "stationId": 83,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 0.0,
+          "lng": 0.0
+        }
+      },
+      {
+        "id": {
+          "stationId": 100,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 0.0,
+          "lng": 0.0
+        }
+      },
+      {
+        "id": {
+          "stationId": 101,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.1225719,
+          "lng": 12.3684631
+        }
+      },
+      {
+        "id": {
+          "stationId": 102,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.3195931,
+          "lng": 12.519159
+        }
+      },
+      {
+        "id": {
+          "stationId": 103,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.1006675,
+          "lng": 12.38567
+        }
+      },
+      {
+        "id": {
+          "stationId": 104,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 49.7896447,
+          "lng": 12.651305
+        }
+      },
+      {
+        "id": {
+          "stationId": 105,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 49.6748608,
+          "lng": 12.6744814
+        }
+      },
+      {
+        "id": {
+          "stationId": 106,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 49.708925,
+          "lng": 12.781377
+        }
+      },
+      {
+        "id": {
+          "stationId": 107,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.0932353,
+          "lng": 12.8408725
+        }
+      },
+      {
+        "id": {
+          "stationId": 108,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.2399,
+          "lng": 12.754947
+        }
+      },
+      {
+        "id": {
+          "stationId": 109,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.316522,
+          "lng": 12.751999
+        }
+      },
+      {
+        "id": {
+          "stationId": 110,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.316682,
+          "lng": 12.945439
+        }
+      },
+      {
+        "id": {
+          "stationId": 111,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.185019,
+          "lng": 12.694227
+        }
+      },
+      {
+        "id": {
+          "stationId": 112,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.06051,
+          "lng": 12.977748
+        }
+      },
+      {
+        "id": {
+          "stationId": 113,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.084093,
+          "lng": 12.372333
+        }
+      },
+      {
+        "id": {
+          "stationId": 114,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.2442937,
+          "lng": 12.8991797
+        }
+      },
+      {
+        "id": {
+          "stationId": 115,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.149325,
+          "lng": 13.052281
+        }
+      },
+      {
+        "id": {
+          "stationId": 119,
+          "country": "CZ"
+        },
+        "location": {
+          "lat": 50.0728122,
+          "lng": 12.3611508
+        }
+      }
+    ]
+  },
+  "detail_samples": [
+    {
+      "station": {
+        "id": {
+          "stationId": 80,
+          "country": "CZ"
+        },
+        "name": "UNICODE - TEST PRO UPDATE 2",
+        "address": {
+          "streetAndNumber": "Drážní 1400/7b",
+          "city": "Brno – Slatina",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [
+          {
+            "from": "0001-01-01",
+            "to": "9999-12-31"
+          }
+        ],
+        "openingHours": [],
+        "icons": [],
+        "discounts": []
+      }
+    },
+    {
+      "station": {
+        "id": {
+          "stationId": 81,
+          "country": "CZ"
+        },
+        "name": "UNICODE - TEST PRO UPDATE",
+        "address": {
+          "streetAndNumber": "Drážní 1400/7b",
+          "city": "Brno – Slatina",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [
+          {
+            "from": "0001-01-01",
+            "to": "9999-12-31"
+          }
+        ],
+        "openingHours": [],
+        "icons": [],
+        "discounts": []
+      }
+    },
+    {
+      "station": {
+        "id": {
+          "stationId": 83,
+          "country": "CZ"
+        },
+        "name": "CODO AGENT NEW MODEL",
+        "address": {
+          "streetAndNumber": "Milevská 2095/5",
+          "city": "Praha 4",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [
+          {
+            "from": "0001-01-01",
+            "to": "9999-12-31"
+          }
+        ],
+        "openingHours": [],
+        "icons": [],
+        "discounts": []
+      }
+    },
+    {
+      "station": {
+        "id": {
+          "stationId": 100,
+          "country": "CZ"
+        },
+        "name": "FOOD TRUCK",
+        "address": {
+          "streetAndNumber": "V přístavu 1586/2",
+          "city": "Hlavní město Praha",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [],
+        "openingHours": [],
+        "icons": [],
+        "discounts": []
+      }
+    },
+    {
+      "station": {
+        "id": {
+          "stationId": 101,
+          "country": "CZ"
+        },
+        "name": "FRANTIŠKOVY LÁZNĚ",
+        "address": {
+          "streetAndNumber": "Aleje – Zátiší 53",
+          "city": "Františkovy Lázně",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [],
+        "openingHours": [
+          {
+            "weekdayFrom": 0,
+            "weekdayTo": 6,
+            "from": "00:00",
+            "to": "23:59"
+          }
+        ],
+        "icons": [
+          "~/getmedia/0c430d09-7b2a-48d3-8961-38b7c37fe916/verva-diesel.png?width=79&height=79&ext=.png",
+          "~/getmedia/021ae679-8aa0-4b30-a363-853aafee62a0/verva-100.png?width=79&height=79&ext=.png",
+          "~/getmedia/e725dfa5-f885-451b-bfc6-743d2bb50d28/efecta-diesel.png?width=79&height=79&ext=.png",
+          "~/getmedia/682da5e2-f4f4-4eae-b061-6d9b4dbecaea/efecta-95.png?width=79&height=79&ext=.png",
+          "~/getmedia/6321fce7-2184-47a8-8c99-6be683c02bc2/adblue-kanystr.png?width=79&height=79&ext=.png"
+        ],
+        "discounts": [
+          {
+            "fuelType": "Verva Diesel",
+            "discountAmount": 1.0,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Verva 100",
+            "discountAmount": 1.0,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Efecta Diesel",
+            "discountAmount": 0.5,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Efecta 95",
+            "discountAmount": 0.5,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "AdBlue kanystr",
+            "discountAmount": 0.0,
+            "currency": "Kč"
+          }
+        ]
+      }
+    },
+    {
+      "station": {
+        "id": {
+          "stationId": 102,
+          "country": "CZ"
+        },
+        "name": "KRASLICE",
+        "address": {
+          "streetAndNumber": "Československé armády 1883",
+          "city": "Kraslice",
+          "country": "CZ",
+          "countryDisplayName": "Česká republika"
+        },
+        "contacts": [],
+        "outOfOrders": [],
+        "openingHours": [
+          {
+            "weekdayFrom": 0,
+            "weekdayTo": 6,
+            "from": "05:00",
+            "to": "23:59"
+          }
+        ],
+        "icons": [
+          "~/getmedia/0c430d09-7b2a-48d3-8961-38b7c37fe916/verva-diesel.png?width=79&height=79&ext=.png",
+          "~/getmedia/021ae679-8aa0-4b30-a363-853aafee62a0/verva-100.png?width=79&height=79&ext=.png",
+          "~/getmedia/e725dfa5-f885-451b-bfc6-743d2bb50d28/efecta-diesel.png?width=79&height=79&ext=.png",
+          "~/getmedia/682da5e2-f4f4-4eae-b061-6d9b4dbecaea/efecta-95.png?width=79&height=79&ext=.png",
+          "~/getmedia/a4d37e5d-6de2-4a97-b335-5f2d18e70706/adblue-tir.png?width=79&height=79&ext=.png",
+          "~/getmedia/6321fce7-2184-47a8-8c99-6be683c02bc2/adblue-kanystr.png?width=79&height=79&ext=.png"
+        ],
+        "discounts": [
+          {
+            "fuelType": "Verva Diesel",
+            "discountAmount": 1.0,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Verva 100",
+            "discountAmount": 1.0,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Efecta Diesel",
+            "discountAmount": 0.5,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "Efecta 95",
+            "discountAmount": 0.5,
+            "currency": "Kč"
+          },
+          {
+            "fuelType": "AdBlue kanystr",
+            "discountAmount": 0.0,
+            "currency": "Kč"
+          }
+        ]
+      }
+    }
+  ]
+}

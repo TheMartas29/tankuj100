@@ -111,9 +111,12 @@
   .tag.type { background: var(--blue-soft); color: var(--blue); }
   /* Pozor: nesmí se jmenovat "hidden" – tu třídu používáme jako utilitu display:none. */
   .tag.muted { background: #eceef1; color: var(--muted); }
+  /* Odznaky oktanů v tabulce benzínek (dřív tu bývaly ceny paliv). */
+  .tag.oct98 { background: var(--blue-soft); color: var(--blue); }
+  .tag.oct100 { background: var(--green-soft); color: var(--green); }
   .stars { color: #e0a800; letter-spacing: 1px; white-space: nowrap; }
   .stars .off { color: #d5d8dc; }
-  .price-note { background: var(--amber-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: 14px; }
+  .detail-box { background: var(--amber-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: 14px; }
   .admin-note { border-left: 3px solid var(--line); padding-left: 10px; margin-top: 8px; color: var(--muted); font-size: 13.5px; }
   a { color: var(--blue); }
 
@@ -179,7 +182,8 @@
   <!-- ------------------------------------------------------ benzínky -->
   <section id="tab-stations" class="hidden">
     <div class="toolbar">
-      <input type="search" id="stationSearch" placeholder="Hledat značku, město, adresu…" oninput="renderStations()">
+      <input type="search" id="stationSearch" placeholder="Hledat značku, město, adresu, OSM ID…" oninput="renderStations()">
+      <span id="stationFilters"></span>
       <span class="meta" id="stationCount"></span>
       <div class="spacer" style="flex:1"></div>
       <button class="small" onclick="saveDirtyStations()" id="saveStationsBtn" disabled>💾 Uložit změny</button>
@@ -194,7 +198,6 @@
 // ============================================================ pomůcky
 
 const REPORT_TYPES = {
-  price:    'špatná cena',
   closed:   'zavřeno / nefunguje',
   fuel:     'palivo',
   location: 'poloha / adresa',
@@ -202,7 +205,6 @@ const REPORT_TYPES = {
   other:    'jiné',
 };
 const REPORT_STATUSES = { new: 'nové', in_review: 'v řešení', resolved: 'vyřešeno', rejected: 'zamítnuto' };
-const FUEL_VERDICTS = { e5: 'E5 potvrzeno', e10: 'E10', disputed: 'rozporné', unconfirmed: 'nepotvrzeno' };
 
 const $ = (id) => document.getElementById(id);
 
@@ -285,7 +287,8 @@ async function loadStats() {
     const needsAttention = s.reportsNew + s.reportsInReview;
     $('cards').innerHTML = `
       ${card('K vyřízení', needsAttention, needsAttention > 0 ? 'attention' : '', `${s.reportsNew} nových`)}
-      ${card('Benzínky', s.stations)}
+      ${card('Benzínky', s.stations, '', s.stationsWithoutFuels ? `${s.stationsWithoutFuels} bez paliv` : 'všechny s palivy')}
+      ${card('100 oktanů', s.stations100, '', `${s.stations98} se 98 okt.`)}
       ${card('Hodnocení', s.reviews, '', s.ratingAverage ? `⌀ ${s.ratingAverage} ★` : 'bez hodnocení')}
       ${card('Hlášení celkem', s.reportsTotal, '', `${s.last7dReports} za 7 dní`)}
       ${card('Potvrzené E5', s.stationsWithE5, '', `${s.fuelVotes} hlasů`)}
@@ -360,7 +363,6 @@ function reportItem(r) {
     : '';
   const detail = [];
   if (r.fuel_name) detail.push(`Palivo: <strong>${esc(r.fuel_name)}</strong>`);
-  if (r.claimed_price != null) detail.push(`Cena podle uživatele: <strong>${esc(r.claimed_price)} Kč/l</strong>`);
 
   return `<article class="item ${done ? 'resolved' : ''}">
     <div>
@@ -371,7 +373,7 @@ function reportItem(r) {
       </div>
       <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))} • stanice ${r.station_id}
         ${[r.address, r.zip].filter(Boolean).map(esc).join(', ')} ${mapLink}</div>
-      ${detail.length ? `<div class="price-note">${detail.join(' &nbsp;•&nbsp; ')}</div>` : ''}
+      ${detail.length ? `<div class="detail-box">${detail.join(' &nbsp;•&nbsp; ')}</div>` : ''}
       ${reportedComment(r)}
       ${r.note ? `<div class="body">${esc(r.note)}</div>` : ''}
       ${r.admin_note ? `<div class="admin-note">Moje poznámka: ${esc(r.admin_note)}</div>` : ''}
@@ -397,7 +399,7 @@ function reportedComment(r) {
     return `<div class="admin-note">Nahlášené hodnocení #${r.review_id} už neexistuje.</div>`;
   }
   const state = r.reported_status === 'hidden' ? ' <span class="tag muted">už skryté</span>' : '';
-  return `<div class="price-note">
+  return `<div class="detail-box">
       <div>${stars(r.reported_rating || 0)} <strong>${esc(r.reported_author || 'Anonym')}</strong>${state}</div>
       <div style="margin-top:4px">${esc(r.reported_comment || '(bez komentáře)')}</div>
     </div>`;
@@ -518,49 +520,92 @@ async function deleteReview(id) {
 // ============================================================ benzínky
 
 let stations = [];
+let stationFilter = 'all';
 const dirtyIds = new Set();
+// Editovatelné sloupce. `osm_id` a paliva se ručně needitují (chodí z importu
+// OpenStreetMap), vypisují se vedle jako readonly.
 const STATION_COLUMNS = ['id', 'brand_name', 'name', 'city', 'address', 'zip', 'phone', 'worktime', 'lat', 'lon'];
+const STATION_SEARCH_KEYS = [...STATION_COLUMNS, 'osm_id'];
+
+const STATION_FILTERS = [
+  ['all', 'Vše'],
+  ['oct100', '100 oktanů'],
+  ['oct98', '98 oktanů'],
+  ['nofuel', 'Bez paliv'],
+];
+
+function renderStationFilters() {
+  $('stationFilters').innerHTML = STATION_FILTERS
+    .map(([key, label]) =>
+      `<button class="chip ${stationFilter === key ? 'active' : ''}" onclick="setStationFilter('${key}')">${esc(label)}</button>`)
+    .join(' ');
+}
+
+function setStationFilter(key) {
+  stationFilter = key;
+  renderStationFilters();
+  renderStations();
+}
 
 async function loadStations() {
   try {
     stations = await api('/api/admin/stations');
+    renderStationFilters();
     renderStations();
   } catch (err) {
     $('stationsTable').innerHTML = `<tr><td>${esc(err.message)}</td></tr>`;
   }
 }
 
-/** Bez diakritiky a malými písmeny – data z fuelo.net diakritiku často nemají. */
+/** Odznak paliva – co stanice čepuje podle OSM (dřív tu bývaly ceny). */
+function fuelBadges(s) {
+  const tags = [];
+  if (s.has_100) tags.push('<span class="tag oct100">100</span>');
+  if (s.has_98) tags.push('<span class="tag oct98">98</span>');
+  return tags.length ? tags.join(' ') : '<span class="tag muted">bez paliv</span>';
+}
+
+function matchesFuelFilter(s) {
+  if (stationFilter === 'oct100') return Boolean(s.has_100);
+  if (stationFilter === 'oct98') return Boolean(s.has_98);
+  if (stationFilter === 'nofuel') return !s.has_98 && !s.has_100;
+  return true;
+}
+
+/** Bez diakritiky a malými písmeny – část dat diakritiku nemá. */
 function foldText(value) {
   return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
 function renderStations() {
   const query = foldText($('stationSearch').value).trim();
-  const rows = query
-    ? stations.filter((s) => STATION_COLUMNS.some((k) => foldText(s[k]).includes(query)))
-    : stations;
+  const rows = stations.filter(
+    (s) => matchesFuelFilter(s) && (!query || STATION_SEARCH_KEYS.some((k) => foldText(s[k]).includes(query)))
+  );
 
-  $('stationCount').textContent = query
-    ? `${rows.length} z ${stations.length}`
-    : plural(stations.length, '1 benzínka', `${stations.length} benzínky`, `${stations.length} benzínek`);
+  $('stationCount').textContent = rows.length === stations.length
+    ? plural(stations.length, '1 benzínka', `${stations.length} benzínky`, `${stations.length} benzínek`)
+    : `${rows.length} z ${stations.length}`;
 
-  // Bez filtru je 400+ řádků – ukážeme prvních 100, ať prohlížeč nestrádá.
+  // Bez filtru je 500+ řádků – ukážeme prvních 100, ať prohlížeč nestrádá.
   const shown = rows.slice(0, 100);
-  const head = `<tr><th></th>${STATION_COLUMNS.map((k) => `<th>${esc(k)}</th>`).join('')}</tr>`;
+  const columns = STATION_COLUMNS.length + 3; // + smazat, paliva, osm_id
+  const head = `<tr><th></th><th>paliva</th>${STATION_COLUMNS.map((k) => `<th>${esc(k)}</th>`).join('')}<th>osm_id</th></tr>`;
   const body = shown.map((s) => `
     <tr id="st-${s.id}" class="${dirtyIds.has(s.id) ? 'dirty' : ''}">
       <td><button class="small danger" onclick="deleteStation(${s.id})" title="Smazat benzínku">✕</button></td>
+      <td>${fuelBadges(s)}</td>
       ${STATION_COLUMNS.map((k) => `<td><input value="${esc(s[k] ?? '')}" ${k === 'id' ? 'readonly' : ''}
           oninput="editStation(${s.id}, '${k}', this.value)"></td>`).join('')}
+      <td class="meta">${esc(s.osm_id ?? '—')}</td>
     </tr>`).join('');
 
   const more = rows.length > shown.length
-    ? `<tr><td colspan="${STATION_COLUMNS.length + 1}" class="meta" style="padding:12px">
+    ? `<tr><td colspan="${columns}" class="meta" style="padding:12px">
          Zobrazeno prvních ${shown.length} z ${rows.length} – zúž hledání.</td></tr>`
     : '';
 
-  $('stationsTable').innerHTML = head + (body || `<tr><td colspan="${STATION_COLUMNS.length + 1}" class="meta" style="padding:16px">Nic nenalezeno.</td></tr>`) + more;
+  $('stationsTable').innerHTML = head + (body || `<tr><td colspan="${columns}" class="meta" style="padding:16px">Nic nenalezeno.</td></tr>`) + more;
 }
 
 function editStation(id, key, value) {

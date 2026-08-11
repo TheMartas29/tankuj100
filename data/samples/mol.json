@@ -1,0 +1,6234 @@
+[
+  {
+    "code": "2031100623",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 131,
+    "numOfFillPos": 12,
+    "numOfPos": 1,
+    "openDate": "1997-12-16",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Plzeňský",
+          "name": "Plzeňský"
+        }
+      ]
+    },
+    "postcode": "345 32",
+    "city": "Ceska Kubice",
+    "city_hu": "",
+    "address": "Horní Folmava (směr Domažlice)",
+    "name": "Folmava II. to CZ",
+    "phoneNum": "+420721006770",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": false,
+    "gpsPosition": {
+      "latitude": 49.3452225,
+      "longitude": 12.8521442
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "06:00-22:00",
+      "openedSummerSaturday": "06:00-22:00",
+      "openedSummerSunday": "06:00-22:00",
+      "openedWinterWeekDay": "06:00-22:00",
+      "openedWinterSaturday": "06:00-22:00",
+      "openedWinterSunday": "06:00-22:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1997-12-16",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "AUSTRIAN_MOTORWAY_VIGNETTE",
+          "name": "Rakouská dálniční známka"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "1_SHOP_CATEGORISATION_1"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100805",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 200,
+    "numOfFillPos": 0,
+    "numOfPos": 3,
+    "openDate": "2022-02-15",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Moravskoslezský",
+          "name": "Moravskoslezský"
+        }
+      ]
+    },
+    "postcode": "739 42",
+    "city": "Chlebovice",
+    "city_hu": "",
+    "address": "Chlebovice 310",
+    "name": "Chlebovice D48 to FM",
+    "phoneNum": "+420720036225",
+    "mobileNum": "+420720036225",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.6555328,
+      "longitude": 18.2499142
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2022-03-31",
+      "summerToWinterDate": "2022-10-30",
+      "fsOpenDate": "2022-02-15",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "ADBLUE_DISPENSER_AVAILABLE",
+          "name": "Stáčené AdBlue"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        }
+      ]
+    },
+    "category": {
+      "values": []
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "FRESH_CORNER_RESTAURANT",
+          "name": "Restaurace"
+        },
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "HAMBURGER",
+          "name": "Hamburger"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "SOUP",
+          "name": "Polévky"
+        },
+        {
+          "id": "TOAST",
+          "name": "Toast"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100802",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 102,
+    "numOfFillPos": 9,
+    "numOfPos": 2,
+    "openDate": "2022-07-28",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Liberecký",
+          "name": "Liberecký"
+        }
+      ]
+    },
+    "postcode": "463 03",
+    "city": "Stráž nad Nisou",
+    "city_hu": "",
+    "address": "Stráž nad Nisou 745",
+    "name": "Stráž nad Nisou",
+    "phoneNum": "+420720984484",
+    "mobileNum": "+420",
+    "faxNum": "",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.7839547,
+      "longitude": 15.0229558
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2022-03-31",
+      "summerToWinterDate": "2022-10-30",
+      "fsOpenDate": "2022-07-28",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "1"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "ADBLUE_DISPENSER_AVAILABLE",
+          "name": "Stáčené AdBlue"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "FAMILY_TOILET",
+          "name": "Toaleta pro rodiny"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "ACC_RECEIPT",
+          "name": "Zpětný odběr baterií"
+        },
+        {
+          "id": "INDOOR_KIDS_CORNER",
+          "name": "Dětský koutek"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "ELECTRONIC_VEHICLE_CHARGER",
+          "name": "Dobíjecí stanice pro elektromobily"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "LPG",
+          "name": "LPG"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "JBC",
+          "name": "JBC"
+        }
+      ]
+    },
+    "category": {
+      "values": []
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "TOAST",
+          "name": "Toast"
+        },
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "HAMBURGER",
+          "name": "Hamburger"
+        },
+        {
+          "id": "SOUP",
+          "name": "Polévky"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100651",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 96,
+    "numOfFillPos": 8,
+    "numOfPos": 3,
+    "openDate": "1997-12-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Zlínský",
+          "name": "Zlínský"
+        }
+      ]
+    },
+    "postcode": "686 04",
+    "city": "Kunovice",
+    "city_hu": "",
+    "address": "Tř. Vítězství 1725",
+    "name": "Kunovice",
+    "phoneNum": "+420721007619",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.050326,
+      "longitude": 17.465919
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1997-12-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "1"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "Y"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "SHOWER_ROOM",
+          "name": "Sprcha"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "AUSTRIAN_MOTORWAY_VIGNETTE",
+          "name": "Rakouská dálniční známka"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "AUTOMATIC_CAR_WASH_AVAILABLE",
+          "name": "Myčka"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "ELECTRONIC_VEHICLE_CHARGER",
+          "name": "Dobíjecí stanice pro elektromobily"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "LPG",
+          "name": "LPG"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "4_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100631",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 84,
+    "numOfFillPos": 9,
+    "numOfPos": 2,
+    "openDate": "1994-01-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Ústecký",
+          "name": "Ústecký"
+        }
+      ]
+    },
+    "postcode": "430 02",
+    "city": "Chomutov",
+    "city_hu": "",
+    "address": "Černovická 5362",
+    "name": "Chomutov - Černovická",
+    "phoneNum": "+420721007429",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.4580631,
+      "longitude": 13.3960367
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1994-01-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "FAMILY_TOILET",
+          "name": "Toaleta pro rodiny"
+        },
+        {
+          "id": "JET_WASH_AVAILABLE",
+          "name": "Ruční mytí"
+        },
+        {
+          "id": "ACC_RECEIPT",
+          "name": "Zpětný odběr baterií"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "LPG",
+          "name": "LPG"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "2_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100633",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 72,
+    "numOfFillPos": 7,
+    "numOfPos": 1,
+    "openDate": "1998-02-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Pardubický",
+          "name": "Pardubický"
+        }
+      ]
+    },
+    "postcode": "537 01",
+    "city": "Chrudim",
+    "city_hu": "",
+    "address": "Pardubická 298",
+    "name": "Chrudim",
+    "phoneNum": "+420721007458",
+    "mobileNum": "+420605212473",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.96068,
+      "longitude": 15.782553
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "06:00-21:00",
+      "openedSummerSaturday": "06:00-21:00",
+      "openedSummerSunday": "06:00-21:00",
+      "openedWinterWeekDay": "06:00-21:00",
+      "openedWinterSaturday": "06:00-21:00",
+      "openedWinterSunday": "06:00-21:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1998-02-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        },
+        {
+          "id": "3_SHOP_CATEGORISATION_1"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100806",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 0,
+    "numOfFillPos": 0,
+    "numOfPos": 3,
+    "openDate": "2022-02-15",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Moravskoslezský",
+          "name": "Moravskoslezský"
+        }
+      ]
+    },
+    "postcode": "73942",
+    "city": "",
+    "city_hu": "",
+    "address": "staničení - km 40,8 vlevo ve směru z PHY",
+    "name": "Chlebovice D48 from FM",
+    "phoneNum": "+420720984685",
+    "mobileNum": "+420720984685",
+    "faxNum": "",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.6612283,
+      "longitude": 18.2661658
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "",
+      "summerToWinterDate": "",
+      "fsOpenDate": "2022-02-15",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "ADBLUE_DISPENSER_AVAILABLE",
+          "name": "Stáčené AdBlue"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        }
+      ]
+    },
+    "category": {
+      "values": []
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "SOUP",
+          "name": "Polévky"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "TOAST",
+          "name": "Toast"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "HAMBURGER",
+          "name": "Hamburger"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER_RESTAURANT",
+          "name": "Restaurace"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100638",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 95,
+    "numOfFillPos": 8,
+    "numOfPos": 1,
+    "openDate": "1994-06-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Liberecký",
+          "name": "Liberecký"
+        }
+      ]
+    },
+    "postcode": "471 25",
+    "city": "Jablonne v Podjestedi",
+    "city_hu": "",
+    "address": "Markvartice 30",
+    "name": "Jablonné v Podještědí",
+    "phoneNum": "+420721007556",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.771188,
+      "longitude": 14.762452
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "05:30-22:00",
+      "openedSummerSaturday": "05:30-22:00",
+      "openedSummerSunday": "05:30-22:00",
+      "openedWinterWeekDay": "05:30-22:00",
+      "openedWinterSaturday": "05:30-22:00",
+      "openedWinterSunday": "05:30-22:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1994-06-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "ACC_RECEIPT",
+          "name": "Zpětný odběr baterií"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        },
+        {
+          "id": "3_SHOP_CATEGORISATION_1"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100703",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 72,
+    "numOfFillPos": 6,
+    "numOfPos": 2,
+    "openDate": "2007-12-18",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Plzeňský",
+          "name": "Plzeňský"
+        }
+      ]
+    },
+    "postcode": "337 01",
+    "city": "Rokycany",
+    "city_hu": "",
+    "address": "Arbesova 975",
+    "name": "Rokycany",
+    "phoneNum": "+420721007056",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.744003,
+      "longitude": 13.581272
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "2007-12-18",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "LPG",
+          "name": "LPG"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "6_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100803",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 97,
+    "numOfFillPos": 0,
+    "numOfPos": 3,
+    "openDate": "",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Jihočeský",
+          "name": "Jihočeský"
+        }
+      ]
+    },
+    "postcode": "373 62",
+    "city": "Chotýčany",
+    "city_hu": "",
+    "address": "124. km dálnice D3 ve směru České Budějovice",
+    "name": "Chotýčany - D3 to ČB",
+    "phoneNum": "+420720819743",
+    "mobileNum": "",
+    "faxNum": "",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "gpsPosition": {
+      "latitude": 49.0676739,
+      "longitude": 14.5320414
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "",
+      "openedSummerSaturday": "",
+      "openedSummerSunday": "",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "",
+      "summerToWinterDate": "",
+      "fsOpenDate": "",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "1"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "ELECTRONIC_VEHICLE_CHARGER",
+          "name": "Dobíjecí stanice pro elektromobily"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "SHOWER_ROOM",
+          "name": "Sprcha"
+        },
+        {
+          "id": "AUSTRIAN_MOTORWAY_VIGNETTE",
+          "name": "Rakouská dálniční známka"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "INDOOR_KIDS_CORNER",
+          "name": "Dětský koutek"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "LPG",
+          "name": "LPG"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        }
+      ]
+    },
+    "category": {
+      "values": []
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "TOAST",
+          "name": "Toast"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "HAMBURGER",
+          "name": "Hamburger"
+        },
+        {
+          "id": "RESTAURANT",
+          "name": "Restaurace"
+        },
+        {
+          "id": "SOUP",
+          "name": "Polévky"
+        },
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "ONE_COURSE_DISH",
+          "name": "Teplá jídla"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100713",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 120,
+    "numOfFillPos": 4,
+    "numOfPos": 1,
+    "openDate": "1998-06-15",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Vysočina",
+          "name": "Vysočina"
+        }
+      ]
+    },
+    "postcode": "674 01",
+    "city": "Trebic",
+    "city_hu": "",
+    "address": "Brněnská 109",
+    "name": "Třebíč - Brněnská",
+    "phoneNum": "+420721006433",
+    "mobileNum": "+420724156921",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": false,
+    "gpsPosition": {
+      "latitude": 49.215954,
+      "longitude": 15.9114
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "05:00-21:00",
+      "openedSummerSaturday": "06:00-21:00",
+      "openedSummerSunday": "06:00-21:00",
+      "openedWinterWeekDay": "05:00-21:00",
+      "openedWinterSaturday": "06:00-21:00",
+      "openedWinterSunday": "06:00-21:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1998-06-15",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "FAMILY_TOILET",
+          "name": "Toaleta pro rodiny"
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "CNG",
+          "name": "CNG"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "MID"
+        },
+        {
+          "id": "3_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100668",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 128,
+    "numOfFillPos": 8,
+    "numOfPos": 3,
+    "openDate": "1999-08-23",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Plzeňský",
+          "name": "Plzeňský"
+        }
+      ]
+    },
+    "postcode": "323 00",
+    "city": "Plzen",
+    "city_hu": "",
+    "address": "Gerská 2006/6",
+    "name": "Plzeň - Gerská II.",
+    "phoneNum": "+420721008328",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.773014,
+      "longitude": 13.366183
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1999-08-23",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "Y"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "FAMILY_TOILET",
+          "name": "Toaleta pro rodiny"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "AUTOMATIC_CAR_WASH_AVAILABLE",
+          "name": "Myčka"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "ACC_RECEIPT",
+          "name": "Zpětný odběr baterií"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "4_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100654",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 96,
+    "numOfFillPos": 8,
+    "numOfPos": 1,
+    "openDate": "1993-01-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Středočeský",
+          "name": "Středočeský"
+        }
+      ]
+    },
+    "postcode": "277 11",
+    "city": "Libis - okr. Melnik",
+    "city_hu": "",
+    "address": "Mělnická 617",
+    "name": "Libiš",
+    "phoneNum": "+420721007750",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.28167,
+      "longitude": 14.49611
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "06:00-21:00",
+      "openedSummerSaturday": "06:00-21:00",
+      "openedSummerSunday": "06:00-21:00",
+      "openedWinterWeekDay": "06:00-21:00",
+      "openedWinterSaturday": "06:00-21:00",
+      "openedWinterSunday": "06:00-21:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1993-01-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "SHOWER_ROOM",
+          "name": "Sprcha"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "3_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100646",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 88,
+    "numOfFillPos": 6,
+    "numOfPos": 4,
+    "openDate": "2000-12-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Středočeský",
+          "name": "Středočeský"
+        }
+      ]
+    },
+    "postcode": "280 01",
+    "city": "Kolin",
+    "city_hu": "",
+    "address": "Havlíčkova 1240",
+    "name": "Kolín - Havlíčkova II.",
+    "phoneNum": "+420721007567",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.01559,
+      "longitude": 15.22096
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "05:00-21:00",
+      "openedSummerSaturday": "05:00-21:00",
+      "openedSummerSunday": "05:00-21:00",
+      "openedWinterWeekDay": "05:00-21:00",
+      "openedWinterSaturday": "05:00-21:00",
+      "openedWinterSunday": "05:00-21:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "2000-12-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "JET_WASH_AVAILABLE",
+          "name": "Ruční mytí"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "3_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100707",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 140,
+    "numOfFillPos": 10,
+    "numOfPos": 3,
+    "openDate": "2006-12-18",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Středočeský",
+          "name": "Středočeský"
+        }
+      ]
+    },
+    "postcode": "294 73",
+    "city": "Brodce nad Jizerou",
+    "city_hu": "",
+    "address": "R10 35km II. (směr Mladá Boleslav)",
+    "name": "Strašnov - R10 to MB",
+    "phoneNum": "+420721006048",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.341869,
+      "longitude": 14.873338
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "2006-12-18",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "1"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "AD_BLUE",
+          "name": "AdBlue"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "TOLL_TERMINAL",
+          "name": "Mýtný terminál"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "DEFIBRILLATOR_AED",
+          "name": "Defibrilátor"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "TRUCK_PARK",
+          "name": "Parkoviště pro kamiony"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "SHOWER_ROOM",
+          "name": "Sprcha"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "SCREENWASH_VIA_DISPENSER",
+          "name": "Stáčené kapaliny do ostřikovačů"
+        },
+        {
+          "id": "ACC_RECEIPT",
+          "name": "Zpětný odběr baterií"
+        },
+        {
+          "id": "FAMILY_TOILET",
+          "name": "Toaleta pro rodiny"
+        },
+        {
+          "id": "ADBLUE_DISPENSER_AVAILABLE",
+          "name": "Stáčené AdBlue"
+        },
+        {
+          "id": "ELECTRONIC_VEHICLE_CHARGER",
+          "name": "Dobíjecí stanice pro elektromobily"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "9_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SOUP",
+          "name": "Polévky"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "HAMBURGER",
+          "name": "Hamburger"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "ONE_COURSE_DISH",
+          "name": "Teplá jídla"
+        },
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "FRESH_CORNER_RESTAURANT",
+          "name": "Restaurace"
+        },
+        {
+          "id": "TOAST",
+          "name": "Toast"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100690",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 65,
+    "numOfFillPos": 6,
+    "numOfPos": 2,
+    "openDate": "2001-08-06",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Praha",
+          "name": "Praha"
+        }
+      ]
+    },
+    "postcode": "156 00",
+    "city": "Praha 5 - Zbraslav",
+    "city_hu": "",
+    "address": "Strakonická",
+    "name": "Praha 5 - Zbraslav",
+    "phoneNum": "+420721007239",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.954242,
+      "longitude": 14.378078
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "2001-08-06",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "SCREENWASH_VIA_DISPENSER",
+          "name": "Stáčené kapaliny do ostřikovačů"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "6_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "0"
+        },
+        {
+          "id": "MID"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "PIZZA_WRAP",
+          "name": "Pizza Wrap"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100665",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 147,
+    "numOfFillPos": 8,
+    "numOfPos": 4,
+    "openDate": "2002-05-13",
+    "opPlatform": "Closed",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Pardubický",
+          "name": "Pardubický"
+        }
+      ]
+    },
+    "postcode": "530 02",
+    "city": "Pardubice",
+    "city_hu": "",
+    "address": "Palackého",
+    "name": "Pardubice - Palackého",
+    "phoneNum": "+420721008403",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "2",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 50.033774,
+      "longitude": 15.759183
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "2002-05-13",
+      "opPlatform": "Closed"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "Y"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "AUTOMATIC_CAR_WASH_AVAILABLE",
+          "name": "Myčka"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "6_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "FRESH_SANDWICH",
+          "name": "Čerstvé bagety a sendviče"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100663",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 62,
+    "numOfFillPos": 4,
+    "numOfPos": 2,
+    "openDate": "1998-01-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Moravskoslezský",
+          "name": "Moravskoslezský"
+        }
+      ]
+    },
+    "postcode": "700 30",
+    "city": "Ostrava",
+    "city_hu": "",
+    "address": "Rudná",
+    "name": "Ostrava - Rudná II.",
+    "phoneNum": "+420702233119",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "3",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.79751,
+      "longitude": 18.24041
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "00:00-24:00",
+      "openedSummerSaturday": "00:00-24:00",
+      "openedSummerSunday": "00:00-24:00",
+      "openedWinterWeekDay": "00:00-24:00",
+      "openedWinterSaturday": "00:00-24:00",
+      "openedWinterSunday": "00:00-24:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1998-01-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "1"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "N"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "ELECTRONIC_VEHICLE_CHARGER",
+          "name": "Dobíjecí stanice pro elektromobily"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "4_SHOP_CATEGORISATION_1"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100677",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 89,
+    "numOfFillPos": 8,
+    "numOfPos": 3,
+    "openDate": "1998-04-24",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Praha",
+          "name": "Praha"
+        }
+      ]
+    },
+    "postcode": "100 00",
+    "city": "Praha 10 - Zahradni mesto",
+    "city_hu": "",
+    "address": "Švehlova",
+    "name": "Praha 10 - Švehlova",
+    "phoneNum": "+420721007783",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": false,
+    "gpsPosition": {
+      "latitude": 50.06056,
+      "longitude": 14.50667
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "06:00-22:00",
+      "openedSummerSaturday": "06:00-22:00",
+      "openedSummerSunday": "06:00-22:00",
+      "openedWinterWeekDay": "06:00-22:00",
+      "openedWinterSaturday": "06:00-22:00",
+      "openedWinterSunday": "06:00-22:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1998-04-24",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "Y"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "PUMP",
+          "name": "Kompresor"
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "AUTOMATIC_CAR_WASH_AVAILABLE",
+          "name": "Myčka"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "2_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        }
+      ]
+    }
+  },
+  {
+    "code": "2031100640",
+    "language": "",
+    "company": "MOL Ceska",
+    "brand": "MOL",
+    "shopSize": 81,
+    "numOfFillPos": 8,
+    "numOfPos": 4,
+    "openDate": "1995-01-01",
+    "opPlatform": "COCA",
+    "country": {
+      "values": [
+        {
+          "id": "CZ",
+          "name": "Czech Republic"
+        }
+      ]
+    },
+    "county": {
+      "values": [
+        {
+          "id": "Jihočeský",
+          "name": "Jihočeský"
+        }
+      ]
+    },
+    "postcode": "377 01",
+    "city": "Jindrichuv Hradec",
+    "city_hu": "",
+    "address": "Rezkova 1157",
+    "name": "Jindřichův Hradec",
+    "phoneNum": "+420721007315",
+    "mobileNum": "",
+    "faxNum": "0",
+    "taxNumber": "",
+    "ntakCode": "",
+    "stationStatus": "1",
+    "migrated": true,
+    "toiletAccessFromShop": true,
+    "gpsPosition": {
+      "latitude": 49.1542,
+      "longitude": 15.00226
+    },
+    "openedHours": {
+      "openedSummerWeekDay": "05:00-22:00",
+      "openedSummerSaturday": "05:00-22:00",
+      "openedSummerSunday": "05:00-22:00",
+      "openedWinterWeekDay": "05:00-22:00",
+      "openedWinterSaturday": "05:00-22:00",
+      "openedWinterSunday": "05:00-22:00",
+      "openedShop": "",
+      "openedCafeeShop": "",
+      "openedCarWash": "",
+      "woStaff": "",
+      "winterToSummerDate": "2019-03-31",
+      "summerToWinterDate": "2019-10-30",
+      "fsOpenDate": "1995-01-01",
+      "opPlatform": "COCA"
+    },
+    "stationAdditionalProperties": [
+      {
+        "key": "numberOfEvChargers",
+        "value": "0"
+      },
+      {
+        "key": "activeCarWash",
+        "value": "Y"
+      }
+    ],
+    "services": {
+      "values": [
+        {
+          "id": "DIAPER_CHANGING_PAD",
+          "name": "Přebalovací pult"
+        },
+        {
+          "id": "SHOP",
+          "name": "Obchod"
+        },
+        {
+          "id": "LUBRICANT",
+          "name": "Oleje"
+        },
+        {
+          "id": "EVERYDAY_SHOPPING",
+          "name": "Everyday Shopping"
+        },
+        {
+          "id": "PRE_PACKED_SANDWICH",
+          "name": "Balené sendviče"
+        },
+        {
+          "id": "CYLINDER_PB_GAS",
+          "name": "PB lahve "
+        },
+        {
+          "id": "FS_IS_ACCESSIBLE_FROM_BOTH",
+          "name": "Stanice dostupná z obou směrů"
+        },
+        {
+          "id": "INTERNET_WIFI",
+          "name": "Wi-Fi"
+        },
+        {
+          "id": "LOTTERY",
+          "name": "Loterie"
+        },
+        {
+          "id": "EURO_PAYMENT_ACCEPTANCE",
+          "name": "Akceptace platby v euro"
+        },
+        {
+          "id": "DISABLED_TOILET",
+          "name": "Toalety pro invalidy"
+        },
+        {
+          "id": "AUSTRIAN_MOTORWAY_VIGNETTE",
+          "name": "Rakouská dálniční známka"
+        },
+        {
+          "id": "HIGH_SPEED_PUMP",
+          "name": "Rychlovýdej"
+        },
+        {
+          "id": "PHARMACY",
+          "name": "Léky"
+        },
+        {
+          "id": "AUTOMATIC_CAR_WASH_AVAILABLE",
+          "name": "Myčka"
+        },
+        {
+          "id": "BIG_ENOUGH_TO_FIT_A_TRUCK",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "TRUCK_FRIENDLY",
+          "name": "Truck friendly"
+        },
+        {
+          "id": "HOOVER",
+          "name": "Vysavač"
+        }
+      ]
+    },
+    "fuelsAndAdditives": {
+      "values": [
+        {
+          "id": "EVO_DIESEL",
+          "name": "EVO Diesel"
+        },
+        {
+          "id": "EVO_95",
+          "name": "EVO 95"
+        },
+        {
+          "id": "EVO_DIESEL_PLUS",
+          "name": "EVO Diesel Plus"
+        },
+        {
+          "id": "EVO_100_PLUS",
+          "name": "EVO 100 Plus"
+        },
+        {
+          "id": "LPG",
+          "name": "LPG"
+        }
+      ]
+    },
+    "cards": {
+      "values": [
+        {
+          "id": "TIFON_GOLD_CARD_HR",
+          "name": "Tifon Gold Card HR"
+        },
+        {
+          "id": "MAESTRO",
+          "name": "Maestro"
+        },
+        {
+          "id": "EURO_OIL",
+          "name": "EURO OIL"
+        },
+        {
+          "id": "UTA_CARD",
+          "name": "UTA Card"
+        },
+        {
+          "id": "INA_CARD",
+          "name": "INA Card"
+        },
+        {
+          "id": "MOL_SILVER_CARD_CZ",
+          "name": "MOL Silver Card CZ"
+        },
+        {
+          "id": "VISA",
+          "name": "VISA"
+        },
+        {
+          "id": "MOL_GOLD_CARD_HU",
+          "name": "MOL Gold Card HU"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SLO",
+          "name": "MOL Gold Card SLO"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC_PREPAID",
+          "name": "Gold Card Czech Republic Prepaid"
+        },
+        {
+          "id": "MOL_GOLD_CARD_CZ",
+          "name": "MOL Gold Card CZ"
+        },
+        {
+          "id": "CIRRUS_MAESTRO",
+          "name": "Cirrus/ Maestro"
+        },
+        {
+          "id": "PARTNER_CARD_CZECH_REPUBLIC",
+          "name": "Partner Card Czech Republic"
+        },
+        {
+          "id": "MOL_GOLD_CARD_SRB",
+          "name": "MOL Gold Card SRB"
+        },
+        {
+          "id": "GIFT_CARD_CZECH_REPUBLIC",
+          "name": "Gift Card Czech Republic"
+        },
+        {
+          "id": "DKV_CARD",
+          "name": "DKV Card"
+        },
+        {
+          "id": "ENERGOPETROL_GOLD_CARD_BIH",
+          "name": "Energopetrol Gold Card BiH"
+        },
+        {
+          "id": "SLOVNAFT_GOLD_CARD_SK",
+          "name": "Slovnaft Gold Card SK"
+        },
+        {
+          "id": "CCS_CARD",
+          "name": "CCS Card"
+        },
+        {
+          "id": "GOLD_CARD_CZECH_REPUBLIC",
+          "name": "Gold Card Czech Republic"
+        },
+        {
+          "id": "GOLD_CARD_EUROPE",
+          "name": "Gold Card Europe"
+        },
+        {
+          "id": "EUROCARD_MASTERCARD",
+          "name": "Eurocard/ Mastercard"
+        },
+        {
+          "id": "MOL_GOLD_CARD_AT",
+          "name": "MOL Gold Card AT"
+        },
+        {
+          "id": "AMEX",
+          "name": "AMEX"
+        },
+        {
+          "id": "E100_CARD",
+          "name": "E100 Card"
+        },
+        {
+          "id": "VPAY",
+          "name": "VPay"
+        },
+        {
+          "id": "MASTERCARD_ELECTRONIC",
+          "name": "MasterCard Electronic"
+        },
+        {
+          "id": "VISA_ELECTRON",
+          "name": "VISA Electron"
+        },
+        {
+          "id": "MOL_GOLD_CARD_RO",
+          "name": "MOL Gold Card RO"
+        }
+      ]
+    },
+    "category": {
+      "values": [
+        {
+          "id": "7_SHOP_CATEGORISATION_1"
+        },
+        {
+          "id": "FULL"
+        },
+        {
+          "id": "0"
+        }
+      ]
+    },
+    "gastroCategory": {
+      "values": [
+        {
+          "id": "SELF_SERVICE_COFFEE",
+          "name": "Káva s sebou"
+        },
+        {
+          "id": "FRESH_CORNER",
+          "name": "Fresh Corner"
+        },
+        {
+          "id": "BAKERY",
+          "name": "Pečivo"
+        },
+        {
+          "id": "BARISTA_COFFEE",
+          "name": "Káva Barista"
+        },
+        {
+          "id": "HOT_DOG",
+          "name": "Hot Dog"
+        }
+      ]
+    }
+  }
+]

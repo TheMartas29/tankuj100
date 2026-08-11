@@ -1,0 +1,232 @@
+{
+  "_source": {
+    "seznam_stanic": "GET https://www.tank-ono.cz/cz/index.php?page=pumpy  (odkazy index.php?page=pumpcard&pump=N, N=1..46)",
+    "detail": "GET https://www.tank-ono.cz/cz/index.php?page=pumpcard&pump=N",
+    "cenik": "GET https://www.tank-ono.cz/cz/index.php?page=cenik  (tabulka nazev stanice x palivo -> cena, sloupce N95,N95+,N98,D,D+,AdBlue,LPG,OM,NM)",
+    "gps": "z odkazu <a href=\"https://goo.gl/maps/XXX\"> na detailu; po nasledovani redirectu je v URL @lat,lng",
+    "poznamka": "zadne JSON API; ceny jsou vykreslene jako GIF obrazky cislic, ale ceníková HTML tabulka ceny obsahuje jako text"
+  },
+  "parsed_sample": [
+    {
+      "pump": 1,
+      "name": "Tank ONO s.r.o. - ČS Plzeň, Domažlická",
+      "map_link": "https://goo.gl/maps/vYXoU",
+      "resolved": "https://www.google.cz/maps/place/Tank+ONO,+s.r.o./@49.7364283,13.330928,18z/data=!4m2!3m1!1s0x0:0x48e9393da5d26da7?hl=cs&ucbcb=1",
+      "lat": "49.7364283",
+      "lng": "13.330928",
+      "fuel_icons": [
+        "abc",
+        "dc",
+        "dpc",
+        "euro",
+        "n95c",
+        "n98c"
+      ]
+    },
+    {
+      "pump": 2,
+      "name": "Tank ONO s.r.o. - ČS Nýřany",
+      "map_link": "https://goo.gl/maps/pC1cr",
+      "resolved": "https://www.google.cz/maps/place/Tank+ONO,+s.r.o./@49.7143517,13.1829904,17z/data=!4m5!1m2!2m1!1sTank+ONO,+s.r.o!3m1!1s0x0:0x15f76bd5d7861b3a?hl=cs&ucbcb=1",
+      "lat": "49.7143517",
+      "lng": "13.1829904",
+      "fuel_icons": [
+        "abc",
+        "dc",
+        "dpc",
+        "euro",
+        "lpgc",
+        "n95c",
+        "n98c"
+      ]
+    },
+    {
+      "pump": 3,
+      "name": "Tank ONO s.r.o. - ČS Plzeň, Studentská",
+      "map_link": "https://goo.gl/maps/vzoMP",
+      "resolved": "https://www.google.cz/maps/place/Tank+ONO,+s.r.o./@49.7751277,13.3605691,19z/data=!4m2!3m1!1s0x0:0xab03da0825645a69?hl=cs&ucbcb=1",
+      "lat": "49.7751277",
+      "lng": "13.3605691",
+      "fuel_icons": [
+        "dc",
+        "dpc",
+        "euro",
+        "lpgc",
+        "n95c",
+        "n98c"
+      ]
+    },
+    {
+      "pump": 20,
+      "name": "Tank ONO s.r.o. - ČS Krupá u Rakovníka",
+      "map_link": "https://goo.gl/maps/yNG0G",
+      "resolved": "https://www.google.cz/maps/place/Tank+ONO,+s.r.o./@50.1690735,13.7439605,14z/data=!4m5!1m2!2m1!1sTank+ONO,+s.r.o.!3m1!1s0x0:0xd5e6a1513bf87a35?hl=cs&ucbcb=1",
+      "lat": "50.1690735",
+      "lng": "13.7439605",
+      "fuel_icons": [
+        "abc",
+        "dc",
+        "dpc",
+        "euro",
+        "n95c"
+      ]
+    },
+    {
+      "pump": 40,
+      "name": "Tank ONO s.r.o. - ČS Dobkovice u Děčína",
+      "map_link": "https://goo.gl/maps/a5HuH2H1GSy",
+      "resolved": "https://www.google.com/maps/place/Tank+ONO,+s.r.o./@50.7210908,14.1865775,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0x3ed0e6ebe3b1c0e4!8m2!3d50.7210908!4d14.1887662?shorturl=1&ucbcb=1",
+      "lat": "50.7210908",
+      "lng": "14.1865775",
+      "fuel_icons": [
+        "abc",
+        "dc",
+        "dpc",
+        "euro",
+        "lpgc",
+        "n95c",
+        "n98c"
+      ]
+    },
+    {
+      "pump": 46,
+      "name": "Tank ONO s.r.o. - ČS Rumburk",
+      "map_link": "https://maps.app.goo.gl/KB5kaF3gvScjrP7v7",
+      "resolved": "https://www.google.com/maps/place/Tank+ONO+Rumburk/@50.9493663,14.5787406,17z/data=!4m6!3m5!1s0x47091bab18fb9765:0x16c144ae7a6e4a6a!8m2!3d50.9493629!4d14.5813155!16s%2Fg%2F11xz14zjwr?entry=tts&g_ep=EgoyMDI1MDkxNC4wIPu8ASoASAFQAw%3D%3D&skid=1c0f138e-5229-4075-8d55-50c16d435c37&ucbcb=1",
+      "lat": "50.9493663",
+      "lng": "14.5787406",
+      "fuel_icons": [
+        "abc",
+        "dc",
+        "euro",
+        "n95c",
+        "n98c"
+      ]
+    }
+  ],
+  "cenik_sample": {
+    "sloupce": [
+      "N95",
+      "N95+",
+      "N98",
+      "Diesel",
+      "Diesel+",
+      "AdBlue",
+      "LPG",
+      "OM",
+      "NM"
+    ],
+    "radky": {
+      "ČS Plzeň, Domažlická": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "---",
+        "---"
+      ],
+      "ČS Nýřany": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "20,50",
+        "99,00",
+        "649,00"
+      ],
+      "ČS Plzeň, Studentská": [
+        "38,90",
+        "39,50",
+        "40,90",
+        "41,90",
+        "42,50",
+        "---",
+        "20,50",
+        "99,00",
+        "---"
+      ],
+      "ČS Sokolov": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "---",
+        "---"
+      ],
+      "ČS Teplice": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "99,00",
+        "---"
+      ],
+      "ČS Cheb": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "---",
+        "---"
+      ],
+      "ČS Milovice u Hořic": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "---",
+        "20,50",
+        "---",
+        "---"
+      ],
+      "ČS Chlumec": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "---",
+        "---"
+      ],
+      "ČS Jihlava": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "99,00",
+        "---"
+      ],
+      "ČS Trutnov": [
+        "38,90",
+        "---",
+        "40,90",
+        "41,90",
+        "42,50",
+        "12,50",
+        "---",
+        "---",
+        "---"
+      ]
+    }
+  }
+}

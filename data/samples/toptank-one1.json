@@ -1,0 +1,880 @@
+{
+  "_source": {
+    "mapa": "GET https://www.one1.eu/cerpaci-stanice -> atribut data-data u <div class=\"Map-inner\"> (HTML-escaped JSON pole)",
+    "modal": "GET https://www.one1.eu/station/map-detail/<map_id> -> adresa + odkaz na detail /<slug>",
+    "detail": "GET https://www.one1.eu/<slug> -> sekce <h2>Paliva</h2> s ikonami Icon--fuel-natural95 / -natural98 / -racing (Onextra) / -diesel / -lpg / -adblue"
+  },
+  "_pocet": 37,
+  "sample": [
+    {
+      "map_id": "61",
+      "name": "Alžbětín",
+      "slug": "/alzbetin",
+      "lat": "49.124959",
+      "lng": "13.210326",
+      "address": "Alžbětín 61, Železná Ruda, 34404",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": true,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E10"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "7",
+      "name": "Aš (casino)",
+      "slug": "/as",
+      "lat": "50.21556",
+      "lng": "12.17095",
+      "address": "Selbská ulice 2865, Aš, 35201",
+      "flags": {
+        "open": true,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "9",
+      "name": "Aš (centrum)",
+      "slug": "/as-q1",
+      "lat": "50.2209362",
+      "lng": "12.1908182",
+      "address": "Rybniční 2742, Aš, 352 01",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": true,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "8",
+      "name": "Aš (Lidl)",
+      "slug": "/as-ii",
+      "lat": "50.2177579",
+      "lng": "12.1766868",
+      "address": "Selbská ulice 2732/15, Aš, 35201",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": true,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        }
+      ]
+    },
+    {
+      "map_id": "10",
+      "name": "Brandov",
+      "slug": "/brandov",
+      "lat": "50.64988",
+      "lng": "13.37191",
+      "address": "Rudé Armády 10, Brandov, 435 47",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "11",
+      "name": "Cínovec",
+      "slug": "/cinovec",
+      "lat": "50.72874",
+      "lng": "13.76974",
+      "address": "Cínovec 293, Cínovec, 41501",
+      "flags": {
+        "open": false,
+        "vingette": true,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "86",
+      "name": "Domažlice",
+      "slug": "/domazlice",
+      "lat": "49.43577",
+      "lng": "12.94402",
+      "address": "Masarykova 569, Domažlice, 34401",
+      "flags": {
+        "open": true,
+        "vingette": false,
+        "gastro": true,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "12",
+      "name": "Folmava",
+      "slug": "/folmava",
+      "lat": "49.3449201",
+      "lng": "12.8509763",
+      "address": "Horní Folmava 39, Česká Kubice, 34532",
+      "flags": {
+        "open": true,
+        "vingette": true,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": true,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "13",
+      "name": "Folmava TIR",
+      "slug": "/folmava-tir",
+      "lat": "49.3472173",
+      "lng": "12.8510183",
+      "address": "Horní Folmava 55, Česká Kubice, 34532",
+      "flags": {
+        "open": true,
+        "vingette": true,
+        "gastro": true,
+        "toll": true,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": true,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "14",
+      "name": "Hora Sv. Kateřiny",
+      "slug": "/hora-sv-kateriny",
+      "lat": "50.61002",
+      "lng": "13.43253",
+      "address": "Dolní 341, Hora Sv. Kateřiny, 43546",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "15",
+      "name": "Hora Sv. Šebestiána",
+      "slug": "/hora-sv-sebestiana",
+      "lat": "50.5461",
+      "lng": "13.22755",
+      "address": "Pohraniční 80, Hora Sv. Šebestiána, 43182",
+      "flags": {
+        "open": true,
+        "vingette": true,
+        "gastro": false,
+        "toll": true,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "16",
+      "name": "Hranice",
+      "slug": "/hranice",
+      "lat": "50.31759",
+      "lng": "12.16765",
+      "address": "Husova 908, Hranice, 35124",
+      "flags": {
+        "open": true,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": true,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "40",
+      "name": "Jiříkov",
+      "slug": "/jirikov-79",
+      "lat": "51.00071",
+      "lng": "14.57507",
+      "address": "9.května č. e. 137, Jiříkov, 40753",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": true,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "19",
+      "name": "Kraslice",
+      "slug": "/kraslice-37",
+      "lat": "50.3502623",
+      "lng": "12.4751846",
+      "address": "Hraničná 1, Kraslice, 35801",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": true,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "20",
+      "name": "Křimov",
+      "slug": "/krimov",
+      "lat": "50.4861578",
+      "lng": "13.2939274",
+      "address": "Křimov 35, Chomutov, 43001",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": true,
+        "toll": true,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": true,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "22",
+      "name": "Lísková",
+      "slug": "/liskova-43",
+      "lat": "49.4179762",
+      "lng": "12.7143169",
+      "address": "Lísková 2, Lísková, 34401",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "39",
+      "name": "Litice",
+      "slug": "/litice",
+      "lat": "49.7084676",
+      "lng": "13.3573042",
+      "address": "Klatovská 507/173, Plzeň, 32101",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": true,
+        "fuelE5": true,
+        "lpg": true,
+        "adBlue": true,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-natural98",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "94",
+      "name": "Mníšek I",
+      "slug": "/mnisek-i",
+      "lat": "50.6300053",
+      "lng": "13.4976467",
+      "address": "Mníšek 251, Nová Ves v Horách, 43545",
+      "flags": {
+        "open": true,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        }
+      ]
+    },
+    {
+      "map_id": "24",
+      "name": "Mníšek II",
+      "slug": "/mnisek-ii",
+      "lat": "50.6295967",
+      "lng": "13.4988433",
+      "address": "Mníšek 233, Nová Ves v Horách, 43545",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    },
+    {
+      "map_id": "25",
+      "name": "Pavlův Studenec",
+      "slug": "/pavluv-studenec",
+      "lat": "49.8106632",
+      "lng": "12.4674661",
+      "address": "Obora 100, Tachov, 34701",
+      "flags": {
+        "open": false,
+        "vingette": false,
+        "gastro": false,
+        "toll": false,
+        "exchange": false,
+        "wash": false,
+        "mediPoint": false,
+        "fuelE5": true,
+        "lpg": false,
+        "adBlue": false,
+        "electricCharger": false
+      },
+      "fuel_icons": [
+        {
+          "wrapper": "",
+          "icon": "fuel-natural95",
+          "label": "E5"
+        },
+        {
+          "wrapper": " Fuel--onextra",
+          "icon": "fuel-racing",
+          "label": "Onextra"
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-diesel",
+          "label": ""
+        },
+        {
+          "wrapper": "",
+          "icon": "fuel-adblue",
+          "label": "Kanystr"
+        }
+      ]
+    }
+  ]
+}

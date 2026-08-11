@@ -11,29 +11,30 @@ zvlášť v App Store Connect.
 - **Podpora URL:** https://tankuj100.silkroadbrand.eu
 
 ## Promo text (170 zn.)
-Rychle najdi nejbližší benzínky s prémiovým palivem. Mapa stanic, ceny, hodnocení řidičů a info, kde se čepuje E5 pro starší auta.
+Najdi benzínky, kde natankuješ 100 nebo 98 oktanů. Mapa prémiových stanic, jejich nabídka paliv, otevírací doba a hodnocení od ostatních řidičů.
 
 ## Popis
-tankuj100 ti na mapě ukáže benzínky nabízející prémiové palivo – ideální pro majitele
-starších vozů i pro každého, kdo chce tankovat kvalitnější palivo.
+tankuj100 ti na mapě ukáže **jen** benzínky, které nabízejí prémiový benzín se 100 nebo
+98 oktany – ideální pro majitele starších vozů i pro každého, kdo chce tankovat
+kvalitnější palivo. Žádné listování stanicemi, kde stejně zastavovat nechceš.
 
 Co appka umí:
-• Mapa benzínek s prémiovým palivem po celé ČR
-• Detail stanice – adresa, otevírací doba, kontakt, možnosti platby
-• Aktuální ceny paliv u dané stanice
+• Mapa benzínek se 100 a 98 oktany po celé ČR
+• Detail stanice – nabídka paliv, adresa, otevírací doba, kontakt a služby
 • Hodnocení a komentáře od ostatních řidičů
-• Ověřeno řidiči: u kterých stanic se čepuje E5 (benzín s nižším podílem etanolu,
-  vhodnější pro starší motory) – a filtr, který ti ukáže jen ty potvrzené
-• Nahlášení nesrovnalosti (špatná cena, zavřeno, špatná adresa) jedním klepnutím
+• Sdílení informace, jestli se na stanici čepuje E5 (benzín s nižším podílem etanolu,
+  vhodnější pro starší motory) – hlásí ji sami řidiči u pumpy
+• Nahlášení nesrovnalosti (zavřeno, nesedí paliva, špatná adresa) jedním klepnutím
 • Oblíbené benzínky a seznam nejbližších stanic
 • Vycentrování mapy na tvoji polohu
 • Navigace do stanice přes Apple Mapy
 
-Bez registrace a bez reklam. Data o cenách jsou informativní a přebírají se z veřejných
-zdrojů; informace o typu benzínu pochází od uživatelů, tak si ji u pumpy ověř.
+Bez registrace a bez reklam. Údaje o benzínkách pocházejí z OpenStreetMap (licence ODbL),
+jsou informativní a nemusí být vždy aktuální; informace o typu benzínu pochází od
+uživatelů, tak si ji u pumpy ověř.
 
 ## Klíčová slova (100 zn., čárkami)
-benzínka,palivo,natural,benzin,nafta,ceny paliv,tankování,mapa,stanice,pumpa,čerpací,e5
+benzínka,palivo,natural,benzin,oktan,100,98,tankování,mapa,stanice,pumpa,čerpací,e5
 
 ## Poznámky k App Privacy (dotazník v App Store Connect)
 - **Location** → „App functionality", **NENÍ** propojeno s identitou, **NENÍ** používáno ke
@@ -58,7 +59,8 @@ Appka umožňuje veřejné komentáře, takže Apple podle Guideline 1.2 vyžadu
   (vede zhruba na 12+). Nezaškrtávat vyšší kategorie.
 
 ## TODO před odesláním
-- [ ] Screenshoty (6.9" a 6.5" iPhone) – mapa, detail stanice s hodnocením, seznam „S E5".
+- [ ] Screenshoty (6.9" a 6.5" iPhone) – mapa, detail stanice s nabídkou paliv a hodnocením,
+      seznam nejbližších stanic.
 - [ ] Ikona 1024×1024 (už je v projektu jako app icon).
 - [ ] Vyplnit App Privacy dotazník dle výše (Location + User Content + Device ID).
 - [ ] Nastavit age rating s ohledem na UGC.
