@@ -1,10 +1,3 @@
-//
-//  ReviewSheet.swift
-//  tankuj100
-//
-//  Sheet pro napsání (nebo úpravu) hodnocení benzínky.
-//
-
 import SwiftUI
 
 struct ReviewSheet: View {
@@ -39,7 +32,7 @@ struct ReviewSheet: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
                 } header: {
-                    Text("Jak jsi tady byl spokojený?")
+                    Text("Jak jste tady byli spokojeni?")
                 } footer: {
                     Text(stationTitle)
                 }
@@ -52,14 +45,14 @@ struct ReviewSheet: View {
                     )
                     .lineLimit(4...8)
                     .focused($commentFocused)
-                    .onChange(of: comment) { _, newValue in
+                    .onValueChange(of: comment) { newValue in
                         if newValue.count > commentLimit { comment = String(newValue.prefix(commentLimit)) }
                     }
                 } header: {
                     Text("Komentář (nepovinný)")
                 } footer: {
                     HStack {
-                        Text("Ostatním řidičům pomůže, když napíšeš, co tě potěšilo nebo zklamalo.")
+                        Text("Ostatním řidičům pomůže, když napíšete, co vás potěšilo nebo zklamalo.")
                         Spacer()
                         if comment.count > commentLimit - 200 {
                             Text("\(comment.count)/\(commentLimit)")
@@ -71,13 +64,13 @@ struct ReviewSheet: View {
                 Section {
                     TextField("Anonym", text: $author)
                         .textInputAutocapitalization(.words)
-                        .onChange(of: author) { _, newValue in
+                        .onValueChange(of: author) { newValue in
                             if newValue.count > authorLimit { author = String(newValue.prefix(authorLimit)) }
                         }
                 } header: {
                     Text("Podpis (nepovinný)")
                 } footer: {
-                    Text("Když necháš prázdné, hodnocení se zobrazí jako „Anonym“. Nikam se nepřihlašuješ a e-mail po tobě nechceme.")
+                    Text("Když necháte prázdné, hodnocení se zobrazí jako „Anonym“. Nikam se nepřihlašujete a e-mail po vás nechceme.")
                 }
 
                 if isEditing {
@@ -110,7 +103,7 @@ struct ReviewSheet: View {
                 }
             }
             .confirmationDialog(
-                "Smazat tvoje hodnocení této benzínky?",
+                "Smazat vaše hodnocení této benzínky?",
                 isPresented: $showDeleteConfirm,
                 titleVisibility: .visible
             ) {
@@ -134,11 +127,10 @@ struct ReviewSheet: View {
         case 3: "Průměr"
         case 4: "Dobré"
         case 5: "Výborné"
-        default: "Klepni na hvězdičky"
+        default: "Klepněte na hvězdičky"
         }
     }
 
-    /// Když už uživatel hodnotil, otevřeme sheet s jeho hodnocením – neztratí, co napsal.
     private func prefill() {
         guard let mine = viewModel.myReview else { return }
         rating = mine.rating

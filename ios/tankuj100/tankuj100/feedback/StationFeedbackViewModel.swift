@@ -1,10 +1,3 @@
-//
-//  StationFeedbackViewModel.swift
-//  tankuj100
-//
-//  Stav feedbacku jedné benzínky – načítání, hlasování, hodnocení, hlášení.
-//
-
 import Foundation
 import SwiftUI
 
@@ -19,33 +12,25 @@ final class StationFeedbackViewModel: ObservableObject {
 
     @Published private(set) var state: LoadState = .loading
     @Published private(set) var feedback: StationFeedback?
-
-    /// Probíhá zápis (hlasování/hodnocení) – blokujeme tlačítka, ať se nic neposílá dvakrát.
     @Published private(set) var isSubmitting = false
-
-    /// Krátká potvrzovací hláška („Díky za hodnocení!“).
     @Published var successMessage: String?
-
-    /// Chyba k zobrazení v alertu (sdílíme mechanismus s ostatními obrazovkami).
     @Published var error: CustomError?
 
     let stationId: Int
-    private let client = NetworkClient()
+    private let client = APIClient.shared
 
     init(stationId: Int) {
         self.stationId = stationId
     }
 
-    // MARK: - Odvozené hodnoty pro view
-
     var rating: RatingSummary { feedback?.rating ?? .empty }
-    var fuel: FuelSummary { feedback?.fuel ?? .empty }
+    /// Hlasy o palivu se uživateli neukazují (dokud jich není dost, byly by
+    /// zavádějící) – držíme je tu pro chvíli, až se odznak zapne.
+    var fuel: FuelSummary { feedback.flatMap(\.fuel) ?? .empty }
     var reviews: [StationReview] { feedback?.reviews ?? [] }
     var myReview: MyReview? { feedback?.mine?.review }
     var myFuelKind: FuelKind? { feedback?.mine?.fuelKind }
     var openReports: Int { feedback?.openReports ?? 0 }
-
-    // MARK: - Načtení
 
     func load() async {
         if feedback == nil { state = .loading }
@@ -66,8 +51,6 @@ final class StationFeedbackViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Hlasování o typu benzínu
-
     func vote(_ kind: FuelKind) async {
         guard !isSubmitting else { return }
         isSubmitting = true
@@ -76,13 +59,11 @@ final class StationFeedbackViewModel: ObservableObject {
         switch await client.submitFuelVote(stationId: stationId, kind: kind) {
         case .success(let response):
             await reload()
-            successMessage = response.message ?? "Díky, tvoje info pomůže ostatním."
+            successMessage = response.message ?? "Díky, vaše info pomůže ostatním."
         case .failure(let failure):
             error = customError(from: failure)
         }
     }
-
-    // MARK: - Hodnocení
 
     /// Vrací true při úspěchu, aby si sheet mohl sám zavřít.
     func submitReview(rating: Int, comment: String, author: String) async -> Bool {
@@ -122,12 +103,9 @@ final class StationFeedbackViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Hlášení nesrovnalosti
-
     func submitReport(
         type: ReportType,
         fuelName: String?,
-        claimedPrice: Double?,
         note: String,
         reviewId: Int? = nil
     ) async -> Bool {
@@ -139,7 +117,6 @@ final class StationFeedbackViewModel: ObservableObject {
             stationId: stationId,
             type: type,
             fuelName: fuelName,
-            claimedPrice: claimedPrice,
             note: note.trimmingCharacters(in: .whitespacesAndNewlines),
             reviewId: reviewId
         )
@@ -155,18 +132,14 @@ final class StationFeedbackViewModel: ObservableObject {
         }
     }
 
-    /// Nahlášení cizího komentáře jako nevhodného (moderace).
     func reportReview(_ review: StationReview) async {
         _ = await submitReport(
             type: .content,
             fuelName: nil,
-            claimedPrice: nil,
             note: "",
             reviewId: review.id
         )
     }
-
-    // MARK: - Pomůcky
 
     private func customError(from failure: Error) -> CustomError {
         (failure as? CustomError) ?? .defaultError(message: failure.localizedDescription)
