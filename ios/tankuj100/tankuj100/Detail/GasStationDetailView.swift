@@ -98,10 +98,12 @@ struct GasStationDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .errorAlert($error)
         .successToast($feedback.successMessage)
-        .task {
+        // Klíčované na stanici: kdyby SwiftUI view recykloval pro jinou benzínku,
+        // data se načtou znovu místo toho, aby zůstala ta předchozí.
+        .task(id: gasStation.id) {
             await loadDetail()
         }
-        .task {
+        .task(id: gasStation.id) {
             await feedback.load()
         }
         .sheet(isPresented: $showReviewSheet) {

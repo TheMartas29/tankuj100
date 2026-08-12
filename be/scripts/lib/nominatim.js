@@ -1,6 +1,7 @@
 const { cleanValue, normalizeZip } = require('./values');
 
 const REVERSE_URL = 'https://nominatim.openstreetmap.org/reverse';
+const SEARCH_URL = 'https://nominatim.openstreetmap.org/search';
 // Kontakt v User-Agentu vyžadují podmínky použití – bez něj Nominatim odpovídá 403.
 const USER_AGENT = 'tankuj100/1.0 (info@silkroadbrand.eu)';
 // Povolený strop je 1 dotaz/s. Držíme se kousek pod ním, ať nás nezradí zaokrouhlení
@@ -99,4 +100,27 @@ const cityOf = (address) =>
 
 const zipOf = (address) => normalizeZip(address.postcode);
 
-module.exports = { reverseWithRetry, addressOf, cityOf, zipOf, sleep, MIN_INTERVAL_MS, MAX_ATTEMPTS };
+
+/** Vyhledá obec podle názvu a vrátí, jak se píše správně (včetně diakritiky). */
+async function searchSettlement(name) {
+  const url =
+    `${SEARCH_URL}?format=jsonv2&countrycodes=cz&limit=1` +
+    `&featureType=settlement&q=${encodeURIComponent(name)}`;
+
+  const res = await fetch(url, {
+    headers: { 'User-Agent': USER_AGENT, 'Accept-Language': 'cs', Accept: 'application/json' },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+
+  if (res.status === 429 || res.status >= 500) {
+    const err = new Error(`HTTP ${res.status}`);
+    err.retryable = true;
+    throw err;
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+  const data = await res.json();
+  return Array.isArray(data) && data.length ? cleanValue(data[0].name) : null;
+}
+
+module.exports = { reverseWithRetry, searchSettlement, addressOf, cityOf, zipOf, sleep, MIN_INTERVAL_MS, MAX_ATTEMPTS };

@@ -31,6 +31,10 @@ struct MapScreen: View {
                                      favorites: favorites,
                                      onClose: { viewModel.selectedStation = nil })
             }
+            // Když uživatel klepne na jiný špendlík, aniž by detail zavřel, sheet se
+            // nezavírá – jen se překreslí. Bez vlastní identity by si SwiftUI nechal
+            // stav předchozí benzínky a ukazoval cizí paliva i hodnocení.
+            .id(station.id)
         }
         .sheet(item: $viewModel.activeSheet) { sheet in
             switch sheet {
