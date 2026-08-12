@@ -86,7 +86,9 @@ struct ReviewSheet: View {
             }
             .navigationTitle(isEditing ? "Upravit hodnocení" : "Ohodnotit")
             .navigationBarTitleDisplayMode(.inline)
-            .interactiveDismissDisabled(viewModel.isSubmitting)
+            // Rozepsané hodnocení nesmí zmizet omylem – scrollování nahoru se snadno
+            // splete se zatažením sheetu dolů. Zavřít jde jen tlačítkem „Zrušit“.
+            .interactiveDismissDisabled()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Zrušit") { dismiss() }

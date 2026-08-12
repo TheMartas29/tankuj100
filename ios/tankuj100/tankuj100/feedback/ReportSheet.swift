@@ -67,7 +67,7 @@ struct ReportSheet: View {
             }
             .navigationTitle("Nahlásit problém")
             .navigationBarTitleDisplayMode(.inline)
-            .interactiveDismissDisabled(viewModel.isSubmitting)
+            .interactiveDismissDisabled()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Zrušit") { dismiss() }
