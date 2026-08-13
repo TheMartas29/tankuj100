@@ -27,7 +27,7 @@ struct StationMapView: UIViewRepresentable {
         map.register(StationClusterView.self,
                      forAnnotationViewWithReuseIdentifier: StationClusterView.reuseID)
 
-        addControls(to: map)
+        addControls(to: map, coordinator: context.coordinator)
         return map
     }
 
@@ -41,17 +41,17 @@ struct StationMapView: UIViewRepresentable {
         }
     }
 
-    private func addControls(to map: MKMapView) {
+    private func addControls(to map: MKMapView, coordinator: Coordinator) {
         let compass = MKCompassButton(mapView: map)
         compass.compassVisibility = .adaptive
-        let trackingSize: CGFloat = 48
+
+        let trackingSize: CGFloat = 44
         let tracking = MKUserTrackingButton(mapView: map)
         tracking.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
 
-        // Vlastní zaoblení si tlačítko přepisuje samo, kulatý tvar proto vynutí až ořez
-        // obalu. Bez něj z něj je zakulacený čtverec.
+        // Zaoblení si tlačítko přepisuje samo, ořez proto musí zajistit až obal.
         let trackingHolder = UIView()
-        trackingHolder.layer.cornerRadius = trackingSize / 2
+        trackingHolder.layer.cornerRadius = 10
         trackingHolder.layer.masksToBounds = true
         trackingHolder.addSubview(tracking)
         tracking.translatesAutoresizingMaskIntoConstraints = false
@@ -70,24 +70,55 @@ struct StationMapView: UIViewRepresentable {
         NSLayoutConstraint.activate([
             compass.topAnchor.constraint(equalTo: map.safeAreaLayoutGuide.topAnchor, constant: 12),
             compass.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -12),
-
-            // Vpravo dole, v dosahu palce a naproti plovoucím tlačítkům. Odsazení zespodu
-            // je stejné jako u nich, aby nepřekrylo povinný podpis Apple Map.
-            trackingHolder.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -20),
-            trackingHolder.bottomAnchor.constraint(
-                equalTo: map.safeAreaLayoutGuide.bottomAnchor, constant: -46),
+            trackingHolder.topAnchor.constraint(equalTo: compass.bottomAnchor, constant: 12),
+            trackingHolder.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -12),
             trackingHolder.widthAnchor.constraint(equalToConstant: trackingSize),
             trackingHolder.heightAnchor.constraint(equalToConstant: trackingSize),
         ])
+
+        coordinator.trackingControl = trackingHolder
+        coordinator.updateTrackingControl(for: map.userTrackingMode, animated: false)
     }
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         var parent: StationMapView
+        weak var trackingControl: UIView?
         private var shownIDs: Set<Int> = []
         private var didCenterOnUser = false
 
         init(_ parent: StationMapView) {
             self.parent = parent
+        }
+
+        /// Tlačítko svítí jen tehdy, když mapa není vycentrovaná na uživatele – jinak
+        /// by nabízelo něco, co už platí.
+        ///
+        /// Vedlejší efekt, na kterém záleží: `MKUserTrackingButton` přepíná dokola
+        /// `none → follow → followWithHeading` a ten poslední režim mapou otáčí.
+        /// Protože po prvním klepnutí tlačítko zmizí, do otáčení se uživatel nedostane
+        /// a natočení zůstává na systémovém kompasu.
+        func updateTrackingControl(for mode: MKUserTrackingMode, animated: Bool) {
+            guard let control = trackingControl else { return }
+            let hidden = mode != .none
+            guard control.isHidden != hidden || control.alpha != (hidden ? 0 : 1) else { return }
+
+            guard animated else {
+                control.isHidden = hidden
+                control.alpha = hidden ? 0 : 1
+                return
+            }
+            if !hidden { control.isHidden = false }
+            UIView.animate(withDuration: 0.2) {
+                control.alpha = hidden ? 0 : 1
+            } completion: { _ in
+                control.isHidden = hidden
+            }
+        }
+
+        func mapView(
+            _ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool
+        ) {
+            updateTrackingControl(for: mode, animated: true)
         }
 
         /// Po startu přiblížíme mapu k uživateli, jakmile dorazí první poloha –
