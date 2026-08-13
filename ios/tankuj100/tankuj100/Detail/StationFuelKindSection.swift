@@ -12,6 +12,7 @@ struct StationFuelKindSection: View {
                 unavailableRow
             case .loaded:
                 FuelKindCard(
+                    report: feedback.fuel.report,
                     myVote: feedback.myFuelKind,
                     isSubmitting: feedback.isSubmitting
                 ) { kind in

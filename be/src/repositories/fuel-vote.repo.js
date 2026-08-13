@@ -29,4 +29,19 @@ function upsert({ stationId, deviceId, fuelKind }) {
   ).run({ stationId, deviceId, fuelKind, ts });
 }
 
-module.exports = { countsForStation, findByDevice, upsert };
+const listVotedStations = () =>
+  db
+    .prepare(
+      `SELECT s.id, s.brand_name, s.name AS station_name, s.city, s.address,
+              SUM(v.fuel_kind = 'e5') AS e5,
+              SUM(v.fuel_kind = 'e10') AS e10,
+              MAX(v.updated_at) AS last_vote_at
+         FROM fuel_vote v
+         JOIN station s ON s.id = v.station_id
+        WHERE v.fuel_kind IN ('e5','e10')
+        GROUP BY s.id
+        ORDER BY (e5 + e10) DESC, last_vote_at DESC`
+    )
+    .all();
+
+module.exports = { countsForStation, findByDevice, upsert, listVotedStations };

@@ -4,8 +4,7 @@ struct StationFeedback: Codable, Hashable {
     let stationId: Int
     let rating: RatingSummary
     let reviews: [StationReview]
-    /// Souhrn hlasů o palivu se v UI nezobrazuje, takže ho bereme jako nepovinný –
-    /// kdyby ho server přestal posílat, nesmí to shodit hodnocení.
+    /// Nepovinný schválně – kdyby ho server přestal posílat, nesmí to shodit hodnocení.
     let fuel: FuelSummary?
     let openReports: Int
     let mine: MyFeedback?

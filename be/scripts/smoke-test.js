@@ -404,6 +404,7 @@ async function run(db) {
     ['GET', '/api/admin/reports'],
     ['GET', '/api/admin/reviews'],
     ['GET', '/api/admin/stations'],
+    ['GET', '/api/admin/fuel-votes'],
     ['POST', '/api/admin/test-mail'],
     ['GET', '/admin'],
     ['GET', '/'],
@@ -534,6 +535,19 @@ async function run(db) {
     checkStatus('DELETE review', res, 200);
     const again = await del(`/api/admin/reviews/${adminReviewId}`, undefined, { auth: true });
     checkStatus('DELETE review podruhé', again, 404);
+  }
+
+  section('admin – hlasy o palivu');
+  {
+    const res = await get('/api/admin/fuel-votes', { auth: true });
+    checkStatus('GET /api/admin/fuel-votes', res, 200);
+    check('fuel-votes je pole', Array.isArray(res.json));
+    const row = res.json?.find((r) => r.id === stationId);
+    check('stanice s hlasem je v přehledu', Boolean(row));
+    for (const key of ['id', 'brand_name', 'station_name', 'city', 'e5', 'e10', 'total', 'verdict']) {
+      check(`hlas o palivu má ${key}`, row ? key in row : false);
+    }
+    check('total odpovídá součtu hlasů', row ? row.total === row.e5 + row.e10 : false);
   }
 
   section('admin – stanice');

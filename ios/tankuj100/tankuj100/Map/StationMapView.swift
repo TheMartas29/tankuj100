@@ -67,9 +67,19 @@ struct StationMapView: UIViewRepresentable {
     final class Coordinator: NSObject, MKMapViewDelegate {
         var parent: StationMapView
         private var shownIDs: Set<Int> = []
+        private var didCenterOnUser = false
 
         init(_ parent: StationMapView) {
             self.parent = parent
+        }
+
+        /// Po startu přiblížíme mapu k uživateli, jakmile dorazí první poloha –
+        /// stejně, jako kdyby klepnul na tlačítko polohy. Jen jednou, ať mapa
+        /// neuhýbala pod rukou, když si ji mezitím posune sám.
+        func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+            guard !didCenterOnUser, userLocation.location != nil else { return }
+            didCenterOnUser = true
+            mapView.setUserTrackingMode(.follow, animated: true)
         }
 
         func sync(stations: [GasStation], on map: MKMapView) {

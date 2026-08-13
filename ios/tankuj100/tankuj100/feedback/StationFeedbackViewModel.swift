@@ -24,8 +24,6 @@ final class StationFeedbackViewModel: ObservableObject {
     }
 
     var rating: RatingSummary { feedback?.rating ?? .empty }
-    /// Hlasy o palivu se uživateli neukazují (dokud jich není dost, byly by
-    /// zavádějící) – držíme je tu pro chvíli, až se odznak zapne.
     var fuel: FuelSummary { feedback.flatMap(\.fuel) ?? .empty }
     var reviews: [StationReview] { feedback?.reviews ?? [] }
     var myReview: MyReview? { feedback?.mine?.review }

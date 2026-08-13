@@ -82,7 +82,7 @@ struct MapScreen: View {
                               accessibilityLabel: "Seznam benzínek") {
                 viewModel.activeSheet = .stationList
             }
-            FloatingMapButton(systemImage: "line.3.horizontal",
+            FloatingMapButton(systemImage: "ellipsis",
                               pointSize: 30,
                               accessibilityLabel: "Menu") {
                 viewModel.activeSheet = .menu

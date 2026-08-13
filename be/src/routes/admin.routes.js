@@ -13,6 +13,7 @@ const stationService = require('../services/station.service');
 const reviewService = require('../services/review.service');
 const reportService = require('../services/report.service');
 const statsService = require('../services/stats.service');
+const fuelVoteService = require('../services/fuel-vote.service');
 const { isConfigured, sendNotification } = require('../mailer');
 
 const router = express.Router();
@@ -101,6 +102,13 @@ router.delete(
   asyncHandler((req, res) => {
     stationService.remove(parseStationId(req.params.id));
     res.json(OK);
+  })
+);
+
+router.get(
+  '/fuel-votes',
+  asyncHandler((req, res) => {
+    res.json(fuelVoteService.listForAdmin());
   })
 );
 

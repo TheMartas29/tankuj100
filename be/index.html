@@ -60,6 +60,8 @@
   .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
   .card .value { font-size: 26px; font-weight: 650; margin-top: 4px; letter-spacing: -0.5px; }
   .card .value small { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .card[data-goto] { cursor: pointer; }
+  .card[data-goto]:hover { border-color: var(--accent); }
   .card.attention { border-color: #f0c5cb; background: var(--accent-soft); }
   .card.attention .value { color: var(--accent); }
 
@@ -164,6 +166,7 @@
   <nav class="tabs" id="tabs">
     <button data-tab="reports" class="active">Hlášení <span class="badge hidden" id="reportsBadge">0</span></button>
     <button data-tab="reviews">Hodnocení</button>
+    <button data-tab="fuel">Paliva</button>
     <button data-tab="stations">Benzínky</button>
   </nav>
 
@@ -177,6 +180,10 @@
   <section id="tab-reviews" class="hidden">
     <div class="toolbar" id="reviewFilters"></div>
     <div class="list" id="reviewsList"></div>
+  </section>
+
+  <section id="tab-fuel" class="hidden">
+    <div class="list" id="fuelList"></div>
   </section>
 
   <!-- ------------------------------------------------------ benzínky -->
@@ -266,7 +273,10 @@ function stars(n) {
 
 function stationLabel(row) {
   const brand = row.brand_name || 'Neznámá značka';
-  const place = [row.city, row.station_name].filter(Boolean).join(' – ');
+  // Název stanice obec často už obsahuje („Praha 8-Prosek“), tak ji nepíšeme dvakrát.
+  const city = row.city || '';
+  const name = row.station_name || '';
+  const place = [city, name.includes(city) ? '' : name].filter(Boolean).join(' – ');
   return `${esc(brand)}${place ? ` <span class="meta">${esc(place)}</span>` : ''}`;
 }
 
@@ -291,7 +301,7 @@ async function loadStats() {
       ${card('100 oktanů', s.stations100, '', `${s.stations98} se 98 okt.`)}
       ${card('Hodnocení', s.reviews, '', s.ratingAverage ? `⌀ ${s.ratingAverage} ★` : 'bez hodnocení')}
       ${card('Hlášení celkem', s.reportsTotal, '', `${s.last7dReports} za 7 dní`)}
-      ${card('Potvrzené E5', s.stationsWithE5, '', `${s.fuelVotes} hlasů`)}
+      ${card('Potvrzené E5', s.stationsWithE5, '', `${s.fuelVotes} hlasů`, 'fuel')}
     `;
     $('reportsBadge').textContent = s.reportsNew;
     $('reportsBadge').classList.toggle('hidden', s.reportsNew === 0);
@@ -303,8 +313,8 @@ async function loadStats() {
   }
 }
 
-function card(label, value, cls = '', sub = '') {
-  return `<div class="card ${cls}">
+function card(label, value, cls = '', sub = '', goesTo = '') {
+  return `<div class="card ${cls}"${goesTo ? ` data-goto="${goesTo}"` : ''}>
     <div class="label">${esc(label)}</div>
     <div class="value">${value ?? '–'}${sub ? ` <small>${esc(sub)}</small>` : ''}</div>
   </div>`;
@@ -669,7 +679,54 @@ async function sendTestMail(button) {
   }
 }
 
-const LOADERS = { reports: loadReports, reviews: loadReviews, stations: loadStations };
+const VERDICTS = {
+  e5: ['Potvrzeno E5', 'resolved'],
+  e10: ['Potvrzeno E10', 'type'],
+  disputed: ['Rozporuplné', 'in_review'],
+  unconfirmed: ['Málo hlasů', 'muted'],
+};
+
+async function loadFuelVotes() {
+  $('fuelList').innerHTML = '<div class="empty">Načítám…</div>';
+  try {
+    const rows = await api('/api/admin/fuel-votes');
+    if (rows.length === 0) {
+      $('fuelList').innerHTML = emptyState(
+        'Zatím žádné hlasy',
+        'Až uživatelé v aplikaci vyplní, jestli je u pumpy E5 nebo E10, objeví se to tady.'
+      );
+      return;
+    }
+    $('fuelList').innerHTML =
+      `<div class="empty" style="text-align:left">Verdikt vzniká sám: potřebuje aspoň ${MIN_VOTES} hlasy u jedné benzínky a shodu aspoň ${MAJORITY} %. Nic neschvaluješ.</div>` +
+      rows.map(fuelItem).join('');
+  } catch (err) {
+    $('fuelList').innerHTML = errorState(err.message, 'loadFuelVotes()');
+  }
+}
+
+const MIN_VOTES = 2;
+const MAJORITY = 60;
+
+function fuelItem(r) {
+  const [label, cls] = VERDICTS[r.verdict] || ['Neznámý stav', ''];
+  return `<article class="item">
+    <div>
+      <div class="head">
+        <span class="tag ${cls}">${esc(label)}</span>
+        ${stationLabel(r)}
+      </div>
+      <div class="meta">#${r.id} • E5: ${r.e5} • E10: ${r.e10} • celkem ${r.total}</div>
+    </div>
+  </article>`;
+}
+
+const LOADERS = { reports: loadReports, reviews: loadReviews, fuel: loadFuelVotes, stations: loadStations };
+
+$('cards').addEventListener('click', (event) => {
+  const tab = event.target.closest('[data-goto]')?.dataset.goto;
+  if (tab) $('tabs').querySelector(`button[data-tab="${tab}"]`)?.click();
+});
 
 $('tabs').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-tab]');

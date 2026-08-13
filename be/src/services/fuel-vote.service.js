@@ -14,4 +14,15 @@ function castVote(stationId, input) {
   return summary(stationId);
 }
 
-module.exports = { summary, kindVotedByDevice, castVote };
+const listForAdmin = () =>
+  fuelVoteRepo.listVotedStations().map((row) => {
+    const counts = { e5: row.e5 || 0, e10: row.e10 || 0 };
+    return {
+      ...row,
+      ...counts,
+      total: counts.e5 + counts.e10,
+      verdict: fuelVerdict(counts),
+    };
+  });
+
+module.exports = { summary, kindVotedByDevice, castVote, listForAdmin };
