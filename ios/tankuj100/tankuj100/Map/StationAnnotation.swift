@@ -24,6 +24,7 @@ final class StationAnnotationView: MKAnnotationView {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         clusteringIdentifier = Self.reuseID
         collisionMode = .circle
+        displayPriority = .defaultLow
         refresh()
     }
 
@@ -31,7 +32,16 @@ final class StationAnnotationView: MKAnnotationView {
         fatalError("init(coder:) není podporován")
     }
 
+    /// Shlukování se nastavuje při každém přiřazení anotace, ne jen v `init`: při rozpadu
+    /// clusteru MapKit recyklovanému view `clusteringIdentifier` vynuluje a `init` už
+    /// podruhé nezavolá. Bez toho by se body po přiblížení a odzoomování zpět neseskupily.
+    ///
+    /// `displayPriority` musí být nižší než výchozí `.required` – požadované anotace
+    /// MapKit nikdy neschovává ani neshlukuje a kreslil by všech tisíc špendlíků přes sebe.
     private func refresh() {
+        clusteringIdentifier = Self.reuseID
+        displayPriority = .defaultLow
+
         guard let station = (annotation as? StationAnnotation)?.station else { return }
         image = StationMarkerImages.image(forBrand: station.brandName)
         // Špička ukazatele míří na souřadnici, takže obrázek posuneme nahoru o půlku výšky.

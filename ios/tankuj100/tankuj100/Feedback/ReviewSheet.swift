@@ -84,6 +84,7 @@ struct ReviewSheet: View {
                     }
                 }
             }
+            .dismissesKeyboardOnTap()
             .navigationTitle(isEditing ? "Upravit hodnocení" : "Ohodnotit")
             .navigationBarTitleDisplayMode(.inline)
             // Rozepsané hodnocení nesmí zmizet omylem – scrollování nahoru se snadno

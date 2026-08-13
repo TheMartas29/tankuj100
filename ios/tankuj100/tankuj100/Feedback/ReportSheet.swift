@@ -65,6 +65,7 @@ struct ReportSheet: View {
                     }
                 }
             }
+            .dismissesKeyboardOnTap()
             .navigationTitle("Nahlásit problém")
             .navigationBarTitleDisplayMode(.inline)
             .interactiveDismissDisabled()
@@ -81,10 +82,6 @@ struct ReportSheet: View {
                             .fontWeight(.semibold)
                             .disabled(!canSubmit)
                     }
-                }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Hotovo") { isNoteFocused = false }
                 }
             }
             .errorAlert($viewModel.error)

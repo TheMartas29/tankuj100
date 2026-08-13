@@ -13,8 +13,8 @@ struct StationRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
                     Text(station.brandName ?? "Benzínka").fontWeight(.medium)
-                    if station.has100 { OctaneBadge(text: "100") }
-                    if station.has98 { OctaneBadge(text: "98") }
+                    if station.has100 { OctaneBadge(octane: 100) }
+                    if station.has98 { OctaneBadge(octane: 98) }
                 }
 
                 HStack(spacing: 10) {

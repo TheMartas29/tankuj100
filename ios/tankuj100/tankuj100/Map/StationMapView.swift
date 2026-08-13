@@ -44,12 +44,25 @@ struct StationMapView: UIViewRepresentable {
     private func addControls(to map: MKMapView) {
         let compass = MKCompassButton(mapView: map)
         compass.compassVisibility = .adaptive
+        let trackingSize: CGFloat = 48
         let tracking = MKUserTrackingButton(mapView: map)
-        tracking.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.85)
-        tracking.layer.cornerRadius = 8
-        tracking.layer.masksToBounds = true
+        tracking.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
 
-        for control in [compass, tracking] {
+        // Vlastní zaoblení si tlačítko přepisuje samo, kulatý tvar proto vynutí až ořez
+        // obalu. Bez něj z něj je zakulacený čtverec.
+        let trackingHolder = UIView()
+        trackingHolder.layer.cornerRadius = trackingSize / 2
+        trackingHolder.layer.masksToBounds = true
+        trackingHolder.addSubview(tracking)
+        tracking.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tracking.topAnchor.constraint(equalTo: trackingHolder.topAnchor),
+            tracking.bottomAnchor.constraint(equalTo: trackingHolder.bottomAnchor),
+            tracking.leadingAnchor.constraint(equalTo: trackingHolder.leadingAnchor),
+            tracking.trailingAnchor.constraint(equalTo: trackingHolder.trailingAnchor),
+        ])
+
+        for control in [compass, trackingHolder] {
             control.translatesAutoresizingMaskIntoConstraints = false
             map.addSubview(control)
         }
@@ -57,10 +70,14 @@ struct StationMapView: UIViewRepresentable {
         NSLayoutConstraint.activate([
             compass.topAnchor.constraint(equalTo: map.safeAreaLayoutGuide.topAnchor, constant: 12),
             compass.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -12),
-            tracking.topAnchor.constraint(equalTo: compass.bottomAnchor, constant: 12),
-            tracking.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -12),
-            tracking.widthAnchor.constraint(equalToConstant: 40),
-            tracking.heightAnchor.constraint(equalToConstant: 40),
+
+            // Vpravo dole, v dosahu palce a naproti plovoucím tlačítkům. Odsazení zespodu
+            // je stejné jako u nich, aby nepřekrylo povinný podpis Apple Map.
+            trackingHolder.trailingAnchor.constraint(equalTo: map.trailingAnchor, constant: -20),
+            trackingHolder.bottomAnchor.constraint(
+                equalTo: map.safeAreaLayoutGuide.bottomAnchor, constant: -46),
+            trackingHolder.widthAnchor.constraint(equalToConstant: trackingSize),
+            trackingHolder.heightAnchor.constraint(equalToConstant: trackingSize),
         ])
     }
 
