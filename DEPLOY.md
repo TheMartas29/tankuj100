@@ -83,6 +83,18 @@ a nasadí zálohu. Když ověření zálohy selže, živá DB zůstane nedotčen
 nebo omylem v adminu, **ne** před ztrátou serveru. Off-site kopii dělá
 `pull-backups.sh` na Macu (stahuje do `~/Backups/tankuj100`).
 
+Na Macu ho pouští launchd každý den v 10:30 – ne v noci, protože spící notebook
+by úlohu prospal. Instalace na novém stroji:
+
+```bash
+cp deploy/cz.silkroad.tankuj100.backups.plist ~/Library/LaunchAgents/
+launchctl load -w ~/Library/LaunchAgents/cz.silkroad.tankuj100.backups.plist
+launchctl start cz.silkroad.tankuj100.backups   # zkušební běh
+```
+
+Průběh je v `~/Backups/tankuj100/pull.log`. Když je server nedostupný (notebook
+na cestách), skript skončí tiše – ať plánovač nespamuje chybami.
+
 ## Konfigurace (`be/.env`)
 
 Soubor **není v gitu**. Vzor je `be/.env.example`; na serveru ho vytvoř a doplň:
