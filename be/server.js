@@ -40,10 +40,14 @@ if (!config.admin.enabled) {
   console.warn('⚠️  ADMIN_USERNAME / ADMIN_PASSWORD nejsou nastavené – administrace je vypnutá.');
 }
 
-const server = app.listen(config.port, () => {
-  console.log(`✅ tankuj100 API běží na http://localhost:${config.port}`);
+// Ve výchozím stavu posloucháme jen na loopbacku – ven se API dostane výhradně
+// přes nginx, který jediný umí HTTPS. Pro ladění na fyzickém telefonu v síti
+// se dá přepnout přes HOST=0.0.0.0.
+const server = app.listen(config.port, config.host, () => {
+  console.log(`✅ tankuj100 API běží na http://${config.host}:${config.port}`);
   console.log(`   DB:            ${dbPath}`);
   console.log(`   Administrace:  ${config.admin.enabled ? 'zapnutá (basic auth)' : 'VYPNUTÁ'}`);
+  console.log(`   Klíč aplikace: ${config.appKey.mode}`);
   console.log(`   Notifikace:    ${mailConfigured() ? 'EmailJS' : 'jen do logu'}`);
 });
 

@@ -90,6 +90,8 @@ Soubor **není v gitu**. Vzor je `be/.env.example`; na serveru ho vytvoř a dopl
 | proměnná | k čemu |
 |--|--|
 | `PORT` | port API (musí sedět s nginx a PM2, výchozí 3000) |
+| `HOST` | adresa, na které server poslouchá. Výchozí `127.0.0.1` = jen přes nginx. Na `0.0.0.0` přepínej jen kvůli ladění z jiného zařízení v síti. |
+| `APP_KEY`, `APP_KEY_MODE` | klíč mobilní aplikace, viz níže |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | přihlášení do adminu. **Bez nich je admin vypnutý** (503) – to je záměr, ať se veřejně neotevře. |
 | `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY` | notifikace přes EmailJS (stejný účet jako formulář na silkroadbrand.eu) |
 | `EMAILJS_PRIVATE_KEY` | jen když v EmailJS zapneš vynucení private key pro ne-browser volání |
@@ -100,6 +102,33 @@ Po změně `.env` je potřeba `pm2 restart tankuj100 --update-env`.
 
 Když e-maily nejsou nakonfigurované, aplikace **funguje dál** – hlášení se uloží do DB
 a notifikace se jen zapíše do `pm2 logs`. Nic se neztratí.
+
+## Klíč mobilní aplikace (`X-App-Key`)
+
+Aplikace posílá u každého volání hlavičku `X-App-Key`. Hodnota je v iOS v
+`APIClient.appKey` a na serveru v `APP_KEY`; **musí být stejná**.
+
+Není to tajemství – z binárky aplikace ji jde vytáhnout. Smysl je odfiltrovat boty
+a `curl`, ne odolat útočníkovi. Proti cílenému zneužití by pomohl až Apple App Attest.
+
+`APP_KEY_MODE` má tři stavy:
+
+| režim | request bez klíče |
+|--|--|
+| `off` | projde, nic se neděje (platí i když `APP_KEY` je prázdný – překlep v `.env` nesmí zamknout API) |
+| `soft` | projde, jen se jednou za hodinu spočítá do `pm2 logs` |
+| `hard` | dostane 401 |
+
+**Zavádění i výměna klíče vždy přes `soft`**, jinak starším buildům aplikace API
+přestane fungovat ze dne na den:
+
+1. na serveru `APP_KEY=<nový>`, `APP_KEY_MODE=soft`, `pm2 restart tankuj100 --update-env`
+2. vydat verzi aplikace se stejným klíčem
+3. sledovat `pm2 logs tankuj100 | grep app-key` – hlásí, kolik requestů chodí bez klíče
+4. až je číslo prakticky nula, přepnout na `APP_KEY_MODE=hard` a restartovat
+
+`/health` klíč nevyžaduje nikdy (kvůli monitoringu) a `/api/admin/*` taky ne – ten má
+vlastní basic auth a prohlížeč by hlavičku stejně neposlal.
 
 ## Data o benzínkách: OpenStreetMap (ODbL)
 

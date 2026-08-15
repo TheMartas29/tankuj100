@@ -14,9 +14,9 @@ setInterval(() => {
 
 // Klíč je IP i device_id zároveň: jedno zařízení nesmí limit obejít přes VPN a jedna IP
 // (mobilní NAT) nesmí zablokovat všechny za ní. Paměť stačí, backend je jeden PM2 proces.
-function rateLimit({ max, windowMs, name }) {
+function rateLimit({ max, windowMs, name, byIpOnly = false }) {
   return (req, res, next) => {
-    const device = (req.body && req.body.device_id) || '';
+    const device = byIpOnly ? '' : (req.body && req.body.device_id) || '';
     const key = `${name}:${req.ip}:${device}`;
     const now = Date.now();
     const hits = (buckets.get(key) || []).filter((t) => now - t < windowMs);
@@ -38,5 +38,6 @@ function rateLimit({ max, windowMs, name }) {
 }
 
 const perHour = (name, max) => rateLimit({ name, max, windowMs: HOUR_MS });
+const perHourByIp = (name, max) => rateLimit({ name, max, windowMs: HOUR_MS, byIpOnly: true });
 
-module.exports = { perHour };
+module.exports = { perHour, perHourByIp };

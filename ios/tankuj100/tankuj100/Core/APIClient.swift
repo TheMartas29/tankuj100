@@ -6,6 +6,12 @@ struct APIClient {
 
     static let productionURL = "https://tankuj100.silkroadbrand.eu"
 
+    /// Klíč, kterým se aplikace hlásí serveru. Schválně natvrdo a bez obfuskace –
+    /// z binárky ho stejně jde vytáhnout, takže by jakékoli schovávání bylo divadlo.
+    /// Slouží jen k tomu, aby API nešlo pohodlně provolávat curlem. Když unikne,
+    /// vymění se na serveru i v aplikaci.
+    static let appKey = "t100_WrtE15YfHu7wW0VhJPUwrUgAt9YXmLwGF2I56kVH"
+
     /// V ladicím buildu jde server přepnout spouštěcím argumentem
     /// `-apiBaseURL http://localhost:3000`. Produkční build vždy míří na ostrý server,
     /// takže se nemůže stát, že by se do App Store dostala testovací adresa.
@@ -106,6 +112,7 @@ struct APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.timeoutInterval = 20
+        request.setValue(Self.appKey, forHTTPHeaderField: "X-App-Key")
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             do {

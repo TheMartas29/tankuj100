@@ -1,7 +1,8 @@
 const express = require('express');
 
 const { asyncHandler } = require('../http/async-handler');
-const { perHour } = require('../http/rate-limit');
+const { perHour, perHourByIp } = require('../http/rate-limit');
+const { requireAppKey } = require('../http/app-key');
 const { parseStationId, requireDeviceId } = require('../validation/primitives');
 const { parseReview, parseReport, parseFuelVote } = require('../validation/inputs');
 const stationService = require('../services/station.service');
@@ -11,6 +12,12 @@ const fuelVoteService = require('../services/fuel-vote.service');
 const feedbackService = require('../services/feedback.service');
 
 const router = express.Router();
+
+// Čtení má vlastní strop. Klíč je jen IP (GET nemá device_id), a protože za jednou
+// adresou mobilního operátora sedí spousta lidí, musí být hodně vysoko – má chytit
+// rozjeté stahování, ne živého uživatele.
+router.use(perHourByIp('public', 1200));
+router.use(requireAppKey);
 
 const stationIdOf = (req) => parseStationId(req.params.id);
 const queryDeviceId = (req) => (typeof req.query.device_id === 'string' ? req.query.device_id.trim() : '');

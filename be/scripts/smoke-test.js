@@ -104,13 +104,14 @@ function copyDatabase(source) {
   return { dir, target };
 }
 
-async function startServer(dbPath) {
+async function startServer(dbPath, { port = PORT, extraEnv = {} } = {}) {
+  const base = `http://127.0.0.1:${port}`;
   const child = spawn(process.execPath, [path.join(ROOT, 'server.js')], {
     cwd: ROOT,
     env: {
       ...process.env,
       DB_PATH: dbPath,
-      PORT: String(PORT),
+      PORT: String(port),
       ADMIN_USERNAME: adminUser,
       ADMIN_PASSWORD: adminPass,
       // Prázdné klíče = notifikace se jen zalogují. Test nesmí posílat skutečné e-maily.
@@ -118,6 +119,9 @@ async function startServer(dbPath) {
       EMAILJS_TEMPLATE_ID: '',
       EMAILJS_PUBLIC_KEY: '',
       EMAILJS_PRIVATE_KEY: '',
+      APP_KEY: '',
+      APP_KEY_MODE: 'off',
+      ...extraEnv,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -129,7 +133,7 @@ async function startServer(dbPath) {
   for (let i = 0; i < 100; i += 1) {
     if (child.exitCode !== null) throw new Error(`server spadl při startu:\n${log.join('')}`);
     try {
-      const res = await fetch(`${BASE}/health`);
+      const res = await fetch(`${base}/health`);
       if (res.ok) return child;
     } catch {
       /* ještě nenaběhl */
@@ -596,6 +600,64 @@ async function run(db) {
     const res = await post('/api/admin/test-mail', undefined, { auth: true });
     checkStatus('POST /api/admin/test-mail (notifikace vypnuté)', res, 503);
     check('test-mail hlásí mail_not_configured', res.json?.error === 'mail_not_configured');
+  }
+
+  await checkAppKeyModes(db);
+}
+
+/**
+ * Klíč aplikace se testuje na vlastních instancích serveru – režim se čte z env
+ * při startu, takže ho za běhu přepnout nejde.
+ *
+ * Podstatná je hlavně větev `soft`: přes ni se zavádí klíč tak, aby starším
+ * buildům aplikace API nepřestalo fungovat ze dne na den.
+ */
+async function checkAppKeyModes(db) {
+  const key = 'smoke-app-key-0123456789';
+  const dbPath = db.name;
+
+  const probe = async (port, headers) => {
+    const res = await fetch(`http://127.0.0.1:${port}/api/map/`, { headers });
+    return res.status;
+  };
+
+  for (const [mode, expected] of [
+    ['off', { none: 200, wrong: 200, right: 200 }],
+    ['soft', { none: 200, wrong: 200, right: 200 }],
+    ['hard', { none: 401, wrong: 401, right: 200 }],
+  ]) {
+    section(`klíč aplikace – režim ${mode}`);
+    const port = PORT + 1;
+    const child = await startServer(dbPath, { port, extraEnv: { APP_KEY: key, APP_KEY_MODE: mode } });
+    try {
+      check(`${mode}: bez klíče → ${expected.none}`, (await probe(port)) === expected.none);
+      check(
+        `${mode}: se špatným klíčem → ${expected.wrong}`,
+        (await probe(port, { 'X-App-Key': 'nesmysl' })) === expected.wrong
+      );
+      check(
+        `${mode}: se správným klíčem → ${expected.right}`,
+        (await probe(port, { 'X-App-Key': key })) === expected.right
+      );
+      const health = await fetch(`http://127.0.0.1:${port}/health`);
+      check(`${mode}: /health zůstává přístupný bez klíče`, health.status === 200);
+    } finally {
+      child.kill('SIGKILL');
+      await new Promise((r) => child.on('exit', r));
+    }
+  }
+
+  section('klíč aplikace – pojistky');
+  {
+    const port = PORT + 2;
+    const child = await startServer(dbPath, { port, extraEnv: { APP_KEY: '', APP_KEY_MODE: 'hard' } });
+    try {
+      // Nevyplněný klíč nesmí zamknout API – jinak by překlep v .env shodil provoz.
+      check('hard bez APP_KEY se chová jako off', (await probe(port)) === 200);
+    } finally {
+      child.kill('SIGKILL');
+      await new Promise((r) => child.on('exit', r));
+    }
   }
 }
 

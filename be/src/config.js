@@ -24,6 +24,10 @@ loadDotEnv(path.join(rootDir, '.env'));
 const adminUsername = process.env.ADMIN_USERNAME || '';
 const adminPassword = process.env.ADMIN_PASSWORD || '';
 
+const appKeyValue = process.env.APP_KEY || '';
+const appKeyMode = (process.env.APP_KEY_MODE || '').trim().toLowerCase();
+const APP_KEY_MODES = ['off', 'soft', 'hard'];
+
 const mail = {
   serviceId: process.env.EMAILJS_SERVICE_ID || '',
   templateId: process.env.EMAILJS_TEMPLATE_ID || '',
@@ -38,6 +42,7 @@ const mail = {
 module.exports = {
   rootDir,
   port: process.env.PORT || 3000,
+  host: process.env.HOST || '127.0.0.1',
   dbPath: process.env.DB_PATH
     ? path.resolve(process.env.DB_PATH)
     : path.join(rootDir, 'db', 'tankuj100db.sqlite'),
@@ -45,6 +50,11 @@ module.exports = {
     username: adminUsername,
     password: adminPassword,
     enabled: Boolean(adminUsername && adminPassword),
+  },
+  appKey: {
+    value: appKeyValue,
+    // Bez klíče nemá smysl nic vynucovat, jinak by server odmítal úplně všechno.
+    mode: !appKeyValue || !APP_KEY_MODES.includes(appKeyMode) ? 'off' : appKeyMode,
   },
   mail,
   mailEnabled: Boolean(mail.serviceId && mail.templateId && mail.publicKey),
