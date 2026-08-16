@@ -93,6 +93,14 @@ extension View {
     }
 }
 
+/// Umí systém přelít sklo z jednoho tvaru do druhého? Rozhoduje o tom, jestli
+/// se animace nechá na `GlassEffectContainer`, nebo se musí poskládat ručně –
+/// a to je obyčejné rozhodnutí, ne pohled, takže `#available` patří sem.
+var hasGlassMorph: Bool {
+    if #available(iOS 26.0, *) { return true }
+    return false
+}
+
 extension UIColor {
     /// Akcentní barva z asset katalogu. `UIColor(Color.accentColor)` ji mimo SwiftUI
     /// nenajde a vrátí systémovou modrou, proto ji bereme jménem.

@@ -83,20 +83,25 @@ struct MapScreen: View {
         // Pořadí odspodu nahoru podle toho, jak často se to používá – nejčastější
         // věc má být nejblíž palci, tedy hned nad hamburgerem.
         [
+            // Velikosti symbolů jsou stejné jako u původních čtyř tlačítek – tečky
+            // i seznam potřebují jinou, aby v kroužku působily stejně velké.
             FloatingMenuItem(id: "menu", systemImage: "ellipsis", title: "Další",
-                             pointSize: 24) {
+                             pointSize: 30) {
                 viewModel.activeSheet = .menu
             },
             FloatingMenuItem(id: "add", systemImage: "plus", title: "Přidat benzínku",
+                             pointSize: 28,
                              badge: requestBadge.hasUnread ? .dot : .none) {
                 viewModel.activeSheet = .addStation
             },
             FloatingMenuItem(id: "filter", systemImage: "line.3.horizontal.decrease",
                              title: "Filtr",
+                             pointSize: 24,
                              badge: .count(filterStore.filter.activeCount)) {
                 viewModel.activeSheet = .filter
             },
-            FloatingMenuItem(id: "list", systemImage: "list.bullet", title: "Seznam benzínek") {
+            FloatingMenuItem(id: "list", systemImage: "list.bullet", title: "Seznam benzínek",
+                             pointSize: 26) {
                 viewModel.activeSheet = .stationList
             },
         ]
