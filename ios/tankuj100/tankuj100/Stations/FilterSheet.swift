@@ -1,50 +1,73 @@
 import SwiftUI
 
-/// Obrazovka filtru. Pracuje nad kopií (`draft`) a do sdíleného stavu ji zapíše až
-/// tlačítko „Použít“ – jinak by se při každém ťuknutí přerovnal seznam pod rukou
-/// i celá mapa za sheetem.
+/// Obrazovka filtru. **Každá změna platí okamžitě** – žádná kopie, žádné potvrzování.
+///
+/// Dřív se pracovalo nad kopií a do sdíleného stavu ji zapsalo až tlačítko dole.
+/// Mělo to chránit před přerovnáním seznamu pod rukou, jenže sheet výsledek stejně
+/// zakrývá celou plochou, takže nebylo co chránit – zbylo jen matoucí „musím to
+/// ještě potvrdit?“. Filtrování navíc běží mimo hlavní vlákno a i nad stotisícem
+/// benzínek trvá jednotky milisekund, takže přepočet na každé ťuknutí nikoho nebolí.
+///
+/// Spodní lišta proto **nic nepotvrzuje**: ukazuje, kolik benzínek zrovna odpovídá,
+/// a „Hotovo“ jen zavírá. Kdyby to bylo tlačítko „Zobrazit…“, vracíme se k původnímu
+/// zmatku, kdy nebylo poznat, co už platí a co ne.
 struct FilterSheet: View {
 
     @ObservedObject private var store = StationFilterStore.shared
     @Environment(\.dismiss) private var dismiss
 
-    @State private var draft = StationFilter()
-    @State private var matches: Int?
-    @State private var countTask: Task<Void, Never>?
-
     var body: some View {
         NavigationStack {
             List {
+                resetSection
                 fuelSection
                 serviceSection
                 brandSection
                 extrasSection
-                clearSection
             }
+            .animation(.easeInOut(duration: 0.2), value: store.filter.isEmpty)
             .navigationTitle("Filtr")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Zrušit") { dismiss() }
-                }
-            }
-            .safeAreaInset(edge: .bottom) { applyBar }
+            .safeAreaInset(edge: .bottom) { summaryBar }
         }
-        .onAppear {
-            draft = store.filter
-            refreshCount()
-        }
-        .onValueChange(of: draft) { _ in refreshCount() }
-        .onDisappear { countTask?.cancel() }
+    }
+
+    /// Zapisuje rovnou do sdíleného stavu. `apply` si sám pohlídá, že se nic nepřepočítá,
+    /// když se hodnota nezměnila.
+    private var filter: Binding<StationFilter> {
+        Binding(get: { store.filter }, set: { store.apply($0) })
+    }
+
+    private func toggling(_ change: (inout StationFilter) -> Void) {
+        var next = store.filter
+        change(&next)
+        store.apply(next)
     }
 
     // MARK: - Sekce
 
+    /// Nahoře, ne dole: je to východisko z nastavení, které uživatel vidí pod ním,
+    /// a hledá se nejdřív. Když není co resetovat, není tu vůbec – prázdné tlačítko
+    /// jen mate a bere místo.
+    @ViewBuilder
+    private var resetSection: some View {
+        if !store.filter.isEmpty {
+            Section {
+                Button("Resetovat filtrování", role: .destructive) {
+                    store.clearFilter()
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            } footer: {
+                Text("Vypne všechny podmínky najednou.")
+            }
+        }
+    }
+
     private var fuelSection: some View {
         Section {
             BadgeGrid(items: FuelFlag.filterOrder) { flag in
-                FilterBadge(title: flag.label, isOn: draft.contains(flag)) {
-                    draft.toggle(flag)
+                FilterBadge(title: flag.label, isOn: store.filter.contains(flag)) {
+                    toggling { $0.toggle(flag) }
                 }
             }
         } header: {
@@ -57,8 +80,9 @@ struct FilterSheet: View {
     private var serviceSection: some View {
         Section {
             BadgeGrid(items: ServiceFlag.filterOrder) { flag in
-                FilterBadge(title: flag.label, symbol: flag.symbol, isOn: draft.contains(flag)) {
-                    draft.toggle(flag)
+                FilterBadge(title: flag.label, symbol: flag.symbol,
+                            isOn: store.filter.contains(flag)) {
+                    toggling { $0.toggle(flag) }
                 }
             }
         } header: {
@@ -71,7 +95,7 @@ struct FilterSheet: View {
     private var brandSection: some View {
         Section {
             NavigationLink {
-                BrandPicker(brands: store.index.brands, draft: $draft)
+                BrandPicker(brands: store.index.brands, filter: filter)
             } label: {
                 HStack {
                     Text("Značky")
@@ -84,15 +108,15 @@ struct FilterSheet: View {
     }
 
     private var brandSummary: String {
-        let selected = draft.brandNames.count
+        let selected = store.filter.brandNames.count
         if selected == 0 { return "Všechny" }
-        if selected == 1, let only = draft.brandNames.first { return only }
+        if selected == 1, let only = store.filter.brandNames.first { return only }
         return "Vybráno \(selected)"
     }
 
     private var extrasSection: some View {
         Section {
-            Toggle("Jen oblíbené", isOn: $draft.favoritesOnly)
+            Toggle("Jen oblíbené", isOn: filter.favoritesOnly)
 
             Picker("Hodnocení", selection: ratingSelection) {
                 Text("Nezáleží").tag(0)
@@ -102,62 +126,50 @@ struct FilterSheet: View {
             }
             .pickerStyle(.segmented)
         } footer: {
-            if draft.minRating != nil {
+            if store.filter.minRating != nil {
                 Text("Benzínky bez hodnocení se nezobrazí.")
             }
         }
     }
 
     private var ratingSelection: Binding<Int> {
-        Binding(get: { draft.minRating ?? 0 },
-                set: { draft.minRating = $0 == 0 ? nil : $0 })
-    }
-
-    private var clearSection: some View {
-        Section {
-            Button("Vymazat filtr", role: .destructive) { draft = StationFilter() }
-                .disabled(draft.isEmpty)
-                .frame(maxWidth: .infinity, alignment: .center)
-        }
+        Binding(get: { store.filter.minRating ?? 0 },
+                set: { value in toggling { $0.minRating = value == 0 ? nil : value } })
     }
 
     // MARK: - Spodní lišta
 
-    private var applyBar: some View {
-        VStack(spacing: 0) {
+    private var summaryBar: some View {
+        VStack(spacing: 8) {
             Divider()
-            Button {
-                store.apply(draft)
-                dismiss()
-            } label: {
-                Text(applyTitle)
-                    .frame(maxWidth: .infinity)
+            Text(summaryTitle)
+                .font(.subheadline)
+                .foregroundColor(matchCount == 0 ? .red : .secondary)
+                // Během přepočtu zůstává vidět předchozí číslo jen zesvětlené –
+                // blikání na spinner a zpátky je při každém ťuknutí horší než
+                // číslo, které o pár milisekund zaostává.
+                .opacity(store.isWorking ? 0.4 : 1)
+                .animation(.easeOut(duration: 0.15), value: store.isWorking)
+
+            // Roztažení patří na popisek, ne na tlačítko – jinak se `borderedProminent`
+            // smrskne na šířku textu a v patičce plave uprostřed.
+            Button { dismiss() } label: {
+                Text("Hotovo").frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .disabled(matches == 0)
             .padding(.horizontal)
-            .padding(.vertical, 10)
         }
+        .padding(.bottom, 10)
         .background(.bar)
     }
 
-    private var applyTitle: String {
-        guard let matches else { return "Použít filtr" }
-        guard matches > 0 else { return "Nic nevyhovuje" }
-        return "Zobrazit \(StationCount.text(matches))"
-    }
+    private var matchCount: Int { store.result.count }
 
-    /// Počet se přepočítává na pozadí a starý dotaz se ruší – uživatel přepíná odznaky
-    /// rychleji, než stihne stotisícový průchod doběhnout.
-    private func refreshCount() {
-        countTask?.cancel()
-        let snapshot = draft
-        countTask = Task {
-            let count = await store.matchCount(for: snapshot)
-            guard !Task.isCancelled else { return }
-            matches = count
-        }
+    private var summaryTitle: String {
+        guard matchCount > 0 else { return "Filtru neodpovídá žádná benzínka" }
+        if store.filter.isEmpty { return "Zobrazuje se všech \(StationCount.text(matchCount))" }
+        return "Odpovídá \(StationCount.text(matchCount))"
     }
 }
 
@@ -204,7 +216,7 @@ private struct FilterBadge: View {
 /// značek zůstává plynulých.
 private struct BrandPicker: View {
     let brands: [StationIndex.Brand]
-    @Binding var draft: StationFilter
+    @Binding var filter: StationFilter
 
     @State private var query = ""
 
@@ -218,7 +230,9 @@ private struct BrandPicker: View {
         List {
             ForEach(shown) { brand in
                 Button {
-                    draft.setBrand(brand, selected: !draft.isSelected(brand))
+                    var next = filter
+                    next.setBrand(brand, selected: !filter.isSelected(brand))
+                    filter = next
                 } label: {
                     HStack {
                         Text(brand.name).foregroundColor(.primary)
@@ -228,7 +242,7 @@ private struct BrandPicker: View {
                             .foregroundColor(.secondary)
                         Image(systemName: "checkmark")
                             .foregroundColor(.accentColor)
-                            .opacity(draft.isSelected(brand) ? 1 : 0)
+                            .opacity(filter.isSelected(brand) ? 1 : 0)
                     }
                 }
             }
@@ -238,8 +252,12 @@ private struct BrandPicker: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Zrušit výběr") { draft.clearBrands() }
-                    .disabled(draft.brandNames.isEmpty)
+                Button("Zrušit výběr") {
+                    var next = filter
+                    next.clearBrands()
+                    filter = next
+                }
+                .disabled(filter.brandNames.isEmpty)
             }
         }
     }

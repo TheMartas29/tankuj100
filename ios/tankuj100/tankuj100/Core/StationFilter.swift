@@ -179,15 +179,6 @@ final class StationFilterStore: ObservableObject {
 
     private static let originThreshold: CLLocationDistance = 150
 
-    /// Živý počet pro obrazovku filtru – jen spočítá, neřadí.
-    func matchCount(for filter: StationFilter) async -> Int {
-        let index = self.index
-        let favorites = self.favorites
-        return await Task.detached(priority: .userInitiated) {
-            index.matchCount(for: filter, favorites: favorites)
-        }.value
-    }
-
     // MARK: - Přepočet
 
     private func recompute() {

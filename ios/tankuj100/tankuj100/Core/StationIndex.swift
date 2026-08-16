@@ -188,11 +188,6 @@ final class StationIndex: @unchecked Sendable {
         return matched
     }
 
-    /// Jen počet – používá ho filtr pro živý údaj „Zobrazit 1 234 benzínek“.
-    func matchCount(for filter: StationFilter, favorites: Set<Int>) -> Int {
-        rows(matching: filter, favorites: favorites).count
-    }
-
     // MARK: - Řazení
 
     /// Vzdálenosti se počítají **jednou dopředu**, ne v porovnávači: ten si o hodnotu
