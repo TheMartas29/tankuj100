@@ -1,6 +1,7 @@
 const stationRepo = require('../repositories/station.repo');
-const { MissingStationError, NotFoundError, ValidationError } = require('../errors');
-const { optionalNumber } = require('../validation/primitives');
+const { MissingStationError, NotFoundError } = require('../errors');
+const { parseStationInput } = require('../validation/inputs');
+const mapCache = require('./map-cache');
 
 function requireStation(stationId) {
   const station = stationRepo.findById(stationId);
@@ -8,7 +9,7 @@ function requireStation(stationId) {
   return station;
 }
 
-const mapMarkers = () =>
+const buildMapMarkers = () =>
   stationRepo.listForMap().map((row) => ({
     id: row.id,
     lat: row.lat,
@@ -19,6 +20,12 @@ const mapMarkers = () =>
     has_98: row.has_98,
     has_100: row.has_100,
   }));
+
+/**
+ * Rovnou jako řetězec, ne pole: uložený JSON se pak posílá tak, jak je, a nemusí
+ * se při každém requestu skládat znovu.
+ */
+const mapMarkersJSON = () => mapCache.remember(() => JSON.stringify(buildMapMarkers()));
 
 function detail(stationId) {
   const station = requireStation(stationId);
@@ -34,32 +41,17 @@ function detail(stationId) {
 
 const listForAdmin = () => stationRepo.listAll();
 
-const NUMERIC_FIELDS = ['lat', 'lon', 'brand_id', 'wikimapia_id'];
-const TEXT_FIELDS = [
-  'brand_name', 'name', 'city', 'address', 'zip', 'phone',
-  'worktime', 'services', 'payments', 'foursquare_id', 'status', 'error',
-];
-
-/**
- * Ruční úprava stanice z adminu. Zapisují se jen pole editovatelná v UI – `osm_id`,
- * `data_source` ani vazby na paliva patří importu z OSM (scripts/import-osm.js).
- */
-function save(body = {}) {
-  if (body.id == null || body.id === '') throw new ValidationError('Stanice musí mít ID.', 'id');
-
-  const row = { id: Number(body.id) };
-  if (!Number.isFinite(row.id)) throw new ValidationError('ID musí být číslo.', 'id');
-
-  for (const field of NUMERIC_FIELDS) row[field] = optionalNumber(body[field]);
-  for (const field of TEXT_FIELDS) row[field] = body[field] ?? null;
-
-  stationRepo.upsert(row);
+/** Ruční úprava stanice z adminu; co se smí měnit, hlídá `parseStationInput`. */
+function save(body) {
+  stationRepo.upsert(parseStationInput(body));
+  mapCache.invalidate();
 }
 
 function remove(stationId) {
   if (stationRepo.remove(stationId).changes === 0) {
     throw new NotFoundError('Stanice nenalezena.');
   }
+  mapCache.invalidate();
 }
 
-module.exports = { requireStation, mapMarkers, detail, listForAdmin, save, remove };
+module.exports = { requireStation, mapMarkersJSON, detail, listForAdmin, save, remove };

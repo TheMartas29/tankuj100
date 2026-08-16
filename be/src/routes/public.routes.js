@@ -2,7 +2,7 @@ const express = require('express');
 
 const config = require('../config');
 const { asyncHandler } = require('../http/async-handler');
-const { perHour, perHourByIp } = require('../http/rate-limit');
+const { perHour, perHourByIp, writeGuard } = require('../http/rate-limit');
 const { requireAppKey } = require('../http/app-key');
 const { parseStationId, requireDeviceId } = require('../validation/primitives');
 const { parseReview, parseReport, parseFuelVote } = require('../validation/inputs');
@@ -18,6 +18,10 @@ const router = express.Router();
 // adresou mobilního operátora sedí spousta lidí, musí být hodně vysoko – má chytit
 // rozjeté stahování, ne živého uživatele.
 router.use(perHourByIp('public', 1200));
+// Zápisy mají navíc vlastní, mnohem těsnější strop podle IP. Limity u jednotlivých
+// endpointů níž se totiž počítají i na `device_id` z těla requestu – a to si klient
+// vymýšlí sám, takže se dá měnit jako rukavice.
+router.use(writeGuard(120));
 router.use(requireAppKey);
 
 const stationIdOf = (req) => parseStationId(req.params.id);
@@ -33,16 +37,20 @@ router.get(
   })
 );
 
+// `no-cache` neznamená „neukládat“, ale „před použitím se zeptej“. Aplikace tak pošle
+// If-None-Match a na nezměněná data dostane 304 o dvou stech bajtech místo 131 kB.
 router.get(
   '/map/',
   asyncHandler((req, res) => {
-    res.json(stationService.mapMarkers());
+    res.set('Cache-Control', 'no-cache');
+    res.type('application/json').send(stationService.mapMarkersJSON());
   })
 );
 
 router.get(
   '/detail/:id',
   asyncHandler((req, res) => {
+    res.set('Cache-Control', 'no-cache');
     res.json(stationService.detail(stationIdOf(req)));
   })
 );
@@ -52,6 +60,8 @@ router.get(
   asyncHandler((req, res) => {
     const stationId = stationIdOf(req);
     stationService.requireStation(stationId);
+    // Odpověď obsahuje i vlastní hodnocení volajícího, tak ať se nikde neuloží.
+    res.set('Cache-Control', 'no-store');
     res.json(feedbackService.forStation(stationId, queryDeviceId(req)));
   })
 );

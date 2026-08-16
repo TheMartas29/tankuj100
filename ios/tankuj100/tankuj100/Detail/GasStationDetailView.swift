@@ -28,10 +28,11 @@ struct GasStationDetailView: View {
         _feedback = StateObject(wrappedValue: StationFeedbackViewModel(stationId: gasStation.id))
     }
 
+    /// Stejný výpočet jako v seznamu benzínek – jinak by u jedné pumpy svítilo
+    /// na dvou obrazovkách o desetinu jiné číslo.
     private var distanceText: String? {
-        guard let userLocation else { return nil }
-        let stationLocation = CLLocation(latitude: gasStation.lat, longitude: gasStation.lon)
-        return DistanceFormatter.text(for: userLocation.distance(from: stationLocation))
+        GeoDistance.meters(from: userLocation, to: gasStation.coordinate)
+            .map(DistanceFormatter.text(for:))
     }
 
     private var detail: GasStationDetail? {

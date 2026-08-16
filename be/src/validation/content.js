@@ -26,15 +26,21 @@ function normalizeForFilter(text) {
     .replace(/[^a-z\s]/g, '');
 }
 
+// Vzory se sestaví jednou při načtení modulu, ne při každém odeslaném komentáři.
+const PROFANITY_PATTERNS = PROFANITY.map((word) => ({
+  word,
+  pattern: new RegExp(`\\b${word}`),
+  // Slepený text chytá „k u r v a“. Krátká slova by v něm ale nacházela samé
+  // falešné shody uprostřed nevinných vět, proto jen od pěti znaků výš.
+  matchCollapsed: word.length >= MIN_LENGTH_FOR_SPACED_MATCH,
+}));
+
 function findProfanity(text) {
   const normalized = normalizeForFilter(text);
   const collapsed = normalized.replace(/\s+/g, '');
-  return PROFANITY.find(
-    (word) =>
-      new RegExp(`\\b${word}`).test(normalized) ||
-      // Slepený text chytá „k u r v a“. Krátká slova by v něm ale nacházela samá
-      // falešná shody uprostřed nevinných vět, proto jen od pěti znaků výš.
-      (word.length >= MIN_LENGTH_FOR_SPACED_MATCH && collapsed.includes(word))
+  return PROFANITY_PATTERNS.find(
+    ({ word, pattern, matchCollapsed }) =>
+      pattern.test(normalized) || (matchCollapsed && collapsed.includes(word))
   );
 }
 

@@ -65,7 +65,7 @@ async function call(method, url, { body, auth, raw } = {}) {
   } catch {
     /* odpověď není JSON (HTML stránky) */
   }
-  return { status: res.status, json, text };
+  return { status: res.status, json, text, headers: res.headers };
 }
 
 const get = (url, opts) => call('GET', url, opts);
@@ -155,13 +155,22 @@ async function run(db) {
     const res = await get('/health');
     checkStatus('GET /health', res, 200);
     check('/health ok:true', res.json?.ok === true);
-    check('/health hlásí testovací DB', res.json?.db === 'smoke.sqlite', `db=${res.json?.db}`);
-    check('/health má pole mail', typeof res.json?.mail === 'boolean');
+    // Schválně nic víc: jméno databáze ani stav notifikací je informace o vnitřku
+    // serveru a monitoring ji nepotřebuje.
+    check('/health neprozrazuje jméno DB', !('db' in (res.json || {})));
+    check('/health neprozrazuje stav mailu', !('mail' in (res.json || {})));
+    check('/health má nosniff', res.headers.get('x-content-type-options') === 'nosniff');
+    check('/health má X-Frame-Options', res.headers.get('x-frame-options') === 'DENY');
+    check('/health má Referrer-Policy', res.headers.get('referrer-policy') === 'no-referrer');
   }
   {
     const res = await get('/privacy');
     checkStatus('GET /privacy', res, 200);
     check('/privacy vrací HTML', res.text.includes('<html') || res.text.includes('<!DOCTYPE'));
+    check(
+      '/privacy má Content-Security-Policy',
+      (res.headers.get('content-security-policy') || '').includes("frame-ancestors 'none'")
+    );
   }
 
   section('GET /api/map');
@@ -174,9 +183,41 @@ async function run(db) {
       check(`/api/map položka má ${key}`, key in row);
     }
     check('/api/map rating_count je číslo', typeof row.rating_count === 'number');
+    check('/api/map nemá stanici bez souřadnic', res.json.every((s) => typeof s.lat === 'number' && typeof s.lon === 'number'));
     const slash = await get('/api/map/');
     checkStatus('GET /api/map/ (se lomítkem)', slash, 200);
     check('/api/map/ vrací stejný počet', slash.json?.length === res.json?.length);
+  }
+  {
+    // Odpověď má přes sto kilobajtů a mění se po kapkách – aplikace ji musí umět
+    // jen ověřit místo znovustažení.
+    const res = await get('/api/map/');
+    const etag = res.headers.get('etag');
+    check('/api/map/ posílá ETag', Boolean(etag), `etag=${etag}`);
+    check('/api/map/ má Cache-Control: no-cache', res.headers.get('cache-control') === 'no-cache');
+
+    // `Cache-Control: max-age=0` je tu schválně: node-ovský fetch jinak sám přidá
+    // `no-cache` a tím si o plnou odpověď řekne, takže by se 304 nikdy neukázala.
+    const revalidated = await fetch(`${BASE}/api/map/`, {
+      headers: { 'If-None-Match': etag, 'Cache-Control': 'max-age=0' },
+    });
+    check('/api/map/ s If-None-Match → 304', revalidated.status === 304, `dostal ${revalidated.status}`);
+    check('304 nemá tělo', (await revalidated.text()).length === 0);
+  }
+  {
+    // Uložený JSON se musí zahodit, jakmile se data změní – jinak by admin uložil
+    // změnu a v mapě by ji minutu nikdo neviděl.
+    const before = (await get('/api/map/')).headers.get('etag');
+    const original = db.prepare('SELECT * FROM station WHERE id = ?').get(stationId);
+    await post('/api/admin/stations', { ...original, brand_name: 'Smoke Značka' }, { auth: true });
+
+    const after = await get('/api/map/');
+    check('zápis do stanice zneplatnil cache mapy', after.headers.get('etag') !== before);
+    check(
+      'změna značky je v mapě hned',
+      after.json.find((s) => s.id === stationId)?.brand_name === 'Smoke Značka'
+    );
+    await post('/api/admin/stations', original, { auth: true });
   }
 
   section('GET /api/detail/:id');
@@ -417,8 +458,22 @@ async function run(db) {
     checkStatus(`${method} ${url} bez auth`, res, 401);
   }
   {
-    const res = await get('/api/admin/stats', { auth: false });
-    check('401 nese WWW-Authenticate challenge', res.status === 401);
+    const res = await get('/api/admin/stats');
+    check('401 nese WWW-Authenticate challenge', res.headers.get('www-authenticate')?.startsWith('Basic'));
+  }
+  {
+    // Prohlížeč si údaje basic auth pamatuje a přiloží je i k requestu, který
+    // vyvolala cizí stránka. Hlavička Origin je jediné, podle čeho to poznáme.
+    const cizi = await fetch(`${BASE}/api/admin/stations/1`, {
+      method: 'DELETE',
+      headers: { Authorization: adminHeader, Origin: 'https://podvod.example' },
+    });
+    check('admin odmítne požadavek z cizí stránky', cizi.status === 403, `dostal ${cizi.status}`);
+
+    const vlastni = await fetch(`${BASE}/api/admin/stats`, {
+      headers: { Authorization: adminHeader, Origin: BASE },
+    });
+    check('admin pustí požadavek z vlastní stránky', vlastni.status === 200, `dostal ${vlastni.status}`);
   }
 
   section('admin – s přihlášením');
@@ -573,14 +628,45 @@ async function run(db) {
     check('úprava se propsala do detailu', detail.json?.city === 'Smoke Město', `city=${detail.json?.city}`);
     await post('/api/admin/stations', original, { auth: true });
   }
-  for (const [label, body] of [
-    ['bez id', { brand_name: 'Bez ID' }],
-    ['prázdné id', { id: '', brand_name: 'Prázdné' }],
-    ['id není číslo', { id: 'abc', brand_name: 'Nečíslo' }],
-  ]) {
-    const res = await post('/api/admin/stations', body, { auth: true });
-    checkStatus(`POST /api/admin/stations – ${label}`, res, 400);
-    check(`stanice – ${label} je validation_error`, isValidationError(res));
+  {
+    // Souřadnice se posílají i s desetinnou čárkou (české klávesnice) – to projít musí.
+    const original = db.prepare('SELECT * FROM station WHERE id = ?').get(stationId);
+    const res = await post(
+      '/api/admin/stations',
+      { ...original, lat: String(original.lat).replace('.', ',') },
+      { auth: true }
+    );
+    checkStatus('POST /api/admin/stations (lat s čárkou)', res, 200);
+    const detail = await get(`/api/detail/${stationId}`);
+    check('lat s čárkou se uložil jako číslo', detail.json?.lat === original.lat, `lat=${detail.json?.lat}`);
+    await post('/api/admin/stations', original, { auth: true });
+  }
+  {
+    const original = db.prepare('SELECT * FROM station WHERE id = ?').get(stationId);
+    for (const [label, body] of [
+      ['bez id', { brand_name: 'Bez ID' }],
+      ['prázdné id', { id: '', brand_name: 'Prázdné' }],
+      ['id není číslo', { id: 'abc', brand_name: 'Nečíslo' }],
+      ['záporné id', { ...original, id: -5 }],
+      // Stanice bez souřadnic by rozbila mapu úplně všem – iOS je dekóduje jako
+      // povinná čísla a jediný vadný záznam shodí celý seznam.
+      ['chybějící lat', { ...original, lat: null }],
+      ['lat není číslo', { ...original, lat: 'sever' }],
+      ['lat mimo rozsah', { ...original, lat: 91 }],
+      ['lon mimo rozsah', { ...original, lon: -181 }],
+      ['brand_id není číslo', { ...original, brand_id: 'abc' }],
+      // Bez typové kontroly by tohle spadlo až na zápisu do SQLite jako 500.
+      ['name je objekt', { ...original, name: { zle: true } }],
+      ['name je pole', { ...original, name: ['a', 'b'] }],
+      ['příliš dlouhý brand_name', { ...original, brand_name: 'x'.repeat(200) }],
+      ['příliš dlouhá adresa', { ...original, address: 'x'.repeat(500) }],
+    ]) {
+      const res = await post('/api/admin/stations', body, { auth: true });
+      checkStatus(`POST /api/admin/stations – ${label}`, res, 400);
+      check(`stanice – ${label} je validation_error`, isValidationError(res));
+    }
+    const unchanged = db.prepare('SELECT * FROM station WHERE id = ?').get(stationId);
+    check('neplatné požadavky stanici nezměnily', unchanged.lat === original.lat && unchanged.name === original.name);
   }
   {
     const res = await del(`/api/admin/stations/${spareStationId}`, undefined, { auth: true });
@@ -610,6 +696,88 @@ async function run(db) {
   }
 
   await checkAppKeyModes(db);
+  await checkHardening(db, stationId);
+}
+
+/**
+ * Limity se počítají v paměti procesu a jednou vyčerpané se za běhu nedají vrátit,
+ * takže každý běží na vlastní instanci serveru – jinak by si testy navzájem
+ * zavřely dveře.
+ */
+async function checkHardening(db, stationId) {
+  const dbPath = db.name;
+  const wrongHeader = `Basic ${Buffer.from(`${adminUser}:rozhodne-spatne-heslo`).toString('base64')}`;
+
+  section('admin – hádání hesla');
+  {
+    const port = PORT + 3;
+    const child = await startServer(dbPath, { port });
+    const stats = (headers) => fetch(`http://127.0.0.1:${port}/api/admin/stats`, { headers });
+    try {
+      let allRejected = true;
+      for (let i = 0; i < 10; i += 1) {
+        const res = await stats({ Authorization: wrongHeader });
+        if (res.status !== 401) allRejected = false;
+      }
+      check('prvních 10 pokusů dostane 401', allRejected);
+
+      const blocked = await stats({ Authorization: wrongHeader });
+      check('11. pokus dostane 429', blocked.status === 429, `dostal ${blocked.status}`);
+      check('429 nese Retry-After', Number(blocked.headers.get('retry-after')) > 0);
+
+      // Zámek platí na adresu, ne na heslo – jinak by útočník poznal, že jedno
+      // z hesel bylo správné, protože by najednou dostal jinou odpověď.
+      const correct = await stats({ Authorization: adminHeader });
+      check('po zamčení neprojde ani správné heslo', correct.status === 429, `dostal ${correct.status}`);
+    } finally {
+      child.kill('SIGKILL');
+      await new Promise((r) => child.on('exit', r));
+    }
+  }
+  {
+    const port = PORT + 4;
+    const child = await startServer(dbPath, { port });
+    const stats = (headers) => fetch(`http://127.0.0.1:${port}/api/admin/stats`, { headers });
+    try {
+      // Prohlížeč se poprvé ptá vždycky bez údajů a čeká na výzvu. Kdyby se to
+      // počítalo jako pokus, zamkl by si admin sám sobě po pár otevřeních stránky.
+      for (let i = 0; i < 15; i += 1) await stats();
+      const correct = await stats({ Authorization: adminHeader });
+      check('requesty bez údajů se jako pokus nepočítají', correct.status === 200, `dostal ${correct.status}`);
+    } finally {
+      child.kill('SIGKILL');
+      await new Promise((r) => child.on('exit', r));
+    }
+  }
+
+  section('strop zápisů podle IP');
+  {
+    const port = PORT + 5;
+    const child = await startServer(dbPath, { port });
+    // Endpoint bez vlastního limitu, ať je jisté, že 429 přišla od stropu zápisů.
+    // Prázdné tělo skončí na validaci (400), do počtu se ale započítá stejně.
+    const write = () =>
+      fetch(`http://127.0.0.1:${port}/api/stations/${stationId}/reviews`, { method: 'DELETE' });
+    try {
+      let hitEarly = false;
+      for (let i = 0; i < 120; i += 1) {
+        if ((await write()).status === 429) hitEarly = true;
+      }
+      check('120 zápisů z jedné IP projde', !hitEarly);
+
+      const blocked = await write();
+      check('121. zápis dostane 429', blocked.status === 429, `dostal ${blocked.status}`);
+      const body = await blocked.json();
+      check('429 hlásí too_many_requests', body.error === 'too_many_requests');
+
+      // Čtení má vlastní, mnohem vyšší strop – vyčerpané zápisy ho nesmí zastavit.
+      const read = await fetch(`http://127.0.0.1:${port}/api/map/`);
+      check('vyčerpaný strop zápisů neblokuje čtení', read.status === 200, `dostal ${read.status}`);
+    } finally {
+      child.kill('SIGKILL');
+      await new Promise((r) => child.on('exit', r));
+    }
+  }
 }
 
 /**

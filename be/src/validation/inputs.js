@@ -68,6 +68,66 @@ function parseAdminNote(value) {
   return cleanText(value, { max: LIMITS.adminNote, field: 'admin_note', label: 'Poznámka' });
 }
 
+// Ručně editovatelné sloupce stanice a jejich maximální délky. `osm_id`, `data_source`
+// ani vazby na paliva tu schválně nejsou – ty patří importu z OpenStreetMap.
+const STATION_TEXT_FIELDS = {
+  brand_name: 80,
+  name: 120,
+  city: 80,
+  address: 160,
+  zip: 20,
+  phone: 40,
+  worktime: 250,
+  services: 500,
+  payments: 500,
+  foursquare_id: 60,
+  status: 50,
+  error: 250,
+};
+
+function parseCoordinate(raw, { limit, field }) {
+  const text = typeof raw === 'number' ? String(raw) : typeof raw === 'string' ? raw.trim() : '';
+  // Přes `Number()` samotné to nejde: `Number(null)`, `Number('')` i `Number([])`
+  // je nula, takže by chybějící souřadnice prošla jako platný rovník.
+  const value = text === '' ? NaN : Number(text.replace(',', '.'));
+
+  if (!Number.isFinite(value) || Math.abs(value) > limit) {
+    throw new ValidationError(`Neplatná souřadnice ${field}.`, field);
+  }
+  return value;
+}
+
+function parseOptionalId(raw, field) {
+  if (raw === '' || raw == null) return null;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new ValidationError(`Pole ${field} musí být celé kladné číslo.`, field);
+  }
+  return value;
+}
+
+/**
+ * Ruční úprava stanice z administrace. Kontroluje se i to, co by přes UI přijít
+ * nemělo: bez typové kontroly by objekt v poli spadl až na zápisu do SQLite (500)
+ * a stanice bez souřadnic by rozbila mapu úplně všem – iOS aplikace `lat`/`lon`
+ * dekóduje jako povinná čísla a jediný vadný záznam shodí celý seznam.
+ */
+function parseStationInput(body = {}) {
+  const row = {
+    id: parseId(body?.id, 'ID benzínky'),
+    lat: parseCoordinate(body?.lat, { limit: 90, field: 'lat' }),
+    lon: parseCoordinate(body?.lon, { limit: 180, field: 'lon' }),
+    brand_id: parseOptionalId(body?.brand_id, 'brand_id'),
+    wikimapia_id: parseOptionalId(body?.wikimapia_id, 'wikimapia_id'),
+  };
+
+  for (const [field, max] of Object.entries(STATION_TEXT_FIELDS)) {
+    const raw = typeof body?.[field] === 'number' ? String(body[field]) : body?.[field];
+    row[field] = cleanText(raw, { max, field, label: field });
+  }
+  return row;
+}
+
 function parseStatusUpdate(body, allowed) {
   const status = body?.status;
   if (!allowed.includes(status)) {
@@ -88,6 +148,7 @@ module.exports = {
   parseReport,
   parseFuelVote,
   parseAdminNote,
+  parseStationInput,
   parseStatusUpdate,
   parseStatusFilter,
   REVIEW_STATUSES,

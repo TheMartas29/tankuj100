@@ -44,8 +44,4 @@ function requireOneOf(value, allowed, { field, message }) {
   return picked;
 }
 
-function optionalNumber(value) {
-  return value === '' || value == null ? null : Number(value);
-}
-
-module.exports = { cleanText, parseId, parseStationId, requireDeviceId, requireOneOf, optionalNumber };
+module.exports = { cleanText, parseId, parseStationId, requireDeviceId, requireOneOf };

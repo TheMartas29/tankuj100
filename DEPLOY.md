@@ -344,14 +344,46 @@ Veřejné (volá iOS aplikace):
 | DELETE | `/api/stations/:id/reviews` | smazat vlastní hodnocení |
 | POST | `/api/stations/:id/reports` | nahlásit nesrovnalost → e-mail (`closed`, `fuel`, `location`, `content`, `other`) |
 | POST | `/api/stations/:id/fuel-vote` | hlas E5 / E10 |
-| GET | `/health` | monitoring |
+| GET | `/api/ping` | s jakým prostředím aplikace mluví (`ENV_NAME`) |
+| GET | `/health` | monitoring – vrací jen `{ok:true}`, nic o vnitřku serveru |
 | GET | `/privacy` | zásady soukromí (URL pro App Store Connect) |
 
 Za basic auth: `/` a `/admin` (UI) a `/api/admin/*`
 (`stats`, `reports`, `reviews`, `stations`, `test-mail`).
 
-Zápisové endpointy mají rate-limit podle IP + `device_id` a limit 3 hlášení
-na benzínku a zařízení za 24 h.
+`/api/map/` posílá `ETag` a `Cache-Control: no-cache`, takže aplikace na nezměněná
+data dostane 304 místo 128 kB. Hotová odpověď se navíc drží minutu v paměti a zápis
+si ji zneplatní sám.
+
+## Limity a ochrany
+
+Všechno se počítá v paměti procesu, takže `pm2 restart` limity vynuluje. To je záměr –
+jde o minuty, ne o trvalé zákazy.
+
+| co | strop | podle čeho |
+|--|--|--|
+| čtení i zápisy dohromady | 1200 / h | IP |
+| jen zápisy (POST, PATCH, DELETE) | 120 / h | IP |
+| hodnocení | 15 / h | IP + `device_id` |
+| hlášení | 10 / h | IP + `device_id` |
+| hlasy o palivu | 40 / h | IP + `device_id` |
+| hlášení jedné benzínky | 3 / 24 h | `device_id` |
+| pokusy o přihlášení do adminu | 10 / 15 min | IP |
+
+Proč mají zápisy strop navíc: `device_id` si posílá klient sám, takže limity vázané
+na něj obejde kdokoli, kdo si ho generuje náhodně. Strop podle IP obejít nejde.
+
+Po deseti nepovedených přihlášeních se adresa na čtvrt hodiny zavře a nepustí ani
+správné heslo – jinak by útočník poznal, že heslo uhodl, protože by najednou dostal
+jinou odpověď. **Když se zamkneš sám, stačí počkat, nebo `pm2 restart tankuj100`.**
+Requesty úplně bez přihlašovacích údajů se do pokusů nepočítají – prohlížeč se takhle
+ptá pokaždé, než dostane výzvu, a jinak by si admin zamkl sám sebe.
+
+Server posílá `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` a na HTML
+stránkách i `Content-Security-Policy`. Nginx přidává totéž – dvojí hlavička nevadí a
+kdyby někdo šel na Node přímo, ochrana platí i tak. `/api/admin/*` navíc odmítá
+požadavky s cizí hlavičkou `Origin`, což je obrana proti CSRF: prohlížeč si údaje
+basic auth pamatuje a přiložil by je i k requestu, který vyvolala cizí stránka.
 
 ## iOS aplikace
 
