@@ -1,0 +1,97 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+@theme {
+  /* Značka – barvy odečtené přímo z ikony aplikace (oranžová nahoře → červená dole). */
+  --color-brand-50: #fff5ef;
+  --color-brand-100: #ffe7d9;
+  --color-brand-200: #ffcbaf;
+  --color-brand-300: #ffa678;
+  --color-brand-400: #f09135;
+  --color-brand-500: #ec702b;
+  --color-brand-600: #e5451a;
+  --color-brand-700: #e22b10;
+  --color-brand-800: #e00600;
+  --color-brand-900: #b00500;
+
+  /* Text a podklady */
+  --color-ink: #16181d;
+  --color-ink-muted: #5c616e;
+  --color-paper: #fbf9f8;
+
+  --font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Kotvy pod lepivou hlavičkou nesmí končit schované za ní. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+    /* Pojistka proti vodorovnému přetečení z dekorativních záře a rámečků. */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer utilities {
+  /* Sytý firemní gradient – používá se na plochách i na textu. */
+  .bg-brand-gradient {
+    background-image: linear-gradient(
+      160deg,
+      var(--color-brand-400) 0%,
+      var(--color-brand-500) 32%,
+      var(--color-brand-700) 68%,
+      var(--color-brand-800) 100%
+    );
+  }
+
+  .text-brand-gradient {
+    background-image: linear-gradient(
+      120deg,
+      var(--color-brand-500) 0%,
+      var(--color-brand-800) 70%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Jemné nadechnutí obsahu při scrollu (respektuje systémové omezení pohybu). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

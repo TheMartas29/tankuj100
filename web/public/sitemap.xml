@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Web je jednostránkový, takže sitemapa obsahuje jen kořenovou adresu.
+  Kotvy (#funkce, #e5, #faq) se do sitemapy nedávají – Google je nebere
+  jako samostatné URL. Po větší změně obsahu aktualizuj <lastmod>.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tankuj100.cz/</loc>
+    <lastmod>2026-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>tankuj100 – benzínky se 100 oktany na jedné mapě</title>
+    <meta
+      name="description"
+      content="Aplikace pro iPhone, která na mapě ukáže jen benzínky s prémiovým palivem – Natural 100 a 98. Nabídka paliv, otevírací doba, hodnocení řidičů a info o E5. Zdarma a bez registrace."
+    />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://tankuj100.cz/" />
+    <meta name="theme-color" content="#e5451a" />
+
+    <!-- Náhled odkazu (Open Graph / Twitter) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="tankuj100" />
+    <meta property="og:locale" content="cs_CZ" />
+    <meta property="og:title" content="tankuj100 – benzínky se 100 oktany na jedné mapě" />
+    <meta
+      property="og:description"
+      content="Aplikace pro iPhone, která ukáže jen pumpy s Natural 100 a 98. Zdarma, bez registrace, bez reklam."
+    />
+    <meta property="og:url" content="https://tankuj100.cz/" />
+    <meta property="og:image" content="https://tankuj100.cz/og-image.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="tankuj100 – benzínky se 100 oktany na jedné mapě" />
+    <meta
+      name="twitter:description"
+      content="Aplikace pro iPhone, která ukáže jen pumpy s Natural 100 a 98. Zdarma, bez registrace, bez reklam."
+    />
+    <meta name="twitter:image" content="https://tankuj100.cz/og-image.png" />
+
+    <!--
+      Strukturovaná data pro Google. Popis aplikace + časté dotazy (FAQ rich results).
+      ⚠️ Otázky drž shodné s src/components/Faq.tsx – Google penalizuje, když se
+      strukturovaná data liší od toho, co je na stránce vidět.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "MobileApplication",
+            "name": "tankuj100",
+            "operatingSystem": "iOS 16.0",
+            "applicationCategory": "NavigationApplication",
+            "url": "https://tankuj100.cz/",
+            "inLanguage": "cs-CZ",
+            "description": "Aplikace pro iPhone, která na mapě ukáže jen benzínky s prémiovým palivem – Natural 100 a 98. Nabídka paliv, otevírací doba, hodnocení řidičů a informace o E5.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "CZK"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "name": "tankuj100",
+            "url": "https://tankuj100.cz/",
+            "inLanguage": "cs-CZ"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Kolik aplikace stojí?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Nic. tankuj100 je zdarma, bez reklam a bez placených funkcí."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Musím se registrovat?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Ne. Aplikace nemá účty ani přihlašování – otevřeš ji a rovnou používáš. Hodnotit a hlásit palivo můžeš i bez registrace."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Odkud jsou data o benzínkách?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Základ tvoří otevřená databáze OpenStreetMap. Informace o typu benzínu (E5/E10) a hodnocení přidávají sami řidiči, proto jsou informativní a u pumpy se vyplatí je ověřit."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Sleduje aplikace moji polohu?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Ne. Poloha se zpracovává jen ve tvém telefonu, aby šla mapa vycentrovat a stanice seřadit podle vzdálenosti. Nikam se neodesílá a s ničím se nespojuje."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Chybí tam benzínka, kterou znám. Co s tím?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Přímo v aplikaci můžeš stanici navrhnout k přidání. Návrh projde kontrolou a pak se objeví ostatním řidičům."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Bude i verze pro Android?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Zatím je tankuj100 jen pro iPhone (iOS 16 a novější). Jestli by ti Android verze pomohla, dej vědět – zájem sledujeme."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

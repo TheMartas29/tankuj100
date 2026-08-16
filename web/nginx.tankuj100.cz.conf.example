@@ -1,0 +1,70 @@
+# tankuj100.cz – nginx server blok pro statický prezentační web (Vite build v dist/).
+#
+# Pozor: tohle NENÍ blok pro API. Backend (PM2 `tankuj100`) má vlastní konfiguraci
+# v deploy/nginx.tankuj100.conf.example a běží na jiné doméně.
+#
+# 1) Zkopíruj:  sudo cp web/nginx.tankuj100.cz.conf.example /etc/nginx/sites-available/tankuj100.cz
+# 2) Aktivuj:   sudo ln -s /etc/nginx/sites-available/tankuj100.cz /etc/nginx/sites-enabled/
+#    Test:      sudo nginx -t
+#    Reload:    sudo systemctl reload nginx
+# 3) HTTPS:     sudo certbot --nginx -d tankuj100.cz -d www.tankuj100.cz
+#               (certbot si sem sám doplní listen 443 + certifikáty + redirect z 80)
+#
+# Až po certbotu – tenhle soubor záměrně zatím poslouchá jen na 80, aby prošel
+# `nginx -t` i bez existujících certifikátů.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name tankuj100.cz www.tankuj100.cz;
+
+    root /var/www/tankuj100-web/dist;
+    index index.html;
+
+    # Komprese – nginx ve výchozím stavu gzipuje jen HTML, ostatní typy se musí vyjmenovat
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/javascript application/json
+               image/svg+xml application/xml font/woff2;
+
+    # Bezpečnostní hlavičky
+    # HSTS zapni (odkomentuj) až budeš mít funkční HTTPS – jinak si zamkneš doménu na http.
+    # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header Permissions-Policy "geolocation=(), camera=(), microphone=()" always;
+
+    # Hashované assety z Vite (/assets/app-a1b2c3.js) – název se mění s obsahem,
+    # takže je můžeme cachovat natvrdo na rok
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable" always;
+        access_log off;
+        try_files $uri =404;
+    }
+
+    # Obrázky, fonty a ikony z public/ – nejsou hashované, ale mění se zřídka
+    location ~* \.(?:webp|png|jpe?g|gif|svg|ico|woff2?|mp4)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable" always;
+        access_log off;
+    }
+
+    # index.html se nesmí cachovat, jinak lidem zůstane odkaz na starý build
+    location = /index.html {
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # Certbot – ověření vlastnictví domény (rsync v deploy_prod.sh tuhle složku nemaže)
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/tankuj100-web/dist;
+        default_type "text/plain";
+    }
+
+    # SPA fallback – neexistující cesty vrací index.html, routování řeší React
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
