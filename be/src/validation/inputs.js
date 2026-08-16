@@ -1,4 +1,5 @@
 const { ValidationError } = require('../errors');
+const { FUEL_BITS } = require('../fuel-flags');
 const { cleanText, parseId, requireDeviceId, requireOneOf } = require('./primitives');
 const { checkContent } = require('./content');
 
@@ -8,6 +9,7 @@ const REPORT_TYPES = ['closed', 'fuel', 'location', 'content', 'other'];
 const FUEL_KINDS = ['e5', 'e10'];
 const REVIEW_STATUSES = ['published', 'hidden'];
 const REPORT_STATUSES = ['new', 'in_review', 'resolved', 'rejected'];
+const STATION_REQUEST_STATUSES = ['new', 'approved', 'rejected'];
 
 const LIMITS = {
   comment: 1000,
@@ -15,6 +17,10 @@ const LIMITS = {
   note: 1000,
   fuelName: 60,
   adminNote: 1000,
+  brandName: 80,
+  stationName: 120,
+  city: 80,
+  address: 160,
 };
 
 function cleanAndCheck(value, { max, field, label }) {
@@ -128,6 +134,49 @@ function parseStationInput(body = {}) {
   return row;
 }
 
+/**
+ * Paliva u žádosti. Číselník je jediný zdroj pravdy `fuel-flags.js` – co v něm není,
+ * by se do bitové masky stejně nevešlo a v aplikaci by po schválení zmizelo.
+ */
+function parseFuelKeys(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    throw new ValidationError('Vyberte prosím aspoň jedno palivo, které tam čepují.', 'fuels');
+  }
+
+  const keys = [];
+  for (const item of raw) {
+    const key = typeof item === 'string' ? item.trim() : '';
+    if (FUEL_BITS[key] === undefined) {
+      throw new ValidationError('Některé z vybraných paliv neznáme. Zkuste aplikaci aktualizovat.', 'fuels');
+    }
+    if (!keys.includes(key)) keys.push(key);
+  }
+  return keys;
+}
+
+/**
+ * Žádost o přidání benzínky. Značka ani název povinné nejsou – uživatel u sjezdu
+ * z dálnice často ví jen to, že tam pumpa je; dohledat ji je práce administrace.
+ * Souřadnice povinné jsou, bez nich by žádost nešlo ani ověřit, ani schválit.
+ */
+function parseStationRequest(body = {}) {
+  return {
+    deviceId: requireDeviceId(body),
+    lat: parseCoordinate(body?.lat, { limit: 90, field: 'lat' }),
+    lon: parseCoordinate(body?.lon, { limit: 180, field: 'lon' }),
+    brandName: cleanAndCheck(body?.brand_name, {
+      max: LIMITS.brandName,
+      field: 'brand_name',
+      label: 'Značka',
+    }),
+    name: cleanAndCheck(body?.name, { max: LIMITS.stationName, field: 'name', label: 'Název' }),
+    city: cleanAndCheck(body?.city, { max: LIMITS.city, field: 'city', label: 'Obec' }),
+    address: cleanAndCheck(body?.address, { max: LIMITS.address, field: 'address', label: 'Adresa' }),
+    fuels: parseFuelKeys(body?.fuels),
+    note: cleanAndCheck(body?.note, { max: LIMITS.note, field: 'note', label: 'Poznámka' }),
+  };
+}
+
 function parseStatusUpdate(body, allowed) {
   const status = body?.status;
   if (!allowed.includes(status)) {
@@ -149,8 +198,10 @@ module.exports = {
   parseFuelVote,
   parseAdminNote,
   parseStationInput,
+  parseStationRequest,
   parseStatusUpdate,
   parseStatusFilter,
   REVIEW_STATUSES,
   REPORT_STATUSES,
+  STATION_REQUEST_STATUSES,
 };

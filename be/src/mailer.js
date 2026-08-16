@@ -123,4 +123,41 @@ function notifyNewReview({ review, station }) {
   });
 }
 
-module.exports = { sendNotification, notifyNewReport, notifyNewReview, isConfigured };
+function notifyNewStationRequest({ request }) {
+  const fuels = (() => {
+    try {
+      const parsed = JSON.parse(request.fuels || '[]');
+      return Array.isArray(parsed) ? parsed.join(', ') : '—';
+    } catch {
+      return '—';
+    }
+  })();
+
+  const lines = [
+    'Nová žádost o přidání benzínky',
+    '',
+    `Značka:   ${request.brand_name || '—'}`,
+    `Název:    ${request.name || '—'}`,
+    `Adresa:   ${[request.city, request.address].filter(Boolean).join(', ') || '—'}`,
+    `Poloha:   ${request.lat}, ${request.lon}`,
+    `Paliva:   ${fuels || '—'}`,
+  ];
+  if (request.note) lines.push('', `Poznámka: ${request.note}`);
+  lines.push('', 'Schválit nebo zamítnout se dá v adminu; důvod zamítnutí uvidí uživatel v aplikaci.');
+
+  return sendNotification({
+    subject: `návrh benzínky ${request.brand_name || ''} ${request.city || ''}`.trim(),
+    // Klíč je id žádosti, takže se zahodí jen skutečný duplicitní pokus o odeslání
+    // téhož e-mailu – tři různé návrhy za sebou musí dorazit všechny.
+    dedupeKey: `station-request:${request.id}`,
+    body: lines.join('\n'),
+  });
+}
+
+module.exports = {
+  sendNotification,
+  notifyNewReport,
+  notifyNewReview,
+  notifyNewStationRequest,
+  isConfigured,
+};

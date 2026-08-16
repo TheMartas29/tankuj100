@@ -64,6 +64,31 @@ const TABLES = `
   );
   CREATE INDEX IF NOT EXISTS idx_station_source_station ON station_source (station_id);
 
+  -- Žádost uživatele o přidání benzínky. Stanice nevzniká odesláním, ale až
+  -- schválením v administraci – do té doby je řádek jediné, co o ní existuje.
+  -- Sloupec admin_note slouží dvěma věcem naráz: u zamítnutí je to text pro
+  -- uživatele, jinde interní poznámka. Kdo ho vyplňuje, musí vědět, že u zamítnutí
+  -- půjde ven. Paliva jsou JSON pole klíčů z fuel-flags.js.
+  CREATE TABLE IF NOT EXISTS station_request (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_id   TEXT    NOT NULL,
+    lat         REAL    NOT NULL,
+    lon         REAL    NOT NULL,
+    brand_name  TEXT,
+    name        TEXT,
+    city        TEXT,
+    address     TEXT,
+    fuels       TEXT    NOT NULL,
+    note        TEXT,
+    status      TEXT    NOT NULL DEFAULT 'new',
+    admin_note  TEXT,
+    created_at  TEXT    NOT NULL,
+    resolved_at TEXT,
+    station_id  INTEGER
+  );
+  CREATE INDEX IF NOT EXISTS idx_station_request_status ON station_request (status, created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_station_request_device ON station_request (device_id, created_at DESC);
+
   CREATE TABLE IF NOT EXISTS station_tag (
     station_id  INTEGER NOT NULL,
     tag_key     TEXT    NOT NULL,

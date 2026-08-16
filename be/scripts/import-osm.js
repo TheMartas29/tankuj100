@@ -15,6 +15,9 @@ POZOR: není to přírůstkový import, ale kompletní přestavba. Stanice se sm
 a s nimi i uživatelský obsah (hodnocení, hlášení, hlasy o palivu), který na nich
 visel – jinak by z něj byli sirotci. Proto skript bez --yes nic nemění.
 
+Výjimkou jsou stanice schválené z žádostí uživatelů (data_source = 'user').
+Ty v OpenStreetMap nejsou, takže je přestavba nechává být i s jejich obsahem.
+
   node scripts/import-osm.js                  jen vypíše, co by udělal
   node scripts/import-osm.js --verbose        vypíše všechny stanice
   node scripts/import-osm.js --yes            provede přestavbu (předtím zálohuje)
@@ -38,7 +41,22 @@ const STATION_VALUES = `@id, @lat, @lon, @brand_name, NULL, @name, @city, @addre
                         @phone, @worktime, @services, @payments, NULL, NULL,
                         NULL, NULL, 'OK', NULL, @osm_id, @data_source`;
 
+const USER_SOURCE = 'user';
+// Stanice ze schválených žádostí ve zdrojovém GeoJSONu nejsou. Kdyby je přestavba
+// smazala, jejich `id` by při nejbližším importu dostala cizí pumpa a hodnocení
+// i hlášení by se tiše přepnula k ní. Proto se maže všechno kromě nich – a kromě
+// jejich navázaného obsahu.
+const USER_STATION_IDS = `SELECT id FROM station WHERE data_source = '${USER_SOURCE}'`;
 const TABLES_TO_CLEAR = ['fuel_vote', 'report', 'review', 'station_tag', 'station_fuel', 'station'];
+
+const clearCondition = (table) =>
+  table === 'station'
+    ? `WHERE data_source IS NULL OR data_source <> '${USER_SOURCE}'`
+    : `WHERE station_id NOT IN (${USER_STATION_IDS})`;
+
+const clearSql = (table) => `DELETE FROM ${table} ${clearCondition(table)}`;
+
+const userStationIds = (db) => db.prepare(USER_STATION_IDS).all().map((row) => row.id);
 
 function loadFeatures() {
   const geojson = JSON.parse(fs.readFileSync(GEOJSON_PATH, 'utf8'));
@@ -99,6 +117,9 @@ function assignIds(db, rows) {
       .map((row) => [row.osm_id, row.id])
   );
   const taken = new Set(previous.values());
+  // Uživatelské stanice přestavbu přežijí, takže jejich `id` je obsazené, i když
+  // v `previous` (párování přes osm_id) není – ty žádné osm_id nemají.
+  for (const id of userStationIds(db)) taken.add(id);
   let nextFree = 1;
   let reused = 0;
 
@@ -127,8 +148,11 @@ const countBy = (rows, keyOf) => {
 
 function printPlan({ db, rows, skipped, mimoCR, reused, features }) {
   const countRows = (table) => db.prepare(`SELECT COUNT(*) AS c FROM ${table}`).get().c;
+  const countToClear = (table) =>
+    db.prepare(`SELECT COUNT(*) AS c FROM ${table} ${clearCondition(table)}`).get().c;
   const withFuel = (key) => rows.filter((r) => r.fuels.includes(key)).length;
   const filled = (field) => rows.filter((r) => r[field]).length;
+  const userStations = userStationIds(db).length;
 
   printSummary([
     null,
@@ -141,11 +165,12 @@ function printPlan({ db, rows, skipped, mimoCR, reused, features }) {
     ['  přeskočeno bez/duplicitní OSM id', skipped.bezOsmId],
     ['  mimo zjednodušenou hranici ČR (jen upozornění)', mimoCR],
     null,
-    ['Stanic v DB teď', `${countRows('station')}  (všechny se smažou)`],
+    ['Stanic v DB teď', `${countRows('station')}  (smaže se ${countToClear('station')})`],
+    ['  z toho ze žádostí uživatelů', `${userStations}  (zůstanou i s obsahem)`],
     [
       'Uživatelský obsah ke smazání',
-      `hodnocení ${countRows('review')}, hlášení ${countRows('report')}, ` +
-        `hlasů o palivu ${countRows('fuel_vote')}`,
+      `hodnocení ${countToClear('review')}, hlášení ${countToClear('report')}, ` +
+        `hlasů o palivu ${countToClear('fuel_vote')}`,
     ],
     ['Vloží se stanic', `${rows.length}  (z toho ${reused} si podrží dosavadní id)`],
     null,
@@ -197,7 +222,7 @@ function rebuild(db, rows) {
   const insertTag = db.prepare('INSERT INTO station_tag (station_id, tag_key, tag_value) VALUES (?, ?, ?)');
 
   db.transaction(() => {
-    for (const table of TABLES_TO_CLEAR) db.exec(`DELETE FROM ${table}`);
+    for (const table of TABLES_TO_CLEAR) db.exec(clearSql(table));
     for (const row of rows) {
       insertStation.run({ ...row, data_source: ATTRIBUTION });
       for (const fuel of row.fuels) insertFuel.run(row.id, fuel);

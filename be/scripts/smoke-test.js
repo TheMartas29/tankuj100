@@ -431,6 +431,293 @@ async function run(db) {
     check(`fuel-vote – ${label} je validation_error`, isValidationError(res));
   }
 
+  section('žádosti o benzínku – odeslání');
+  // Osm volných míst: kontrola duplicit by jinak legitimní test zablokovala.
+  const spots = findFreeSpots(db, 8);
+  check('našlo se osm míst bez benzínky v okolí', spots.length === 8, `nalezeno ${spots.length}`);
+  const requestDevice = device('request');
+  let requestId = null;
+  {
+    const res = await post('/api/station-requests', {
+      device_id: requestDevice,
+      lat: spots[0].lat,
+      lon: spots[0].lon,
+      brand_name: 'Smoke Pumpa',
+      name: 'U testovacího sjezdu',
+      city: 'Smokov',
+      address: 'Testovací 1',
+      fuels: ['octane_100', 'octane_98'],
+      note: 'Nová pumpa u sjezdu, natankoval jsem tam stovku.',
+    });
+    checkStatus('POST /api/station-requests', res, 201);
+    check('žádost ok:true', res.json?.ok === true);
+    check('žádost vrací request_id', typeof res.json?.request_id === 'number');
+    check('žádost vzniká ve stavu new', res.json?.status === 'new');
+    requestId = res.json?.request_id;
+  }
+  {
+    // Odesláním stanice nevzniká – to je celý smysl schvalování.
+    const res = await get('/api/map/');
+    check(
+      'odeslaná žádost se do mapy nepropsala',
+      !(res.json || []).some((s) => s.brand_name === 'Smoke Pumpa')
+    );
+  }
+
+  section('žádosti o benzínku – validace');
+  const validFuels = ['octane_100'];
+  const at = (spot, extra = {}) => ({ lat: spot.lat, lon: spot.lon, fuels: validFuels, ...extra });
+  for (const [label, body] of [
+    ['bez device_id', at(spots[1])],
+    // `Number(null)` i `Number('')` je nula, takže chybějící souřadnice nesmí projít
+    // jako platný bod na rovníku.
+    ['bez souřadnic', { device_id: device('sr1'), fuels: validFuels }],
+    ['prázdný lat', at(spots[1], { device_id: device('sr2'), lat: '' })],
+    ['lat null', at(spots[1], { device_id: device('sr3'), lat: null })],
+    ['lat není číslo', at(spots[1], { device_id: device('sr4'), lat: 'sever' })],
+    ['lat mimo rozsah', at(spots[1], { device_id: device('sr5'), lat: 91 })],
+    ['lon mimo rozsah', at(spots[1], { device_id: device('sr6'), lon: -181 })],
+    ['bez paliv', { device_id: device('sr7'), lat: spots[1].lat, lon: spots[1].lon }],
+    ['prázdná paliva', at(spots[1], { device_id: device('sr8'), fuels: [] })],
+    ['neznámé palivo', at(spots[1], { device_id: device('sr9'), fuels: ['petrolej'] })],
+    ['paliva nejsou pole', at(spots[1], { device_id: device('sr10'), fuels: 'octane_100' })],
+    ['odkaz v poznámce', at(spots[1], { device_id: device('sr11'), note: 'Mrkni na https://spam.example' })],
+    ['vulgarismus v poznámce', at(spots[1], { device_id: device('sr12'), note: 'Ten zmrd tam nebyl' })],
+    ['příliš dlouhá poznámka', at(spots[1], { device_id: device('sr13'), note: 'a'.repeat(1001) })],
+    ['značka není text', at(spots[1], { device_id: device('sr14'), brand_name: { zle: true } })],
+  ]) {
+    const res = await post('/api/station-requests', body);
+    checkStatus(`POST station-request – ${label}`, res, 400);
+    check(`station-request – ${label} je validation_error`, isValidationError(res));
+  }
+
+  section('žádosti o benzínku – duplicity');
+  {
+    const res = await post('/api/station-requests', {
+      device_id: device('dup-first'),
+      ...at(spots[1], { brand_name: 'Smoke Duplikát', city: 'Duplikov' }),
+    });
+    checkStatus('POST station-request (podklad pro duplicitu)', res, 201);
+  }
+  {
+    // Zhruba 55 m severně – pořád tatáž pumpa, jen zaměřená z druhé strany.
+    const res = await post('/api/station-requests', {
+      device_id: device('dup-second'),
+      ...at({ lat: spots[1].lat + 0.0005, lon: spots[1].lon }),
+    });
+    checkStatus('POST station-request – čekající žádost do 150 m', res, 409);
+    check('duplicitní žádost má kód duplicate_station', res.json?.error === 'duplicate_station');
+    check(
+      'duplicitní žádost pojmenuje, co našla',
+      (res.json?.message || '').includes('Smoke Duplikát'),
+      res.json?.message
+    );
+  }
+  {
+    // Asi 330 m daleko – to už je jiná pumpa a projít musí.
+    const res = await post('/api/station-requests', {
+      device_id: device('dup-far'),
+      ...at({ lat: spots[1].lat + 0.003, lon: spots[1].lon }),
+    });
+    checkStatus('POST station-request – 330 m od žádosti projde', res, 201);
+  }
+
+  section('žádosti o benzínku – denní limit');
+  {
+    const spamDevice = device('request-spam');
+    let allAccepted = true;
+    for (const spot of [spots[2], spots[3], spots[4]]) {
+      const res = await post('/api/station-requests', { device_id: spamDevice, ...at(spot) });
+      if (res.status !== 201) allAccepted = false;
+    }
+    check('tři žádosti za den projdou', allAccepted);
+
+    const res = await post('/api/station-requests', { device_id: spamDevice, ...at(spots[5]) });
+    checkStatus('POST station-request – čtvrtá žádost téhož zařízení', res, 429);
+    check('denní limit je too_many_station_requests', res.json?.error === 'too_many_station_requests');
+  }
+
+  section('moje žádosti');
+  {
+    const res = await get(`/api/station-requests?device_id=${requestDevice}`);
+    checkStatus('GET /api/station-requests', res, 200);
+    check('moje žádosti jsou pole', Array.isArray(res.json));
+    const row = (res.json || []).find((r) => r.id === requestId);
+    check('seznam obsahuje moji žádost', Boolean(row));
+    for (const key of [
+      'id', 'lat', 'lon', 'brand_name', 'city', 'status', 'admin_note',
+      'created_at', 'resolved_at', 'station_id',
+    ]) {
+      check(`moje žádost má ${key}`, row ? key in row : false);
+    }
+    check('moje žádost neprozrazuje device_id', row ? !('device_id' in row) : false);
+    check('moje žádosti se neukládají do cache', res.headers.get('cache-control') === 'no-store');
+  }
+  {
+    const res = await get(`/api/station-requests?device_id=${device('cizi')}`);
+    checkStatus('GET /api/station-requests cizího zařízení', res, 200);
+    check('cizí zařízení nevidí moje žádosti', Array.isArray(res.json) && res.json.length === 0);
+  }
+  {
+    const res = await get('/api/station-requests');
+    checkStatus('GET /api/station-requests bez device_id', res, 400);
+    check('bez device_id je validation_error', isValidationError(res));
+  }
+
+  section('admin – žádosti o benzínku');
+  let approvedStationId = null;
+  {
+    const res = await get('/api/admin/station-requests', { auth: true });
+    checkStatus('GET /api/admin/station-requests', res, 200);
+    check('žádosti jsou pole', Array.isArray(res.json));
+    const row = (res.json || []).find((r) => r.id === requestId);
+    check('seznam obsahuje novou žádost', Boolean(row));
+    check('admin vidí device_id', row ? typeof row.device_id === 'string' : false);
+    check('admin vidí poznámku uživatele', row?.note?.includes('sjezdu'));
+    check('paliva jsou pole klíčů', Array.isArray(row?.fuels) && row.fuels.includes('octane_100'));
+    check('žádost má status new', row?.status === 'new');
+  }
+  {
+    const res = await get('/api/admin/station-requests?status=new', { auth: true });
+    checkStatus('GET station-requests?status=new', res, 200);
+    check('filtr vrací jen new', (res.json || []).every((r) => r.status === 'new'));
+  }
+  {
+    const res = await get('/api/admin/station-requests?status=nesmysl', { auth: true });
+    checkStatus('GET station-requests?status=nesmysl', res, 400);
+    check('neznámý filtr žádostí je bad_request', res.json?.error === 'bad_request');
+  }
+  {
+    const res = await patch(`/api/admin/station-requests/${requestId}`, { status: 'nesmysl' }, { auth: true });
+    checkStatus('PATCH žádost – neplatný status', res, 400);
+    check('neplatný status žádosti je validation_error', isValidationError(res));
+  }
+  {
+    const res = await patch(`/api/admin/station-requests/${missingId}`, { status: 'approved' }, { auth: true });
+    checkStatus('PATCH žádost – neexistující id', res, 404);
+  }
+  {
+    const res = await patch('/api/admin/station-requests/abc', { status: 'approved' }, { auth: true });
+    checkStatus('PATCH žádost – neplatné id', res, 400);
+  }
+  {
+    const before = (await get('/api/map/')).headers.get('etag');
+    const res = await patch(
+      `/api/admin/station-requests/${requestId}`,
+      { status: 'approved', admin_note: 'Ověřeno podle fotky.' },
+      { auth: true }
+    );
+    checkStatus('PATCH žádost → approved', res, 200);
+    check('schválení ok:true', res.json?.ok === true);
+    check('schválení vrací station_id', typeof res.json?.station_id === 'number');
+    approvedStationId = res.json?.station_id;
+
+    const map = await get('/api/map/');
+    check('schválení zneplatnilo cache mapy', map.headers.get('etag') !== before);
+    const marker = (map.json || []).find((s) => s.id === approvedStationId);
+    check('schválená stanice je v mapě', Boolean(marker));
+    check('stanice v mapě má značku ze žádosti', marker?.brand_name === 'Smoke Pumpa');
+    check('stanice v mapě má souřadnice ze žádosti', marker?.lat === spots[0].lat && marker?.lon === spots[0].lon);
+    check('stanice v mapě hlásí has_100', marker?.has_100 === 1);
+    check('stanice v mapě hlásí has_98', marker?.has_98 === 1);
+    // Bit 0 = octane_100, bit 1 = octane_98 (src/fuel-flags.js).
+    check('maska paliv je 3 (100 + 98)', marker?.f === 3, `f=${marker?.f}`);
+  }
+  {
+    const res = await get(`/api/detail/${approvedStationId}`);
+    checkStatus('GET detail schválené stanice', res, 200);
+    check('detail má název ze žádosti', res.json?.name === 'U testovacího sjezdu');
+    check('detail má obec ze žádosti', res.json?.city === 'Smokov');
+    check('detail má adresu ze žádosti', res.json?.address === 'Testovací 1');
+    check('detail má obě paliva', ['octane_100', 'octane_98'].every((f) => (res.json?.fuels || []).includes(f)));
+    // Poznámka uživatele patří administraci, ne veřejnému detailu stanice.
+    check('poznámka ze žádosti se do detailu nepropsala', !res.json?.note);
+  }
+  {
+    const res = await get(`/api/station-requests?device_id=${requestDevice}`);
+    const row = (res.json || []).find((r) => r.id === requestId);
+    check('moje žádost je schválená', row?.status === 'approved');
+    check('moje žádost odkazuje na stanici', row?.station_id === approvedStationId);
+    check('moje žádost má datum vyřízení', typeof row?.resolved_at === 'string');
+  }
+  {
+    const res = await patch(`/api/admin/station-requests/${requestId}`, { status: 'approved' }, { auth: true });
+    checkStatus('PATCH žádost – opakované schválení', res, 409);
+    check('opakované schválení je already_approved', res.json?.error === 'already_approved');
+  }
+  {
+    // Schválená stanice se do kontroly duplicit musí započítat okamžitě.
+    const res = await post('/api/station-requests', { device_id: device('dup-station'), ...at(spots[0]) });
+    checkStatus('POST station-request – na místě schválené stanice', res, 409);
+    check('duplicita proti stanici má kód duplicate_station', res.json?.error === 'duplicate_station');
+    check(
+      'duplicita proti stanici pojmenuje benzínku',
+      (res.json?.message || '').includes('Smoke Pumpa'),
+      res.json?.message
+    );
+  }
+  {
+    // Hodnocení uživatelské stanice musí přežít i přestavbu z OSM (níž).
+    const res = await post(`/api/stations/${approvedStationId}/reviews`, {
+      device_id: device('user-station'),
+      rating: 5,
+      comment: 'Hodnocení uživatelské stanice.',
+    });
+    checkStatus('POST hodnocení schválené stanice', res, 201);
+  }
+
+  let rejectedRequestId = null;
+  {
+    const created = await post('/api/station-requests', {
+      device_id: device('reject'),
+      ...at(spots[6], { brand_name: 'Smoke Zamítnutá' }),
+    });
+    rejectedRequestId = created.json?.request_id;
+    check('připravena žádost k zamítnutí', typeof rejectedRequestId === 'number');
+
+    const res = await patch(`/api/admin/station-requests/${rejectedRequestId}`, { status: 'rejected' }, { auth: true });
+    checkStatus('PATCH žádost → rejected bez důvodu', res, 400);
+    check('zamítnutí bez důvodu je validation_error', isValidationError(res));
+    check('chyba ukazuje na admin_note', res.json?.field === 'admin_note');
+  }
+  {
+    const res = await patch(
+      `/api/admin/station-requests/${rejectedRequestId}`,
+      { status: 'rejected', admin_note: 'Na téhle adrese žádná pumpa není.' },
+      { auth: true }
+    );
+    checkStatus('PATCH žádost → rejected s důvodem', res, 200);
+
+    const mine = await get(`/api/station-requests?device_id=${device('reject')}`);
+    const row = (mine.json || []).find((r) => r.id === rejectedRequestId);
+    check('zamítnutá žádost má status rejected', row?.status === 'rejected');
+    check('uživatel vidí důvod zamítnutí', row?.admin_note === 'Na téhle adrese žádná pumpa není.');
+    check('zamítnutá žádost nemá station_id', row?.station_id === null);
+
+    const map = await get('/api/map/');
+    check(
+      'zamítnutá žádost stanici nezaložila',
+      !(map.json || []).some((s) => s.brand_name === 'Smoke Zamítnutá')
+    );
+  }
+  {
+    const created = await post('/api/station-requests', {
+      device_id: device('delete'),
+      ...at(spots[7]),
+    });
+    const id = created.json?.request_id;
+    check('připravena žádost ke smazání', typeof id === 'number');
+
+    const res = await del(`/api/admin/station-requests/${id}`, undefined, { auth: true });
+    checkStatus('DELETE žádost', res, 200);
+    const again = await del(`/api/admin/station-requests/${id}`, undefined, { auth: true });
+    checkStatus('DELETE žádost podruhé', again, 404);
+  }
+  {
+    const res = await del('/api/admin/station-requests/abc', undefined, { auth: true });
+    checkStatus('DELETE žádost – neplatné id', res, 400);
+  }
+
   section('obecné chybové stavy');
   {
     const res = await post(`/api/stations/${stationId}/fuel-vote`, '{tohle není JSON', { raw: true });
@@ -449,6 +736,7 @@ async function run(db) {
     ['GET', '/api/admin/reports'],
     ['GET', '/api/admin/reviews'],
     ['GET', '/api/admin/stations'],
+    ['GET', '/api/admin/station-requests'],
     ['GET', '/api/admin/fuel-votes'],
     ['POST', '/api/admin/test-mail'],
     ['GET', '/admin'],
@@ -695,8 +983,130 @@ async function run(db) {
     check('ping hlásí prostředí', res.json?.env === 'production', `dostal ${res.json?.env}`);
   }
 
+  await checkImportProtection(db, approvedStationId);
   await checkAppKeyModes(db);
   await checkHardening(db, stationId);
+}
+
+/**
+ * Místa, kolem kterých do 150 m není žádná benzínka – jinak by odeslání žádosti
+ * skončilo na kontrole duplicit. Mřížka je pevná, ať je běh deterministický;
+ * krok 0,05° (asi 5 km) zároveň zaručí, že si vrácené body nekolidují navzájem.
+ */
+function findFreeSpots(db, count) {
+  const stations = db.prepare('SELECT lat, lon FROM station').all();
+  const spots = [];
+
+  for (let step = 0; step < 400 && spots.length < count; step += 1) {
+    const lat = Number((49.05 + (step % 20) * 0.05).toFixed(5));
+    const lon = Number((14.55 + Math.floor(step / 20) * 0.05).toFixed(5));
+    // Hrubý obdélník o poloměru asi kilometr – s rezervou nad limitem 150 m.
+    const occupied = stations.some((s) => Math.abs(s.lat - lat) < 0.01 && Math.abs(s.lon - lon) < 0.02);
+    if (!occupied) spots.push({ lat, lon });
+  }
+  return spots;
+}
+
+/**
+ * Nejnebezpečnější místo celé funkce: `scripts/import-osm.js` je kompletní přestavba
+ * tabulky `station` a rozdává nejnižší volná `id`. Kdyby uživatelské stanice mazal,
+ * přišly by o hodnocení, a kdyby jejich `id` přidělil cizí pumpě, hodnocení by se
+ * tiše přepnula k ní.
+ *
+ * Test běží nad vlastní kopií databáze a uživatelskou stanici v ní schválně přesune
+ * na `id` 1, tedy přesně na to, které by import jinak rozdal jako první.
+ */
+async function checkImportProtection(db, userStationId) {
+  section('import z OSM – ochrana uživatelských stanic');
+  if (typeof userStationId !== 'number') {
+    check('je z čeho vyjít (schválená uživatelská stanice)', false);
+    return;
+  }
+
+  const Database = require('better-sqlite3');
+  const { dir, target } = copyDatabase(db.name);
+  const geojsonPath = path.join(dir, 'osm-fixture.geojson');
+
+  const feature = (id, lat, lon, brand) => ({
+    type: 'Feature',
+    id,
+    properties: { '@id': id, amenity: 'fuel', brand, 'fuel:octane_100': 'yes' },
+    geometry: { type: 'Point', coordinates: [lon, lat] },
+  });
+  fs.writeFileSync(
+    geojsonPath,
+    JSON.stringify({
+      type: 'FeatureCollection',
+      features: [
+        feature('node/900000001', 49.9, 15.9, 'Smoke Import A'),
+        feature('node/900000002', 49.8, 15.8, 'Smoke Import B'),
+      ],
+    })
+  );
+
+  try {
+    const seed = new Database(target);
+    // Uvolníme `id` 1 a uživatelskou stanici na něj přesuneme – bez opravy v importu
+    // by ho dostala první pumpa z GeoJSONu.
+    for (const table of ['review', 'report', 'fuel_vote', 'station_fuel', 'station_tag']) {
+      seed.prepare(`DELETE FROM ${table} WHERE station_id = 1`).run();
+      seed.prepare(`UPDATE ${table} SET station_id = 1 WHERE station_id = ?`).run(userStationId);
+    }
+    seed.prepare('DELETE FROM station WHERE id = 1').run();
+    seed.prepare('UPDATE station SET id = 1 WHERE id = ?').run(userStationId);
+    seed.prepare('UPDATE station_request SET station_id = 1 WHERE station_id = ?').run(userStationId);
+    const before = {
+      fuels: seed.prepare('SELECT COUNT(*) AS c FROM station_fuel WHERE station_id = 1').get().c,
+      reviews: seed.prepare('SELECT COUNT(*) AS c FROM review WHERE station_id = 1').get().c,
+    };
+    seed.close();
+    check('kopie DB má uživatelskou stanici na id 1', before.fuels > 0 && before.reviews > 0);
+
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'import-osm.js'), '--yes'], {
+      cwd: ROOT,
+      env: { ...process.env, DB_PATH: target, OSM_GEOJSON: geojsonPath },
+      stdio: 'pipe',
+    });
+
+    const after = new Database(target, { readonly: true });
+    const station = after.prepare('SELECT * FROM station WHERE id = 1').get();
+    check('uživatelská stanice přestavbu přežila', Boolean(station));
+    check('a zůstala uživatelská', station?.data_source === 'user');
+    check('a drží si značku ze žádosti', station?.brand_name === 'Smoke Pumpa');
+    check(
+      'a nechala si paliva',
+      after.prepare('SELECT COUNT(*) AS c FROM station_fuel WHERE station_id = 1').get().c === before.fuels
+    );
+    check(
+      'a nechala si hodnocení',
+      after.prepare('SELECT COUNT(*) AS c FROM review WHERE station_id = 1').get().c === before.reviews
+    );
+
+    const imported = after
+      .prepare("SELECT id, brand_name FROM station WHERE data_source <> 'user' ORDER BY id")
+      .all();
+    check('naimportovaly se obě pumpy z fixtury', imported.length === 2, `${imported.length} stanic`);
+    check('import nesáhl na obsazené id 1', imported.every((s) => s.id !== 1));
+    check(
+      'obsah uživatelské stanice se nepřepsal na cizí pumpu',
+      imported.every((s) => s.brand_name !== 'Smoke Pumpa')
+    );
+    check(
+      'žádost pořád ukazuje na svou stanici',
+      after.prepare('SELECT COUNT(*) AS c FROM station_request WHERE station_id = 1').get().c === 1
+    );
+    // Osiřelý obsah po smazaných OSM stanicích uklízí až scripts/cleanup-db.js,
+    // ale hodnocení uživatelské stanice tam být nesmí.
+    check(
+      'stanic je jen fixtura plus uživatelská',
+      after.prepare('SELECT COUNT(*) AS c FROM station').get().c === 3
+    );
+    after.close();
+  } catch (e) {
+    check('import z OSM proběhl', false, e.stderr ? e.stderr.toString().slice(-500) : e.message);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 /**

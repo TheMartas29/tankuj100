@@ -5,12 +5,13 @@ const { asyncHandler } = require('../http/async-handler');
 const { perHour, perHourByIp, writeGuard } = require('../http/rate-limit');
 const { requireAppKey } = require('../http/app-key');
 const { parseStationId, requireDeviceId } = require('../validation/primitives');
-const { parseReview, parseReport, parseFuelVote } = require('../validation/inputs');
+const { parseReview, parseReport, parseFuelVote, parseStationRequest } = require('../validation/inputs');
 const stationService = require('../services/station.service');
 const reviewService = require('../services/review.service');
 const reportService = require('../services/report.service');
 const fuelVoteService = require('../services/fuel-vote.service');
 const feedbackService = require('../services/feedback.service');
+const stationRequestService = require('../services/station-request.service');
 
 const router = express.Router();
 
@@ -117,6 +118,33 @@ router.post(
     const fuel = fuelVoteService.castVote(stationId, parseFuelVote(req.body));
 
     res.json({ ok: true, message: 'Díky, vaše info pomůže ostatním.', fuel });
+  })
+);
+
+// Návrh nové benzínky. Stanice tímhle nevzniká – jen žádost, kterou ještě někdo
+// ručně projde. Strop je nízko schválně: každou položku pak někdo musí ověřit.
+router.post(
+  '/station-requests',
+  perHour('stationrequests', 10),
+  asyncHandler((req, res) => {
+    const request = stationRequestService.submit(parseStationRequest(req.body));
+
+    res.status(201).json({
+      ok: true,
+      message: 'Díky! Benzínku ověříme a přidáme. V „Mých žádostech“ uvidíte, jak to dopadlo.',
+      request_id: request.id,
+      status: request.status,
+    });
+  })
+);
+
+router.get(
+  '/station-requests',
+  asyncHandler((req, res) => {
+    // Odpověď patří jednomu zařízení a je v ní i důvod zamítnutí, tak ať se nikde
+    // neuloží. `device_id` z query se ověřuje stejně jako v těle zápisů.
+    res.set('Cache-Control', 'no-store');
+    res.json(stationRequestService.listForDevice(requireDeviceId(req.query)));
   })
 );
 

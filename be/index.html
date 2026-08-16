@@ -165,6 +165,7 @@
 
   <nav class="tabs" id="tabs">
     <button data-tab="reports" class="active">Hlášení <span class="badge hidden" id="reportsBadge">0</span></button>
+    <button data-tab="requests">Žádosti <span class="badge hidden" id="requestsBadge">0</span></button>
     <button data-tab="reviews">Hodnocení</button>
     <button data-tab="fuel">Paliva</button>
     <button data-tab="stations">Benzínky</button>
@@ -174,6 +175,12 @@
   <section id="tab-reports">
     <div class="toolbar" id="reportFilters"></div>
     <div class="list" id="reportsList"></div>
+  </section>
+
+  <!-- ------------------------------------------------------ žádosti o benzínku -->
+  <section id="tab-requests" class="hidden">
+    <div class="toolbar" id="requestFilters"></div>
+    <div class="list" id="requestsList"></div>
   </section>
 
   <!-- ------------------------------------------------------ hodnocení -->
@@ -295,8 +302,12 @@ async function loadStats() {
   try {
     const s = await api('/api/admin/stats');
     const needsAttention = s.reportsNew + s.reportsInReview;
+    // Starší backend pole `stationRequestsNew` ještě nemusí posílat – bez `?? 0`
+    // by se celý přehled utrhl na `undefined`.
+    const requestsNew = s.stationRequestsNew ?? 0;
     $('cards').innerHTML = `
       ${card('K vyřízení', needsAttention, needsAttention > 0 ? 'attention' : '', `${s.reportsNew} nových`)}
+      ${card('Žádosti', requestsNew, requestsNew > 0 ? 'attention' : '', 'nevyřízených', 'requests')}
       ${card('Benzínky', s.stations, '', s.stationsWithoutFuels ? `${s.stationsWithoutFuels} bez paliv` : 'všechny s palivy')}
       ${card('100 oktanů', s.stations100, '', `${s.stations98} se 98 okt.`)}
       ${card('Hodnocení', s.reviews, '', s.ratingAverage ? `⌀ ${s.ratingAverage} ★` : 'bez hodnocení')}
@@ -305,6 +316,8 @@ async function loadStats() {
     `;
     $('reportsBadge').textContent = s.reportsNew;
     $('reportsBadge').classList.toggle('hidden', s.reportsNew === 0);
+    $('requestsBadge').textContent = requestsNew;
+    $('requestsBadge').classList.toggle('hidden', requestsNew === 0);
     $('mailState').innerHTML = s.mail_configured
       ? '✉️ notifikace zapnuté'
       : '<span style="color:var(--accent)">✉️ notifikace VYPNUTÉ</span>';
@@ -454,6 +467,179 @@ async function deleteReport(id) {
     await api(`/api/admin/reports/${id}`, { method: 'DELETE' });
     toast('Hlášení smazáno.');
     loadReports(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+// ============================================================ žádosti o benzínku
+
+// Uživatel posílá klíče paliv, admin je má číst česky. Číselník je stejný jako
+// `FUEL_BITS` v `be/src/fuel-flags.js`; když tam přibude klíč, patří i sem.
+const FUEL_LABELS = {
+  octane_100: '100 oktanů',
+  octane_98: '98 oktanů',
+  octane_95: 'Natural 95',
+  diesel: 'Nafta',
+  lpg: 'LPG',
+  cng: 'CNG',
+  adblue: 'AdBlue',
+  e85: 'E85',
+};
+
+const REQUEST_STATUSES = { new: 'nová', approved: 'schválená', rejected: 'zamítnutá' };
+// Stav → třída odznaku. `approved` se veze na zeleném `resolved`, žádnou vlastní
+// třídu kvůli tomu nepřidáváme.
+const REQUEST_TAGS = { new: 'new', approved: 'resolved', rejected: 'rejected' };
+
+const REQUEST_FILTERS = [
+  ['new', 'K vyřízení'],
+  ['approved', 'Schválené'],
+  ['rejected', 'Zamítnuté'],
+  ['all', 'Vše'],
+];
+
+let requestFilter = 'new';
+
+function renderRequestFilters() {
+  $('requestFilters').innerHTML = REQUEST_FILTERS
+    .map(([key, label]) =>
+      `<button class="chip ${requestFilter === key ? 'active' : ''}" onclick="setRequestFilter('${key}')">${esc(label)}</button>`)
+    .join('');
+}
+
+function setRequestFilter(key) {
+  requestFilter = key;
+  renderRequestFilters();
+  loadRequests();
+}
+
+async function loadRequests() {
+  $('requestsList').innerHTML = '<div class="empty">Načítám…</div>';
+  try {
+    const rows = await api(`/api/admin/station-requests?status=${requestFilter}`);
+    if (!Array.isArray(rows) || rows.length === 0) {
+      $('requestsList').innerHTML = requestFilter === 'new'
+        ? emptyState('Nic k vyřízení', 'Žádná nová žádost o přidání benzínky nečeká.')
+        : emptyState('Žádné žádosti', 'V tomhle filtru nic není.');
+      return;
+    }
+    $('requestsList').innerHTML = rows.map(requestItem).join('');
+  } catch (err) {
+    // Endpoint nemusí být nasazený – ať je vidět důvod, ne prázdná stránka.
+    $('requestsList').innerHTML = errorState(err.message, 'loadRequests()');
+  }
+}
+
+/** `fuels` chodí jako pole klíčů, ale ze sloupce to může přijít i jako JSON text. */
+function requestFuels(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return value.split(',').map((key) => key.trim()).filter(Boolean);
+    }
+  }
+  return [];
+}
+
+function fuelTags(fuels) {
+  const keys = requestFuels(fuels);
+  if (keys.length === 0) return '<span class="tag muted">bez paliv</span>';
+  return keys.map((key) => {
+    const cls = key === 'octane_100' ? 'oct100' : key === 'octane_98' ? 'oct98' : 'type';
+    // Neznámý klíč vypíšeme, jak přišel – aspoň bude vidět, že číselník nesedí.
+    return `<span class="tag ${cls}">${esc(FUEL_LABELS[key] || key)}</span>`;
+  }).join(' ');
+}
+
+function requestItem(r) {
+  const done = r.status === 'approved' || r.status === 'rejected';
+  const mapLink = r.lat && r.lon
+    ? `<a href="https://maps.apple.com/?ll=${r.lat},${r.lon}&q=${encodeURIComponent(r.brand_name || 'benzínka')}" target="_blank" rel="noopener">mapa</a>`
+    : '';
+  const place = [r.city, r.address].filter(Boolean).map(esc).join(', ');
+  const name = r.name ? ` <span class="meta">${esc(r.name)}</span>` : '';
+  const device = r.device_id ? ` • zařízení ${esc(String(r.device_id).slice(0, 8))}` : '';
+
+  // Vyřízená žádost: kdy, kým (pokud to backend pošle) a u zamítnutí i důvod,
+  // protože ten uživatel vidí v aplikaci a musí být po ruce.
+  const resolution = done
+    ? `<div class="admin-note">${esc(REQUEST_STATUSES[r.status] || r.status)}
+         ${r.resolved_at ? `• ${esc(formatDate(r.resolved_at))}` : ''}
+         ${r.resolved_by ? `• ${esc(r.resolved_by)}` : ''}
+         ${r.status === 'approved' && r.station_id
+           ? `• vznikla benzínka <a href="#" onclick="openStation(${Number(r.station_id)}); return false;">#${Number(r.station_id)}</a>`
+           : ''}
+         ${r.admin_note
+           ? `<div style="margin-top:4px">${r.status === 'rejected' ? 'Důvod pro uživatele' : 'Poznámka'}: ${esc(r.admin_note)}</div>`
+           : ''}</div>`
+    : '';
+
+  return `<article class="item ${done ? 'resolved' : ''}">
+    <div>
+      <div class="head">
+        <span class="tag ${REQUEST_TAGS[r.status] || 'muted'}">${esc(REQUEST_STATUSES[r.status] || r.status)}</span>
+        <span class="station">${esc(r.brand_name || 'Neznámá značka')}</span>${name}
+      </div>
+      <div class="meta">#${r.id} • ${esc(formatDate(r.created_at))}${device}
+        ${place ? `• ${place} ` : ''}${mapLink}</div>
+      <div class="detail-box">${fuelTags(r.fuels)}</div>
+      ${r.note ? `<div class="body">${esc(r.note)}</div>` : ''}
+      ${resolution}
+    </div>
+    <div class="actions">
+      ${!done ? `<button class="small" onclick="approveRequest(${r.id})">✓ Schválit</button>` : ''}
+      ${!done ? `<button class="small" onclick="rejectRequest(${r.id})"
+          title="Vyžádá si důvod – ten uvidí uživatel v aplikaci.">Zamítnout</button>` : ''}
+      <button class="small danger" onclick="deleteRequest(${r.id})">Smazat</button>
+    </div>
+  </article>`;
+}
+
+/** Skočí na záložku Benzínky a předfiltruje ji na jedno ID. */
+function openStation(id) {
+  $('stationSearch').value = String(id);
+  $('tabs').querySelector('button[data-tab="stations"]')?.click();
+}
+
+async function approveRequest(id) {
+  if (!confirm(`Schválit žádost #${id}?\nZaloží se nová benzínka a hned se objeví v aplikaci.`)) return;
+  try {
+    const res = await api(`/api/admin/station-requests/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'approved' }),
+    });
+    const stationId = res?.station_id ?? res?.station?.id;
+    toast(stationId ? `Schváleno – vznikla benzínka #${stationId}.` : 'Žádost schválena.');
+    loadRequests(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function rejectRequest(id) {
+  const reason = prompt(
+    `Důvod zamítnutí žádosti #${id}.\nPOZOR: tenhle text uvidí uživatel v aplikaci.`);
+  if (reason === null) return;
+  if (!reason.trim()) {
+    toast('Bez důvodu to nejde – uživateli by přišlo prázdné zamítnutí.', true);
+    return;
+  }
+  try {
+    await api(`/api/admin/station-requests/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'rejected', admin_note: reason.trim() }),
+    });
+    toast(`Žádost #${id} zamítnuta.`);
+    loadRequests(); loadStats();
+  } catch (err) { toast(err.message, true); }
+}
+
+async function deleteRequest(id) {
+  if (!confirm(`Smazat žádost #${id}? Tohle nejde vzít zpět.`)) return;
+  try {
+    await api(`/api/admin/station-requests/${id}`, { method: 'DELETE' });
+    toast('Žádost smazána.');
+    loadRequests(); loadStats();
   } catch (err) { toast(err.message, true); }
 }
 
@@ -721,7 +907,10 @@ function fuelItem(r) {
   </article>`;
 }
 
-const LOADERS = { reports: loadReports, reviews: loadReviews, fuel: loadFuelVotes, stations: loadStations };
+const LOADERS = {
+  reports: loadReports, requests: loadRequests, reviews: loadReviews,
+  fuel: loadFuelVotes, stations: loadStations,
+};
 
 $('cards').addEventListener('click', (event) => {
   const tab = event.target.closest('[data-goto]')?.dataset.goto;
@@ -744,6 +933,7 @@ function refreshAll() {
 }
 
 renderReportFilters();
+renderRequestFilters();
 renderReviewFilters();
 loadStats();
 loadReports();

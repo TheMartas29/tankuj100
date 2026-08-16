@@ -8,12 +8,14 @@ const {
   parseStatusFilter,
   REVIEW_STATUSES,
   REPORT_STATUSES,
+  STATION_REQUEST_STATUSES,
 } = require('../validation/inputs');
 const stationService = require('../services/station.service');
 const reviewService = require('../services/review.service');
 const reportService = require('../services/report.service');
 const statsService = require('../services/stats.service');
 const fuelVoteService = require('../services/fuel-vote.service');
+const stationRequestService = require('../services/station-request.service');
 const { isConfigured, sendNotification } = require('../mailer');
 
 const router = express.Router();
@@ -101,6 +103,32 @@ router.delete(
   '/stations/:id',
   asyncHandler((req, res) => {
     stationService.remove(parseStationId(req.params.id));
+    res.json(OK);
+  })
+);
+
+router.get(
+  '/station-requests',
+  asyncHandler((req, res) => {
+    res.json(stationRequestService.listForAdmin(requireStatusFilter(req, STATION_REQUEST_STATUSES, 'žádosti')));
+  })
+);
+
+// Schválení tady zakládá stanici, takže odpověď nese i její `station_id` – admin
+// se na ni musí umět rovnou podívat.
+router.patch(
+  '/station-requests/:id',
+  asyncHandler((req, res) => {
+    const id = parseId(req.params.id, 'ID žádosti');
+    const status = parseStatusUpdate(req.body, STATION_REQUEST_STATUSES);
+    res.json({ ...OK, ...stationRequestService.setStatus(id, status, req.body?.admin_note) });
+  })
+);
+
+router.delete(
+  '/station-requests/:id',
+  asyncHandler((req, res) => {
+    stationRequestService.remove(parseId(req.params.id, 'ID žádosti'));
     res.json(OK);
   })
 );
