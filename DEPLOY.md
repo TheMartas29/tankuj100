@@ -191,6 +191,15 @@ nic nenajde (masky jsou nula). Pořadí je tedy: nasadit backend na produkci →
 | `APP_KEY_MODE` | `soft` (do vydání verze s klíčem) | **`hard`** |
 | `APP_KEY` | jiný než na testu | jiný než na produkci |
 | e-maily | EmailJS | vypnuté (jen do logu) |
+| `ADMIN_URL` | tankuj100… | **tankuj100-test…** |
+| `EMAILJS_ORIGIN` | tankuj100… | **tankuj100-test…** |
+
+Poslední dva řádky se snadno přehlédnou, protože **se dnes nikde neprojeví**:
+notifikace jsou na testu vypnuté (`mailEnabled` chce vyplněné `EMAILJS_SERVICE_ID`,
+`EMAILJS_TEMPLATE_ID` i `EMAILJS_PUBLIC_KEY`), takže `mailer` jen loguje a `ADMIN_URL`
+ani `EMAILJS_ORIGIN` do ničeho nevstoupí. Jakmile ale někdo klíče na testu vyplní,
+aby si notifikace vyzkoušel, začnou testovací e-maily odkazovat do **produkční**
+administrace a EmailJS dostane produkční origin.
 
 Klíče se **nesmí** shodovat – jinak by přístup k testu otevřel i produkci.
 
