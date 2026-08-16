@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Export archivu pro App Store Connect. Viz DEPLOY.md, sekce „Nahrání buildu“. -->
+    <key>method</key>
+    <string>app-store-connect</string>
+
+    <key>teamID</key>
+    <string>R5MFNT4B5A</string>
+
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!-- Nahrání řešíme zvlášť přes altool, ať je vidět, co se posílá. -->
+    <key>destination</key>
+    <string>export</string>
+
+    <key>uploadSymbols</key>
+    <true/>
+</dict>
+</plist>

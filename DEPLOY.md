@@ -143,6 +143,40 @@ přestane fungovat ze dne na den:
 `/health` klíč nevyžaduje nikdy (kvůli monitoringu) a `/api/admin/*` taky ne – ten má
 vlastní basic auth a prohlížeč by hlavičku stejně neposlal.
 
+## Nahrání buildu do App Store Connect
+
+Potřeba jednou nastavit (obojí vyžaduje přihlášení k Apple ID, takže to nejde
+automatizovat):
+
+1. **Distribuční certifikát** pro tým `R5MFNT4B5A` – Xcode → Settings → Accounts →
+   Manage Certificates → **+** → Apple Distribution. V klíčence musí být vidět jako
+   `Apple Distribution: … (R5MFNT4B5A)`; ověř přes `security find-identity -v -p codesigning`.
+2. **App Store Connect API klíč** – App Store Connect → Users and Access →
+   Integrations → App Store Connect API → **+**, role Developer nebo App Manager.
+   Stažený `AuthKey_XXXXXXXX.p8` patří do `~/.appstoreconnect/private_keys/`.
+   Poznamenej si **Key ID** a **Issuer ID**.
+
+Potom už je nahrání tři příkazy:
+
+```bash
+cd ios/tankuj100 && xcodebuild -project tankuj100.xcodeproj -scheme tankuj100 -configuration Release -archivePath build/tankuj100.xcarchive -destination 'generic/platform=iOS' archive
+```
+
+```bash
+cd ios/tankuj100 && xcodebuild -exportArchive -archivePath build/tankuj100.xcarchive -exportOptionsPlist ../ExportOptions.plist -exportPath build/export
+```
+
+```bash
+xcrun altool --upload-app -f ios/tankuj100/build/export/tankuj100.ipa -t ios --apiKey <KEY_ID> --apiIssuer <ISSUER_ID>
+```
+
+Číslo buildu (`CURRENT_PROJECT_VERSION`) musí být u stejné verze pokaždé vyšší než
+u předchozího nahrání, jinak App Store Connect build odmítne.
+
+⚠️ Do poznámek pro App Review napiš, že aplikace obsahuje **skrytý přepínač
+prostředí** (7× klepnutí na verzi) a k čemu slouží. Skryté funkce jsou podle
+pravidla 2.3.1 důvod k zamítnutí; přiznaná vývojářská pomůcka problém není.
+
 ## Testovací prostředí
 
 | | produkce | test |
