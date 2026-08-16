@@ -50,6 +50,10 @@ struct StationLocationPicker: View {
 
     @Binding var pick: MapPick
     var userLocation: CLLocation?
+    /// Bez svolení k poloze se tlačítko „Moje poloha“ vůbec nekreslí. Zašedlé
+    /// tlačítko je horší než žádné – vypadá jako porucha, i když je to jen
+    /// rozhodnutí, které uživatel sám udělal.
+    var canUseLocation = false
 
     @State private var recenter: RecenterCommand?
 
@@ -80,25 +84,31 @@ struct StationLocationPicker: View {
         .allowsHitTesting(false)
     }
 
+    @ViewBuilder
     private var myLocationButton: some View {
-        VStack {
-            Spacer()
-            HStack {
+        if canUseLocation {
+            VStack {
                 Spacer()
-                Button {
-                    guard let userLocation else { return }
-                    recenter = RecenterCommand(point: MapPoint(userLocation.coordinate))
-                } label: {
-                    Label("Moje poloha", systemImage: "location.fill")
-                        .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(.ultraThinMaterial, in: Capsule())
+                HStack {
+                    Spacer()
+                    Button {
+                        guard let userLocation else { return }
+                        recenter = RecenterCommand(point: MapPoint(userLocation.coordinate))
+                    } label: {
+                        Label("Moje poloha", systemImage: "location.fill")
+                            .font(.footnote.weight(.semibold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(.ultraThinMaterial, in: Capsule())
+                    }
+                    // Svolení je, jen zaměření ještě nedorazilo – to je chvilkový
+                    // stav, tady zašedlé tlačítko dává smysl.
+                    .disabled(userLocation == nil)
                 }
-                .disabled(userLocation == nil)
             }
+            .padding(10)
+            .transition(.opacity)
         }
-        .padding(10)
     }
 
     /// Vycentrování je příkaz, ne stav – bez vlastní identity by se po každém

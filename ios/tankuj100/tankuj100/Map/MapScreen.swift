@@ -18,7 +18,8 @@ struct MapScreen: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             StationMapView(stations: viewModel.stations,
-                           selected: $viewModel.selectedStation)
+                           selected: $viewModel.selectedStation,
+                           canShowUserLocation: location.isAuthorized)
                 .ignoresSafeArea()
 
             // Menu si okraje i ztmavení řeší samo, proto tu nemá odsazení.
@@ -64,6 +65,7 @@ struct MapScreen: View {
             case .addStation:
                 AddStationSheet(badge: requestBadge,
                                 userLocation: location.location,
+                                canUseLocation: location.isAuthorized,
                                 onShowStation: showStation,
                                 onClose: { viewModel.activeSheet = nil })
             case .stationList:

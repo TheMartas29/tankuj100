@@ -76,6 +76,11 @@ struct FloatingMenu: View {
                     }
                 }
             }
+            // Odznaky se kreslí **mimo** skleněný kontejner. Uvnitř to nešlo ani
+            // jedním pořadím: před `glassEffectID` si je iOS 26 přibere do
+            // skleněného tvaru a rozmaže je, za ním je zase kontejner ořízne.
+            // Zvenčí je proto drží vrstva prázdných rámečků stejné geometrie.
+            .overlay(alignment: .bottomLeading) { badgeLayer }
             // Dole vlevo si Apple Mapy kreslí povinný podpis („Maps · Legal“),
             // menu ho nesmí překrývat.
             .padding(.leading, 20)
@@ -103,13 +108,43 @@ struct FloatingMenu: View {
         circleButton(systemImage: "line.3.horizontal", pointSize: 26) {
             setExpanded(true)
         }
-        .overlay(alignment: .topTrailing) { badge(collapsedCount) }
-        .overlay(alignment: .topLeading) {
-            if collapsedHasNews { badge(.dot).offset(x: -10, y: -3) }
-        }
         .glassMorphID("toggle", in: glass)
         .accessibilityLabel(toggleAccessibilityLabel)
         .accessibilityHint("Rozbalí nabídku")
+    }
+
+    /// Kopie rozvržení tlačítek, ve které jsou místo nich prázdné rámečky. Odznaky
+    /// tak sedí přesně na svých kolečkách, ale kreslí se až nad sklem.
+    private var badgeLayer: some View {
+        VStack(alignment: .leading, spacing: spacing) {
+            if isExpanded {
+                ForEach(items) { item in
+                    badgeSlot {
+                        badge(item.badge)
+                    }
+                }
+            } else {
+                badgeSlot {
+                    badge(collapsedCount)
+                } leading: {
+                    // Tečka na druhé straně, aby si s číslem nelezly do cesty.
+                    if collapsedHasNews { badge(.dot).offset(x: badgeInset, y: badgeInset) }
+                }
+            }
+        }
+        // Klepnutí musí projít skrz na tlačítka pod vrstvou.
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    private func badgeSlot<Trailing: View, Leading: View>(
+        @ViewBuilder _ trailing: () -> Trailing,
+        @ViewBuilder leading: () -> Leading = { EmptyView() }
+    ) -> some View {
+        Color.clear
+            .frame(width: diameter, height: diameter)
+            .overlay(alignment: .topTrailing, content: trailing)
+            .overlay(alignment: .topLeading, content: leading)
     }
 
     private func itemButton(_ item: FloatingMenuItem) -> some View {
@@ -119,9 +154,9 @@ struct FloatingMenu: View {
             setExpanded(false)
             item.action()
         }
-        .overlay(alignment: .topTrailing) { badge(item.badge) }
         .glassMorphID(item.id, in: glass)
-        // Bez popisku je tohle jediné, co ikonu pojmenuje.
+        // Odznak sem nepatří – kreslí ho `badgeLayer` mimo sklo. Zůstává tu ale
+        // v hlasovém popisu, aby ho VoiceOver nepřeskočil.
         .accessibilityLabel(item.title + item.badge.spokenSuffix)
     }
 
@@ -139,28 +174,43 @@ struct FloatingMenu: View {
         .modifier(FloatingButtonBackground())
     }
 
+    /// Jak daleko od rohu rámečku sedí střed odznaku, aby ležel na **obvodu kruhu**
+    /// a ne v prázdném rohu opsaného čtverce. Roh čtverce je od kruhu vzdálený
+    /// `r·(√2−1)`, tedy u šedesátibodového kolečka skoro devět bodů – přesně o to
+    /// odznak vypadal odlepeně a „za tlačítkem“.
+    ///
+    /// Bod na 45° leží v `r·(1−1/√2)` od hrany rámečku; pro odznak vysoký `h` z toho
+    /// po odečtení jeho poloviny vyjde tohle. U osmnáctibodového odznaku je to skoro
+    /// nula, proto se počítá a nehádá.
+    private func badgeInset(height: CGFloat) -> CGFloat {
+        let radius = diameter / 2
+        return radius * (1 - 1 / 2.squareRoot()) - height / 2
+    }
+
+    private var badgeInset: CGFloat { badgeInset(height: 12) }
+
     @ViewBuilder
     private func badge(_ badge: FloatingMenuBadge) -> some View {
         if badge.isVisible {
-            Group {
-                switch badge {
-                case .count(let value):
-                    Text("\(min(value, 99))")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(minWidth: 18, minHeight: 18)
-                        .padding(.horizontal, 3)
-                        .background(Color.red, in: Capsule())
-                default:
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 12, height: 12)
-                }
+            switch badge {
+            case .count(let value):
+                Text("\(min(value, 99))")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(minWidth: 18, minHeight: 18)
+                    .padding(.horizontal, 3)
+                    .background(Color.red, in: Capsule())
+                    .modifier(BadgeLift())
+                    .offset(x: -badgeInset(height: 18), y: badgeInset(height: 18))
+                    .accessibilityHidden(true)
+            default:
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 12, height: 12)
+                    .modifier(BadgeLift())
+                    .offset(x: -badgeInset, y: badgeInset)
+                    .accessibilityHidden(true)
             }
-            .overlay(Capsule().stroke(Color(.systemBackground), lineWidth: 1.5))
-            .offset(x: 5, y: -5)
-            // Odznak je jen obrázek stavu, do hlasového popisu ho přidává už tlačítko.
-            .accessibilityHidden(true)
         }
     }
 
@@ -226,6 +276,14 @@ struct FloatingMenu: View {
         withAnimation(reduceMotion ? .easeOut(duration: 0.15) : expandAnimation) {
             isExpanded = value
         }
+    }
+}
+
+/// Odznak se od skla odděluje stínem, ne obrysem. Obrys v barvě pozadí vypadal
+/// v tmavém režimu jako tmavá svatozář a odznak působil, že leží pod tlačítkem.
+private struct BadgeLift: ViewModifier {
+    func body(content: Content) -> some View {
+        content.shadow(color: .black.opacity(0.35), radius: 1.5, y: 0.5)
     }
 }
 

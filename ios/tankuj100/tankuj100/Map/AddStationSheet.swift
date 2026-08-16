@@ -10,6 +10,8 @@ struct AddStationSheet: View {
     /// Odznak nepřečtených změn. Zhasne, jakmile se záložka s žádostmi zobrazí.
     var badge: StationRequestBadge?
     var userLocation: CLLocation?
+    /// Svolení k poloze. Bez něj se v mapce neukáže tlačítko „Moje poloha“.
+    var canUseLocation = false
     /// Vyplní se z `MapScreen` – z žádosti se pak dá skočit na hotovou benzínku.
     var onShowStation: ((Int) -> Void)?
     let onClose: () -> Void
@@ -101,7 +103,9 @@ struct AddStationSheet: View {
     private var form: some View {
         Form {
             Section {
-                StationLocationPicker(pick: $pick, userLocation: userLocation)
+                StationLocationPicker(pick: $pick,
+                                      userLocation: userLocation,
+                                      canUseLocation: canUseLocation)
                     .listRowInsets(EdgeInsets())
             } header: {
                 Text("Kde benzínka stojí")

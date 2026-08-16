@@ -7,8 +7,22 @@ struct StationMapView: UIViewRepresentable {
     let stations: [GasStation]
     @Binding var selected: GasStation?
     var onRegionChange: (MKCoordinateRegion) -> Void = { _ in }
+    /// Smíme číst polohu. Bez svolení nemá tlačítko pro vycentrování co dělat –
+    /// klepnutí by jen nic neudělalo. Mění se za běhu, proto se vyhodnocuje
+    /// v `updateUIView`, ne jednorázově při vzniku mapy.
+    var canShowUserLocation = false
 
     @ObservedObject private var store = StationFilterStore.shared
+
+    /// Ladicí přepínač polohu vypne i tam, kde ji uživatel povolil – systémový dotaz
+    /// by jinak překryl snímanou obrazovku na runtime bez ovládacího panelu.
+    private var showsUserLocation: Bool {
+        #if DEBUG
+        return canShowUserLocation && !DebugLaunch.skipLocation
+        #else
+        return canShowUserLocation
+        #endif
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -17,11 +31,6 @@ struct StationMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let map = MKMapView()
         map.delegate = context.coordinator
-        #if DEBUG
-        map.showsUserLocation = !DebugLaunch.skipLocation
-        #else
-        map.showsUserLocation = true
-        #endif
         map.showsCompass = false
         map.pointOfInterestFilter = .excludingAll
         map.setRegion(.czechia, animated: false)
@@ -39,6 +48,10 @@ struct StationMapView: UIViewRepresentable {
         context.coordinator.parent = self
         context.coordinator.load(stations)
         context.coordinator.sync(stations: store.result, on: map)
+
+        map.showsUserLocation = showsUserLocation
+        context.coordinator.locationAllowed = showsUserLocation
+        context.coordinator.updateTrackingControl(for: map.userTrackingMode, animated: false)
 
         // Zavření detailu musí bod v mapě odznačit, jinak na něj podruhé nejde klepnout.
         if selected == nil, let active = map.selectedAnnotations.first {
@@ -101,6 +114,10 @@ struct StationMapView: UIViewRepresentable {
 
         var parent: StationMapView
         weak var trackingControl: UIView?
+        /// Smíme číst polohu. Druhá podmínka viditelnosti tlačítka vedle režimu
+        /// sledování; obě musí rozhodovat na jednom místě, jinak si zápisy do
+        /// `isHidden` přebíjejí a tlačítko problikává.
+        var locationAllowed = false
         private var didCenterOnUser = false
 
         private var data: FilteredStations = .empty
@@ -123,7 +140,9 @@ struct StationMapView: UIViewRepresentable {
         /// a natočení zůstává na systémovém kompasu.
         func updateTrackingControl(for mode: MKUserTrackingMode, animated: Bool) {
             guard let control = trackingControl else { return }
-            let hidden = mode != .none
+            // Bez svolení tlačítko nedává smysl vůbec; se svolením zmizí ve chvíli,
+            // kdy mapa uživatele už sleduje.
+            let hidden = !locationAllowed || mode != .none
             guard control.isHidden != hidden || control.alpha != (hidden ? 0 : 1) else { return }
 
             guard animated else {
