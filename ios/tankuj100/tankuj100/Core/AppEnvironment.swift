@@ -1,29 +1,25 @@
 import Foundation
 
-/// Prostředí, se kterým aplikace mluví.
+/// Prostředí, se kterým aplikace mluví. Každé má vlastní adresu i vlastní klíč –
+/// přepnutí mění obojí naráz, jinak by aplikace klepala na test produkčním klíčem
+/// a dostávala 401.
 ///
-/// Produkce je výchozí a jediná, kam se dá dostat bez kódu. Testovací klíč
-/// **není v binárce** – zadává se ručně ve vývojářském nastavení a ukládá se do
-/// `UserDefaults`. Kdo rozebere aplikaci, najde jen produkční klíč.
+/// Oba klíče jsou v aplikaci natvrdo a bez obfuskace. Z binárky je stejně jde
+/// vytáhnout, takže by schovávání bylo divadlo; slouží k tomu, aby API nešlo
+/// pohodlně provolávat curlem. Když některý unikne, vymění se na serveru i tady.
 enum AppEnvironment: String {
     case production
     case test
 
-    private static let environmentKey = "appEnvironment"
-    private static let testAppKeyKey = "testAppKey"
+    private static let storageKey = "appEnvironment"
 
     /// Čte se i z vláken mimo hlavní – proto `UserDefaults` a ne `@Published`
     /// vlastnost. Změny hlásí `AppEnvironmentStore` kvůli překreslení UI.
     static var current: AppEnvironment {
-        guard let raw = UserDefaults.standard.string(forKey: environmentKey),
-              let value = AppEnvironment(rawValue: raw),
-              value.isUsable
+        guard let raw = UserDefaults.standard.string(forKey: storageKey),
+              let value = AppEnvironment(rawValue: raw)
         else { return .production }
         return value
-    }
-
-    static var storedTestKey: String {
-        UserDefaults.standard.string(forKey: testAppKeyKey) ?? ""
     }
 
     var baseURL: String {
@@ -35,8 +31,8 @@ enum AppEnvironment: String {
 
     var appKey: String {
         switch self {
-        case .production: return APIClient.productionKey
-        case .test: return Self.storedTestKey
+        case .production: return "t100_WrtE15YfHu7wW0VhJPUwrUgAt9YXmLwGF2I56kVH"
+        case .test: return "t100test_6OmjK2dGBvjC4nBkRCdoPjBpK8JNO0tj2pCA"
         }
     }
 
@@ -47,20 +43,12 @@ enum AppEnvironment: String {
         }
     }
 
-    /// Test bez uloženého klíče by jen sypal 401 – v takovém případě se tváříme
-    /// jako produkce, ať se aplikace nezasekne v nepoužitelném stavu.
-    private var isUsable: Bool {
-        self == .production || !Self.storedTestKey.isEmpty
+    var other: AppEnvironment {
+        self == .production ? .test : .production
     }
 
-    static func activateTest(key: String) {
-        UserDefaults.standard.set(key, forKey: testAppKeyKey)
-        UserDefaults.standard.set(AppEnvironment.test.rawValue, forKey: environmentKey)
-    }
-
-    static func activateProduction() {
-        UserDefaults.standard.removeObject(forKey: testAppKeyKey)
-        UserDefaults.standard.set(AppEnvironment.production.rawValue, forKey: environmentKey)
+    static func select(_ environment: AppEnvironment) {
+        UserDefaults.standard.set(environment.rawValue, forKey: storageKey)
     }
 }
 
@@ -74,13 +62,12 @@ final class AppEnvironmentStore: ObservableObject {
 
     private init() {}
 
-    func useTest(key: String) {
-        AppEnvironment.activateTest(key: key)
-        current = AppEnvironment.current
-    }
-
-    func useProduction() {
-        AppEnvironment.activateProduction()
-        current = AppEnvironment.current
+    /// Vrací prostředí, na které se právě přepnulo, ať má volající co oznámit.
+    @discardableResult
+    func toggle() -> AppEnvironment {
+        let next = current.other
+        AppEnvironment.select(next)
+        current = next
+        return next
     }
 }

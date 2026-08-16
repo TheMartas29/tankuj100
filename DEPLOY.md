@@ -161,18 +161,23 @@ posílá `X-Robots-Tag: noindex, nofollow`, ať se doména neobjeví ve vyhledá
 
 ### Přepnutí aplikace na test
 
-Testovací klíč **není v aplikaci** – zadává se ručně:
+**Menu → O aplikaci → 7× klepnout na řádek s verzí.** Přepne se to tam a zpátky,
+potvrzeno toastem („Přepnuto na TEST…“ / „Přepnuto zpět na produkci“).
 
-1. Menu → O aplikaci → **7× klepnout na řádek s verzí**
-2. zadat přístupový kód (= `APP_KEY` z testovacího `.env`)
-3. aplikace kód ověří proti `/api/ping` testu a přepne se
+Dokud na mapě svítí oranžový pruh „TESTOVACÍ PROSTŘEDÍ“, mluví aplikace s testem;
+odznak je i pod verzí v „O aplikaci“. Po přepnutí se benzínky načtou znovu, aby na
+mapě nezůstala data z předchozího serveru.
 
-Dokud na mapě svítí oranžový pruh „TESTOVACÍ PROSTŘEDÍ“, mluví aplikace s testem.
-Zpátky na produkci se jde stejnou cestou a kód k tomu potřeba není; uložený
-testovací klíč se přitom smaže.
+Adresa i klíč se mění naráz – jsou svázané v `AppEnvironment` (`baseURL` + `appKey`),
+takže nemůže nastat, že by aplikace klepala na test produkčním klíčem.
 
-Odebrání přístupu = změnit `APP_KEY` v testovacím `.env` a restartovat. Všechna
-zařízení, která mají starý kód, okamžitě dostanou 401.
+⚠️ **Oba klíče jsou v aplikaci natvrdo**, takže kdo si ji rozebere, dostane se i na
+test. Je to vědomý kompromis za pohodlí – test je klon bez skutečných uživatelských
+dat. Kdyby to někdy vadilo, vrátit se dá k variantě, kdy se testovací klíč zadává
+ručně a v binárce vůbec není (viz commit `8c312c9`).
+
+Při výměně klíče se musí změnit **obě strany** – `APP_KEY` v `.env` daného prostředí
+i konstanta v `AppEnvironment.appKey` – a vydat novou verzi aplikace.
 
 ## Data o benzínkách: OpenStreetMap (ODbL)
 
