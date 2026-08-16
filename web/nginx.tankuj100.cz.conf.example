@@ -45,10 +45,12 @@ server {
         try_files $uri =404;
     }
 
-    # Obrázky, fonty a ikony z public/ – nejsou hashované, ale mění se zřídka
-    location ~* \.(?:webp|png|jpe?g|gif|svg|ico|woff2?|mp4)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable" always;
+    # Obrázky a ikony z public/ (telefony, og-image, favicon) – tyhle soubory
+    # NEJSOU hashované, takže „immutable“ na rok by po přegenerování držel
+    # lidem i crawlerům starou verzi. Měsíc je rozumný kompromis.
+    location ~* \.(?:webp|png|jpe?g|gif|svg|ico|mp4)$ {
+        expires 30d;
+        add_header Cache-Control "public" always;
         access_log off;
     }
 
@@ -63,8 +65,11 @@ server {
         default_type "text/plain";
     }
 
-    # SPA fallback – neexistující cesty vrací index.html, routování řeší React
+    # Web je jednostránkový a nemá klientský router, takže se tu záměrně
+    # NEDĚLÁ SPA fallback na index.html – neexistující adresa musí vrátit
+    # poctivou 404. Kdyby vracela obsah se stavem 200, Google to bere jako
+    # „soft 404“ a zhoršuje si tím důvěru v celý web.
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ =404;
     }
 }
