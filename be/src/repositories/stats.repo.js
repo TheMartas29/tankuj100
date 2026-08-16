@@ -21,9 +21,11 @@ const METRICS = {
   reportsNew: "SELECT COUNT(*) AS c FROM report WHERE status = 'new'",
   reportsInReview: "SELECT COUNT(*) AS c FROM report WHERE status = 'in_review'",
   reportsTotal: 'SELECT COUNT(*) AS c FROM report',
-  fuelVotes: 'SELECT COUNT(*) AS c FROM fuel_vote',
+  // Nevyřízené žádosti o přidání benzínky – karta „Žádosti“ v přehledu a odznak
+  // u záložky. Bez téhle metriky by obojí ukazovalo navždy nulu.
   stationRequestsNew: "SELECT COUNT(*) AS c FROM station_request WHERE status = 'new'",
   stationRequestsTotal: 'SELECT COUNT(*) AS c FROM station_request',
+  fuelVotes: 'SELECT COUNT(*) AS c FROM fuel_vote',
   // Stejné rozhodovací pravidlo jako fuelVerdict(), jen spočítané nad všemi stanicemi.
   stationsWithE5: `
     SELECT COUNT(*) AS c FROM (
