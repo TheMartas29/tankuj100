@@ -43,6 +43,8 @@ module.exports = {
   rootDir,
   port: process.env.PORT || 3000,
   host: process.env.HOST || '127.0.0.1',
+  // Jméno prostředí hlásí /api/ping, aby aplikace poznala, s kým opravdu mluví.
+  envName: process.env.ENV_NAME || 'production',
   dbPath: process.env.DB_PATH
     ? path.resolve(process.env.DB_PATH)
     : path.join(rootDir, 'db', 'tankuj100db.sqlite'),

@@ -602,6 +602,13 @@ async function run(db) {
     check('test-mail hlásí mail_not_configured', res.json?.error === 'mail_not_configured');
   }
 
+  section('ping');
+  {
+    const res = await get('/api/ping');
+    checkStatus('GET /api/ping', res, 200);
+    check('ping hlásí prostředí', res.json?.env === 'production', `dostal ${res.json?.env}`);
+  }
+
   await checkAppKeyModes(db);
 }
 
@@ -641,6 +648,15 @@ async function checkAppKeyModes(db) {
       );
       const health = await fetch(`http://127.0.0.1:${port}/health`);
       check(`${mode}: /health zůstává přístupný bez klíče`, health.status === 200);
+
+      // Přes /api/ping si aplikace ověřuje zadaný kód, takže musí platit stejná
+      // pravidla jako pro zbytek API.
+      const ping = await fetch(`http://127.0.0.1:${port}/api/ping`, {
+        headers: { 'X-App-Key': key },
+      });
+      check(`${mode}: /api/ping se správným klíčem → 200`, ping.status === 200);
+      const pingNoKey = await fetch(`http://127.0.0.1:${port}/api/ping`);
+      check(`${mode}: /api/ping bez klíče → ${expected.none}`, pingNoKey.status === expected.none);
     } finally {
       child.kill('SIGKILL');
       await new Promise((r) => child.on('exit', r));

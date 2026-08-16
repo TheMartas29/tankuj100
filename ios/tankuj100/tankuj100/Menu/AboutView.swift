@@ -2,6 +2,14 @@ import SwiftUI
 
 struct AboutView: View {
 
+    /// Kolikrát je potřeba klepnout na verzi, než se objeví přepínač prostředí.
+    /// Sedm je zaběhaná konvence a náhodou se na to nepřijde.
+    private static let tapsToUnlock = 7
+
+    @ObservedObject private var environment = AppEnvironmentStore.shared
+    @State private var versionTaps = 0
+    @State private var showDeveloper = false
+
     private var version: String {
         let info = Bundle.main.infoDictionary
         let short = info?["CFBundleShortVersionString"] as? String ?? "1.0"
@@ -22,6 +30,17 @@ struct AboutView: View {
                     Text("Verze \(version)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
+                        .contentShape(Rectangle())
+                        .onTapGesture(perform: countTap)
+
+                    if environment.current == .test {
+                        Text(environment.current.title.uppercased())
+                            .font(.caption2).bold()
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(Color.orange.opacity(0.2), in: Capsule())
+                            .foregroundColor(.orange)
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
@@ -47,5 +66,17 @@ struct AboutView: View {
         }
         .navigationTitle("O aplikaci")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showDeveloper) {
+            DeveloperSheet()
+        }
+    }
+
+    /// Odemyká se jen souvislou sérií klepnutí – když uživatel mezi nimi odejde
+    /// jinam, počítadlo se vynuluje při dalším zobrazení obrazovky.
+    private func countTap() {
+        versionTaps += 1
+        guard versionTaps >= Self.tapsToUnlock else { return }
+        versionTaps = 0
+        showDeveloper = true
     }
 }

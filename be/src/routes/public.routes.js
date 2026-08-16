@@ -1,5 +1,6 @@
 const express = require('express');
 
+const config = require('../config');
 const { asyncHandler } = require('../http/async-handler');
 const { perHour, perHourByIp } = require('../http/rate-limit');
 const { requireAppKey } = require('../http/app-key');
@@ -21,6 +22,16 @@ router.use(requireAppKey);
 
 const stationIdOf = (req) => parseStationId(req.params.id);
 const queryDeviceId = (req) => (typeof req.query.device_id === 'string' ? req.query.device_id.trim() : '');
+
+// Levé ověření klíče. Aplikace přes něj pozná, že zadaný kód platí, a hlavně
+// od koho odpověď přišla – prostředí se tak nečte z lokálního nastavení, ale
+// od serveru samotného.
+router.get(
+  '/ping',
+  asyncHandler((req, res) => {
+    res.json({ ok: true, env: config.envName });
+  })
+);
 
 router.get(
   '/map/',

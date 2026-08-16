@@ -4,24 +4,27 @@ struct APIClient {
 
     static let shared = APIClient()
 
-    static let productionURL = "https://tankuj100.silkroadbrand.eu"
+    static let productionURL = AppEnvironment.production.baseURL
 
-    /// Klíč, kterým se aplikace hlásí serveru. Schválně natvrdo a bez obfuskace –
-    /// z binárky ho stejně jde vytáhnout, takže by jakékoli schovávání bylo divadlo.
-    /// Slouží jen k tomu, aby API nešlo pohodlně provolávat curlem. Když unikne,
-    /// vymění se na serveru i v aplikaci.
-    static let appKey = "t100_WrtE15YfHu7wW0VhJPUwrUgAt9YXmLwGF2I56kVH"
+    /// Klíč, kterým se aplikace hlásí produkčnímu serveru. Schválně natvrdo a bez
+    /// obfuskace – z binárky ho stejně jde vytáhnout, takže by jakékoli schovávání
+    /// bylo divadlo. Slouží jen k tomu, aby API nešlo pohodlně provolávat curlem.
+    /// Když unikne, vymění se na serveru i v aplikaci.
+    ///
+    /// Testovací klíč tu **schválně není** – zadává se ve vývojářském nastavení,
+    /// takže z aplikace nejde vyčíst.
+    static let productionKey = "t100_WrtE15YfHu7wW0VhJPUwrUgAt9YXmLwGF2I56kVH"
 
     /// V ladicím buildu jde server přepnout spouštěcím argumentem
-    /// `-apiBaseURL http://localhost:3000`. Produkční build vždy míří na ostrý server,
-    /// takže se nemůže stát, že by se do App Store dostala testovací adresa.
+    /// `-apiBaseURL http://localhost:3000`. Jinak rozhoduje zvolené prostředí,
+    /// které je bez zadaného kódu vždy produkce.
     private var baseURL: String {
         #if DEBUG
         if let override = UserDefaults.standard.string(forKey: "apiBaseURL"), !override.isEmpty {
             return override
         }
         #endif
-        return Self.productionURL
+        return AppEnvironment.current.baseURL
     }
 
     func stations() async -> Result<[GasStation], Error> {
@@ -99,6 +102,42 @@ struct APIClient {
         )
     }
 
+    /// Ověří kód proti testovacímu serveru dřív, než se prostředí přepne.
+    ///
+    /// Schválně se ptáme serveru, jaké je to prostředí, místo abychom mu věřili
+    /// podle adresy – kdyby se někdy testovací doména přesměrovala na produkci,
+    /// odpověď to prozradí.
+    func verifyTestKey(_ key: String) async -> Result<String, Error> {
+        guard let url = URL(string: AppEnvironment.test.baseURL + "/api/ping") else {
+            return .failure(CustomError.defaultError(message: "Neplatná adresa serveru."))
+        }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15
+        request.setValue(key, forHTTPHeaderField: "X-App-Key")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                return .failure(CustomError.defaultError(message: "Server odpověděl neočekávaně."))
+            }
+            guard http.statusCode != 401 else {
+                return .failure(CustomError.defaultError(message: "Kód neplatí."))
+            }
+            guard (200...299).contains(http.statusCode) else {
+                return .failure(CustomError.defaultError(
+                    message: Self.serverMessage(from: data, status: http.statusCode)))
+            }
+            let ping = try JSONDecoder().decode(PingResponse.self, from: data)
+            return .success(ping.env)
+        } catch {
+            return .failure(CustomError.defaultError(message: Self.networkMessage(for: error)))
+        }
+    }
+
+    private struct PingResponse: Decodable {
+        let env: String
+    }
+
     func send<T: Decodable>(
         path: String,
         method: String = "GET",
@@ -112,7 +151,7 @@ struct APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.timeoutInterval = 20
-        request.setValue(Self.appKey, forHTTPHeaderField: "X-App-Key")
+        request.setValue(AppEnvironment.current.appKey, forHTTPHeaderField: "X-App-Key")
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             do {

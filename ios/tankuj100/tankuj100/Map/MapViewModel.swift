@@ -31,6 +31,14 @@ final class MapViewModel: ObservableObject {
         await load(reportingErrors: false)
     }
 
+    /// Po přepnutí prostředí se stará data musí zahodit hned – kdyby nové načtení
+    /// selhalo, je lepší prázdná mapa než benzínky z jiného serveru.
+    func reloadAfterEnvironmentChange() async {
+        stations = []
+        selectedStation = nil
+        await load(reportingErrors: true)
+    }
+
     private func load(reportingErrors: Bool) async {
         switch await APIClient.shared.stations() {
         case .success(let loaded):

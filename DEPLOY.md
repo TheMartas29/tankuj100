@@ -103,6 +103,7 @@ Soubor **není v gitu**. Vzor je `be/.env.example`; na serveru ho vytvoř a dopl
 |--|--|
 | `PORT` | port API (musí sedět s nginx a PM2, výchozí 3000) |
 | `HOST` | adresa, na které server poslouchá. Výchozí `127.0.0.1` = jen přes nginx. Na `0.0.0.0` přepínej jen kvůli ladění z jiného zařízení v síti. |
+| `ENV_NAME` | `production` nebo `test` – hlásí to `/api/ping` a aplikace podle toho pozná, s kým mluví |
 | `APP_KEY`, `APP_KEY_MODE` | klíč mobilní aplikace, viz níže |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | přihlášení do adminu. **Bez nich je admin vypnutý** (503) – to je záměr, ať se veřejně neotevře. |
 | `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY` | notifikace přes EmailJS (stejný účet jako formulář na silkroadbrand.eu) |
@@ -141,6 +142,37 @@ přestane fungovat ze dne na den:
 
 `/health` klíč nevyžaduje nikdy (kvůli monitoringu) a `/api/admin/*` taky ne – ten má
 vlastní basic auth a prohlížeč by hlavičku stejně neposlal.
+
+## Testovací prostředí
+
+| | produkce | test |
+|--|--|--|
+| doména | tankuj100.silkroadbrand.eu | tankuj100-test.silkroadbrand.eu |
+| stroj | VPS `root@80.211.200.128` | `roman@192.168.0.73` (ven přes duckdns) |
+| složka | `/root/projects/tankuj100` | `/var/www/tankuj100-test` |
+| `APP_KEY_MODE` | `soft` (do vydání verze s klíčem) | **`hard`** |
+| `APP_KEY` | jiný než na testu | jiný než na produkci |
+| e-maily | EmailJS | vypnuté (jen do logu) |
+
+Klíče se **nesmí** shodovat – jinak by přístup k testu otevřel i produkci.
+
+Test je uzavřený právě tím klíčem: bez něj vrací `/api/*` 401. Nginx tam navíc
+posílá `X-Robots-Tag: noindex, nofollow`, ať se doména neobjeví ve vyhledávačích.
+
+### Přepnutí aplikace na test
+
+Testovací klíč **není v aplikaci** – zadává se ručně:
+
+1. Menu → O aplikaci → **7× klepnout na řádek s verzí**
+2. zadat přístupový kód (= `APP_KEY` z testovacího `.env`)
+3. aplikace kód ověří proti `/api/ping` testu a přepne se
+
+Dokud na mapě svítí oranžový pruh „TESTOVACÍ PROSTŘEDÍ“, mluví aplikace s testem.
+Zpátky na produkci se jde stejnou cestou a kód k tomu potřeba není; uložený
+testovací klíč se přitom smaže.
+
+Odebrání přístupu = změnit `APP_KEY` v testovacím `.env` a restartovat. Všechna
+zařízení, která mají starý kód, okamžitě dostanou 401.
 
 ## Data o benzínkách: OpenStreetMap (ODbL)
 

@@ -6,6 +6,7 @@ struct MapScreen: View {
     @StateObject private var viewModel = MapViewModel()
     @StateObject private var location = LocationProvider()
     @StateObject private var favorites = FavoritesStore()
+    @ObservedObject private var environment = AppEnvironmentStore.shared
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -18,12 +19,19 @@ struct MapScreen: View {
                 // tlačítka ho nesmí překrývat.
                 .padding(.leading, 20)
                 .padding(.bottom, 46)
+
+            if environment.current == .test { testBanner }
         }
         .onAppear {
             viewModel.onAppear()
             if shouldStartLocation { location.start() }
         }
         .onValueChange(of: viewModel.stations.count) { _ in applyDebugLaunchOptions() }
+        // Po přepnutí prostředí se musí data vyměnit, jinak by na mapě zůstaly
+        // benzínky z předchozího serveru.
+        .onValueChange(of: environment.current) { _ in
+            Task { await viewModel.reloadAfterEnvironmentChange() }
+        }
         .sheet(item: $viewModel.selectedStation) { station in
             NavigationStack {
                 GasStationDetailView(gasStation: station,
@@ -69,6 +77,22 @@ struct MapScreen: View {
             viewModel.selectedStation = viewModel.stations.first { $0.id == id }
         }
         #endif
+    }
+
+    /// Nepřehlédnutelně schválně – z testovacích dat se snadno udělá hlášení chyby,
+    /// která v ostré aplikaci není.
+    private var testBanner: some View {
+        VStack {
+            Text("TESTOVACÍ PROSTŘEDÍ")
+                .font(.caption).bold()
+                .foregroundColor(.white)
+                .padding(.vertical, 5)
+                .frame(maxWidth: .infinity)
+                .background(Color.orange)
+            Spacer()
+        }
+        .ignoresSafeArea(edges: .horizontal)
+        .allowsHitTesting(false)
     }
 
     private var buttons: some View {
