@@ -1,5 +1,21 @@
 import Foundation
 
+/// Chyba z API i s kódem, který k ní poslal server (`{"error":"duplicate_station",…}`).
+///
+/// `CustomError` nese jen text, takže se z něj nedá poznat, o jakou chybu šlo.
+/// U žádosti o benzínku to potřebujeme: duplicitu má formulář vysvětlit sám,
+/// ne ji schovat do obecného alertu.
+struct APIError: LocalizedError, Equatable {
+    let status: Int
+    let code: String?
+    let message: String
+
+    var errorDescription: String? { message }
+
+    /// Do 150 m už stanice nebo nevyřízená žádost existuje (viz kontrakt, `409`).
+    var isDuplicateStation: Bool { code == "duplicate_station" }
+}
+
 struct APIClient {
 
     static let shared = APIClient()
@@ -93,14 +109,97 @@ struct APIClient {
         )
     }
 
+    /// Odeslání žádosti o přidání benzínky. Server ji jen uloží – stanice vzniká
+    /// až schválením v administraci.
+    func submitStationRequest(
+        lat: Double,
+        lon: Double,
+        brandName: String?,
+        name: String?,
+        city: String?,
+        address: String?,
+        fuels: [FuelFlag],
+        note: String?
+    ) async -> Result<StationRequestResponse, APIError> {
+        var body: [String: Any] = [
+            "device_id": DeviceIdentity.current,
+            "lat": lat,
+            "lon": lon,
+            "fuels": fuels.map(\.apiKey),
+        ]
+        // Prázdné texty se neposílají vůbec – server si je uloží jako NULL a nemusí
+        // rozlišovat mezi „nevyplněno“ a „vyplněno prázdnem“.
+        let optionalFields: [(String, String?)] = [
+            ("brand_name", brandName), ("name", name), ("city", city),
+            ("address", address), ("note", note),
+        ]
+        for (key, value) in optionalFields {
+            if let value, !value.isEmpty { body[key] = value }
+        }
+
+        return await sendChecked(
+            path: "/api/station-requests",
+            method: "POST",
+            body: body,
+            as: StationRequestResponse.self
+        )
+    }
+
+    func myStationRequests() async -> Result<[StationRequest], APIError> {
+        await sendChecked(
+            path: "/api/station-requests?device_id=\(DeviceIdentity.current)",
+            as: [StationRequest].self
+        )
+    }
+
     func send<T: Decodable>(
         path: String,
         method: String = "GET",
         body: [String: Any]? = nil,
         as type: T.Type
     ) async -> Result<T, Error> {
+        switch await sendChecked(path: path, method: method, body: body, as: type) {
+        case .success(let value):
+            return .success(value)
+        case .failure(let failure):
+            return .failure(CustomError.defaultError(message: failure.message))
+        }
+    }
+
+    /// Jako `send`, ale nechá projít i kód chyby ze serveru. Formulář žádosti podle
+    /// něj pozná duplicitu (`duplicate_station`) a umí ji vysvětlit místo obecného
+    /// „něco se nepovedlo“.
+    private func sendChecked<T: Decodable>(
+        path: String,
+        method: String = "GET",
+        body: [String: Any]? = nil,
+        as type: T.Type
+    ) async -> Result<T, APIError> {
+        switch await perform(path: path, method: method, body: body) {
+        case .success(let data):
+            do {
+                return .success(try JSONDecoder().decode(T.self, from: data))
+            } catch {
+                #if DEBUG
+                print("[APIClient] dekódování \(T.self) selhalo: \(error)")
+                #endif
+                return .failure(APIError(
+                    status: 0, code: "decode_error",
+                    message: "Odpověď serveru se nepodařilo zpracovat."))
+            }
+        case .failure(let failure):
+            return .failure(failure)
+        }
+    }
+
+    private func perform(
+        path: String,
+        method: String,
+        body: [String: Any]?
+    ) async -> Result<Data, APIError> {
         guard let url = URL(string: baseURL + path) else {
-            return .failure(CustomError.defaultError(message: "Neplatná adresa serveru."))
+            return .failure(APIError(status: 0, code: "invalid_url",
+                                     message: "Neplatná adresa serveru."))
         }
 
         var request = URLRequest(url: url)
@@ -112,29 +211,28 @@ struct APIClient {
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: body)
             } catch {
-                return .failure(CustomError.defaultError(message: "Data se nepodařilo připravit k odeslání."))
+                return .failure(APIError(status: 0, code: "encode_error",
+                                         message: "Data se nepodařilo připravit k odeslání."))
             }
         }
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let http = response as? HTTPURLResponse else {
-                return .failure(CustomError.defaultError(message: "Server odpověděl neočekávaně."))
+                return .failure(APIError(status: 0, code: nil,
+                                         message: "Server odpověděl neočekávaně."))
             }
             guard (200...299).contains(http.statusCode) else {
-                return .failure(CustomError.defaultError(
+                let payload = try? JSONDecoder().decode(ServerErrorPayload.self, from: data)
+                return .failure(APIError(
+                    status: http.statusCode,
+                    code: payload?.error,
                     message: Self.serverMessage(from: data, status: http.statusCode)))
             }
-            do {
-                return .success(try JSONDecoder().decode(T.self, from: data))
-            } catch {
-                #if DEBUG
-                print("[APIClient] dekódování \(T.self) selhalo: \(error)")
-                #endif
-                return .failure(CustomError.defaultError(message: "Odpověď serveru se nepodařilo zpracovat."))
-            }
+            return .success(data)
         } catch {
-            return .failure(CustomError.defaultError(message: Self.networkMessage(for: error)))
+            return .failure(APIError(status: 0, code: nil,
+                                     message: Self.networkMessage(for: error)))
         }
     }
 

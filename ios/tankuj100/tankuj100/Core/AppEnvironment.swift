@@ -1,26 +1,29 @@
 import Foundation
 
-/// Prostředí, se kterým aplikace mluví. Každé má vlastní adresu i vlastní klíč –
-/// přepnutí mění obojí naráz, jinak by aplikace klepala na test produkčním klíčem
-/// a dostávala 401.
+/// Prostředí, se kterým aplikace mluví. **Určuje se při překladu, ne za běhu.**
 ///
-/// Oba klíče jsou v aplikaci natvrdo a bez obfuskace. Z binárky je stejně jde
-/// vytáhnout, takže by schovávání bylo divadlo; slouží k tomu, aby API nešlo
-/// pohodlně provolávat curlem. Když některý unikne, vymění se na serveru i tady.
-enum AppEnvironment: String {
+/// Schéma `tankuj100` staví ostrou aplikaci, schéma `tankuj100 TEST` testovací –
+/// mají jiné bundle ID, takže jdou mít v telefonu obě vedle sebe a nemůže se stát,
+/// že by si někdo omylem nechal ostrou appku ukazovat testovací data.
+///
+/// Dřív to řešil skrytý přepínač (sedm klepnutí na verzi) a v binárce byly oba klíče.
+/// Tohle je lepší ve třech ohledech: v každém buildu je jen jeho vlastní klíč,
+/// odpadá riziko, že si uživatel prostředí přepne omylem, a hlavně to není skrytá
+/// nepopsaná funkce, kterou App Review zakazuje (Guideline 2.3.1).
+enum AppEnvironment {
+
+    #if TANKUJ_TEST
+    static let current: AppEnvironment = .test
+    #else
+    static let current: AppEnvironment = .production
+    #endif
+
     case production
     case test
 
-    private static let storageKey = "appEnvironment"
-
-    /// Čte se i z vláken mimo hlavní – proto `UserDefaults` a ne `@Published`
-    /// vlastnost. Změny hlásí `AppEnvironmentStore` kvůli překreslení UI.
-    static var current: AppEnvironment {
-        guard let raw = UserDefaults.standard.string(forKey: storageKey),
-              let value = AppEnvironment(rawValue: raw)
-        else { return .production }
-        return value
-    }
+    /// Testovací build to dává najevo pruhem přes celou šířku mapy. Z testovacích dat
+    /// se snadno udělá hlášení chyby, která v ostré aplikaci není.
+    static var isTest: Bool { current == .test }
 
     var baseURL: String {
         switch self {
@@ -29,6 +32,9 @@ enum AppEnvironment: String {
         }
     }
 
+    /// Klíč není tajemství – z binárky ho jde vytáhnout. Odfiltruje boty a `curl`,
+    /// proti cílenému zneužití nepomůže. Podstatné je, že každý build nese jen ten
+    /// svůj: kdo rozebere ostrou aplikaci, na testovací prostředí se nedostane.
     var appKey: String {
         switch self {
         case .production: return "t100_WrtE15YfHu7wW0VhJPUwrUgAt9YXmLwGF2I56kVH"
@@ -41,33 +47,5 @@ enum AppEnvironment: String {
         case .production: return "Produkce"
         case .test: return "Testovací prostředí"
         }
-    }
-
-    var other: AppEnvironment {
-        self == .production ? .test : .production
-    }
-
-    static func select(_ environment: AppEnvironment) {
-        UserDefaults.standard.set(environment.rawValue, forKey: storageKey)
-    }
-}
-
-/// Jen kvůli překreslení UI po přepnutí – zdrojem pravdy zůstává `AppEnvironment.current`.
-@MainActor
-final class AppEnvironmentStore: ObservableObject {
-
-    static let shared = AppEnvironmentStore()
-
-    @Published private(set) var current: AppEnvironment = AppEnvironment.current
-
-    private init() {}
-
-    /// Vrací prostředí, na které se právě přepnulo, ať má volající co oznámit.
-    @discardableResult
-    func toggle() -> AppEnvironment {
-        let next = current.other
-        AppEnvironment.select(next)
-        current = next
-        return next
     }
 }

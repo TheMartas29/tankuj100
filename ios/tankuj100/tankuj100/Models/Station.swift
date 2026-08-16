@@ -68,6 +68,10 @@ struct GasStation: Codable, Identifiable, Hashable {
     var ratingCount: Int? = nil
     var has98: Bool = false
     var has100: Bool = false
+    /// Bitové masky paliv a služeb – číselník je v `StationFlags.swift`. Krátká jména
+    /// `f` a `s` jsou z API schválně: při stotisíci stanicích je každý bajt znát.
+    var fuelMask: UInt32 = 0
+    var serviceMask: UInt32 = 0
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: lat, longitude: lon)
@@ -81,6 +85,8 @@ struct GasStation: Codable, Identifiable, Hashable {
         case ratingCount = "rating_count"
         case has98 = "has_98"
         case has100 = "has_100"
+        case fuelMask = "f"
+        case serviceMask = "s"
     }
 
     init(
@@ -92,7 +98,9 @@ struct GasStation: Codable, Identifiable, Hashable {
         ratingAvg: Double? = nil,
         ratingCount: Int? = nil,
         has98: Bool = false,
-        has100: Bool = false
+        has100: Bool = false,
+        fuelMask: UInt32 = 0,
+        serviceMask: UInt32 = 0
     ) {
         self.id = id
         self.lat = lat
@@ -103,6 +111,8 @@ struct GasStation: Codable, Identifiable, Hashable {
         self.ratingCount = ratingCount
         self.has98 = has98
         self.has100 = has100
+        self.fuelMask = fuelMask
+        self.serviceMask = serviceMask
     }
 
     init(from decoder: Decoder) throws {
@@ -116,6 +126,11 @@ struct GasStation: Codable, Identifiable, Hashable {
         ratingCount = try container.decodeIfPresent(Int.self, forKey: .ratingCount)
         has98 = container.decodeFlag(forKey: .has98)
         has100 = container.decodeFlag(forKey: .has100)
+        // Masky přibyly až ve verzi 1.1. Server, který je ještě neposílá, nesmí seznam
+        // shodit – prázdná maska znamená „o palivech a službách nic nevíme“ a filtr
+        // takovou stanici prostě nenajde.
+        fuelMask = (try? container.decodeIfPresent(UInt32.self, forKey: .fuelMask)) ?? 0
+        serviceMask = (try? container.decodeIfPresent(UInt32.self, forKey: .serviceMask)) ?? 0
     }
 }
 

@@ -1,50 +1,44 @@
 import CoreLocation
 import SwiftUI
 
+/// Seznam benzínek. Ukazuje **všechny**, které projdou filtrem – strop na padesát
+/// nejbližších padl, protože se seznam stal hlavní cestou k filtrování.
+///
+/// Datovým zdrojem `List` je pole indexů (`[Int32]`), ne přefiltrované pole struktur.
+/// Kdyby se pole stanic skládalo znovu při každém překreslení, byla by to při stotisíci
+/// položkách kopie několika megabajtů na každý pohyb prstem.
 struct StationsListView: View {
+
+    /// Načtená data. Index i filtr si z nich postaví sdílený `StationFilterStore`;
+    /// když už je postavený nad stejnými daty, nic se neděje.
     let stations: [GasStation]
     var userLocation: CLLocation?
     @ObservedObject var favorites: FavoritesStore
     var onRetry: (() async -> Void)?
 
+    @ObservedObject private var store = StationFilterStore.shared
     @Environment(\.dismiss) private var dismiss
     @State private var mode: Mode = .nearest
     @State private var isRetrying = false
+    @State private var showsFilter = false
+    @State private var favoriteRows: [Int32] = []
+    /// Ke kterému výsledku `favoriteRows` patří. Bez toho by po přestavbě indexu
+    /// zbyly v poli indexy do starých dat – a to je čtení mimo pole, ne kosmetika.
+    @State private var favoriteRevision: UInt64 = 0
 
     enum Mode: String, CaseIterable {
         case nearest = "Nejbližší"
         case favorites = "Oblíbené"
     }
 
-    private static let nearestLimit = 50
-
-    /// Benzínka i s už spočítanou vzdáleností. Počítat ji až v porovnávači by
-    /// znamenalo vyhodnotit ji nad tisícovkou položek přes dvacet tisíckrát – a to
-    /// pokaždé, co si SwiftUI řekne o překreslení seznamu.
-    private struct Nearby: Identifiable {
-        let station: GasStation
-        let distance: CLLocationDistance?
-
-        var id: Int { station.id }
-    }
-
-    private var displayed: [Nearby] {
-        let source = mode == .favorites
-            ? stations.filter { favorites.contains($0.id) }
-            : stations
-
-        guard let origin = userLocation?.coordinate else {
-            // Bez polohy není podle čeho řadit. Režim „Nejbližší“ se v takovém stavu
-            // stejně nezobrazí a místo seznamu nabídne povolení polohy.
-            return source.map { Nearby(station: $0, distance: nil) }
+    private var rows: [Int32] {
+        guard mode == .favorites else { return store.result.rows }
+        // Nový výsledek dorazí dřív, než se stihne ohlásit `onChange`; v tom jednom
+        // snímku se oblíbené prosejí rovnou, ať seznam neproblikne prázdnem.
+        guard favoriteRevision == store.result.revision else {
+            return store.result.keepingOnly(favorites.ids)
         }
-
-        var list = source.map {
-            Nearby(station: $0, distance: GeoDistance.meters(from: origin, to: $0.coordinate))
-        }
-        list.sort { ($0.distance ?? .greatestFiniteMagnitude) < ($1.distance ?? .greatestFiniteMagnitude) }
-
-        return mode == .nearest ? Array(list.prefix(Self.nearestLimit)) : list
+        return favoriteRows
     }
 
     var body: some View {
@@ -58,6 +52,7 @@ struct StationsListView: View {
                                          favorites: favorites)
                 }
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) { filterButton }
                     ToolbarItem(placement: .principal) {
                         Picker("", selection: $mode) {
                             ForEach(Mode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
@@ -69,6 +64,39 @@ struct StationsListView: View {
                     }
                 }
         }
+        .sheet(isPresented: $showsFilter) { FilterSheet() }
+        .task {
+            store.setFavorites(favorites.ids)
+            store.setOrigin(userLocation)
+            await store.load(stations)
+        }
+        .onValueChange(of: stations.count) { _ in
+            Task { await store.load(stations) }
+        }
+        .onValueChange(of: userLocation) { store.setOrigin($0) }
+        .onValueChange(of: favorites.ids) { ids in
+            store.setFavorites(ids)
+            refreshFavoriteRows()
+        }
+        .onValueChange(of: mode) { _ in refreshFavoriteRows() }
+        .onValueChange(of: store.result.revision) { _ in refreshFavoriteRows() }
+    }
+
+    private var filterButton: some View {
+        Button { showsFilter = true } label: {
+            ZStack(alignment: .topTrailing) {
+                Image(systemName: "line.3.horizontal.decrease")
+                if store.filter.activeCount > 0 {
+                    Text("\(store.filter.activeCount)")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(width: 14, height: 14)
+                        .background(Color.accentColor, in: Circle())
+                        .offset(x: 9, y: -8)
+                }
+            }
+        }
+        .accessibilityLabel(store.filter.isEmpty ? "Filtr" : "Filtr, aktivní podmínky: \(store.filter.activeCount)")
     }
 
     @ViewBuilder
@@ -85,23 +113,56 @@ struct StationsListView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(onRetry == nil || isRetrying)
             }
-        } else if mode == .favorites && displayed.isEmpty {
-            EmptyStateView(title: "Žádné oblíbené",
-                           systemImage: "heart",
-                           message: "Benzínku si přidáte do oblíbených srdíčkem v detailu.")
-        } else if mode == .nearest && userLocation == nil {
-            EmptyStateView(title: "Poloha není dostupná",
-                           systemImage: "location.slash",
-                           message: "Povolte přístup k poloze pro seznam nejbližších benzínek.")
+        } else if rows.isEmpty && store.isWorking {
+            ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if rows.isEmpty {
+            emptyResult
         } else {
-            List(displayed) { item in
-                NavigationLink(value: item.station) {
-                    StationRow(station: item.station,
-                               distance: item.distance,
-                               isFavorite: favorites.contains(item.station.id))
+            // `List` je líný, takže i sto tisíc řádků vykreslí jen tolik, kolik je vidět.
+            List {
+                ForEach(rows, id: \.self) { row in
+                    let station = store.result.station(forRow: row)
+                    NavigationLink(value: station) {
+                        StationRow(station: station,
+                                   distance: store.result.distance(forRow: row),
+                                   isFavorite: favorites.contains(station.id))
+                    }
                 }
             }
         }
+    }
+
+    /// Bez polohy se seznam **nezablokuje** – jen se řadí podle značky. Prázdný stav
+    /// tu zbyl jen pro případy, kdy opravdu není co ukázat.
+    @ViewBuilder
+    private var emptyResult: some View {
+        if mode == .favorites && store.filter.isEmpty {
+            EmptyStateView(title: "Žádné oblíbené",
+                           systemImage: "heart",
+                           message: "Benzínku si přidáte do oblíbených srdíčkem v detailu.")
+        } else {
+            EmptyStateView(
+                title: "Filtru nic neodpovídá",
+                systemImage: "line.3.horizontal.decrease",
+                message: "Zkuste ubrat některou z podmínek."
+            ) {
+                Button("Vymazat filtr") { store.clearFilter() }
+                    .buttonStyle(.borderedProminent)
+            }
+        }
+    }
+
+    /// Oblíbené se jen prosejí z hotového výsledku – pořadí i vzdálenosti tím zůstávají
+    /// a nemusí se kvůli záložce filtrovat a řadit znovu. Počítá se jen tehdy, když je
+    /// záložka vidět.
+    private func refreshFavoriteRows() {
+        guard mode == .favorites else {
+            if !favoriteRows.isEmpty { favoriteRows = [] }
+            favoriteRevision = 0
+            return
+        }
+        favoriteRows = store.result.keepingOnly(favorites.ids)
+        favoriteRevision = store.result.revision
     }
 
     private func retry() {

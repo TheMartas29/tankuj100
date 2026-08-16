@@ -58,28 +58,20 @@ Appka umožňuje veřejné komentáře, takže Apple podle Guideline 1.2 vyžadu
 - **Age rating:** kvůli UGC nastavit v dotazníku „Infrequent/Mild – User Generated Content"
   (vede zhruba na 12+). Nezaškrtávat vyšší kategorie.
 
-## Poznámka pro recenzenta (App Review Notes) – POVINNÁ
+## Poznámka pro recenzenta (App Review Notes)
 
-V aplikaci je skrytá funkce: **sedmero klepnutí na číslo verze** na obrazovce „O aplikaci"
-přepne aplikaci mezi ostrým a testovacím serverem. Guideline 2.3.1 zakazuje skryté
-a nepopsané funkce, takže tohle **musí** být v poznámce pro recenzenta – jinak hrozí
-zamítnutí. Návrh textu do pole App Review Information → Notes:
+**Od verze 1.1 už není potřeba žádná.** Verze 1.0 obsahovala skrytý přepínač prostředí
+(sedmero klepnutí na číslo verze v „O aplikaci"), který se kvůli Guideline 2.3.1 musel
+recenzentovi přiznat – text, kterým se to popsalo, je v historii tohohle souboru.
 
-> The app contains a developer-only environment switcher: tapping the version number
-> seven times on the "O aplikaci" (About) screen toggles between the production and
-> staging API. While staging is active, an orange "TESTOVACÍ PROSTŘEDÍ" banner is shown
-> at all times, so the state is never hidden from the user, and seven more taps switch
-> back. The switch only changes which server the app reads data from — it unlocks no
-> additional functionality and no paid content. It exists so we can verify releases
-> against staging data without shipping a separate build.
-
-Kdyby to recenzentovi vadilo, alternativa je přepínač v release buildu vypnout
-(`#if DEBUG` kolem `countTap()` v `ios/tankuj100/tankuj100/Menu/AboutView.swift`).
+Přepínač je pryč. Prostředí se určuje při překladu a testovací aplikace je samostatný
+produkt s vlastním bundle ID (`cz.silkroad.tankuj100.test`), který se do App Storu
+nikdy neposílá. Ostrá aplikace tedy žádnou skrytou ani nepopsanou funkci nemá a v
+binárce není ani testovací klíč.
 
 ## TODO před odesláním
-- [ ] **Zvážit číslo verze** – teď je `0.2 (1)`. Pro první veřejné vydání se hodí spíš
-      `1.0`. Mění se v Xcode: target tankuj100 → General → Version.
-- [ ] **Vyplnit poznámku pro recenzenta** podle sekce výše (kvůli 2.3.1).
+- [x] ~~Zvážit číslo verze~~ – vydáno jako `1.0 (1)`.
+- [x] ~~Vyplnit poznámku pro recenzenta (kvůli 2.3.1)~~ – od 1.1 odpadá, viz výše.
 - [ ] Screenshoty (6.9" a 6.5" iPhone) – mapa, detail stanice s nabídkou paliv a hodnocením,
       seznam nejbližších stanic.
 - [ ] Ikona 1024×1024 (už je v projektu jako app icon).

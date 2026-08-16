@@ -26,5 +26,11 @@ enum DebugLaunch {
     static var skipLocation: Bool {
         UserDefaults.standard.bool(forKey: "skipLocation")
     }
+
+    /// Plovoucí menu rovnou rozbalené. Jinak by se na runtime bez ovládacího panelu
+    /// nedalo ověřit, jak vypadají položky pod starším systémem.
+    static var expandMenu: Bool {
+        UserDefaults.standard.bool(forKey: "expandMenu")
+    }
 }
 #endif

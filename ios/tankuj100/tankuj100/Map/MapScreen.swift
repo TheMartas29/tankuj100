@@ -6,7 +6,14 @@ struct MapScreen: View {
     @StateObject private var viewModel = MapViewModel()
     @StateObject private var location = LocationProvider()
     @StateObject private var favorites = FavoritesStore()
-    @ObservedObject private var environment = AppEnvironmentStore.shared
+    @StateObject private var requestBadge = StationRequestBadge()
+
+    /// Filtr je sdílený s mapou i seznamem; tady se z něj bere jen počet do odznaku.
+    @ObservedObject private var filterStore = StationFilterStore.shared
+
+    @Environment(\.scenePhase) private var scenePhase
+
+    @State private var toast: String?
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -14,23 +21,29 @@ struct MapScreen: View {
                            selected: $viewModel.selectedStation)
                 .ignoresSafeArea()
 
-            buttons
-                // Dole vlevo si Apple Mapy kreslí povinný podpis („Maps · Legal“),
-                // tlačítka ho nesmí překrývat.
-                .padding(.leading, 20)
-                .padding(.bottom, 46)
+            // Menu si okraje i ztmavení řeší samo, proto tu nemá odsazení.
+            FloatingMenu(items: menuItems)
 
-            if environment.current == .test { testBanner }
+            // Prostředí se určuje při překladu, takže tenhle pruh buď je v buildu
+            // vždycky, nebo v něm není vůbec – za běhu se přepnout nedá.
+            if AppEnvironment.isTest { testBanner }
         }
         .onAppear {
             viewModel.onAppear()
             if shouldStartLocation { location.start() }
         }
+        // Index se staví tady, ne až v seznamu: mapa kreslí to, co projde filtrem,
+        // takže bez načteného indexu by zůstala prázdná.
+        .task(id: viewModel.stations.count) {
+            await filterStore.load(viewModel.stations)
+        }
+        .onValueChange(of: location.location) { filterStore.setOrigin($0) }
+        .onValueChange(of: favorites.ids) { filterStore.setFavorites($0) }
         .onValueChange(of: viewModel.stations.count) { _ in applyDebugLaunchOptions() }
-        // Po přepnutí prostředí se musí data vyměnit, jinak by na mapě zůstaly
-        // benzínky z předchozího serveru.
-        .onValueChange(of: environment.current) { _ in
-            Task { await viewModel.reloadAfterEnvironmentChange() }
+        // Aplikace nemá push notifikace, o změně stavu žádosti se dozví jen dotazem.
+        .onValueChange(of: scenePhase) { phase in
+            guard phase == .active else { return }
+            Task { await requestBadge.refresh() }
         }
         .sheet(item: $viewModel.selectedStation) { station in
             NavigationStack {
@@ -49,15 +62,58 @@ struct MapScreen: View {
             case .menu:
                 MenuSheet()
             case .addStation:
-                AddStationSheet(onClose: { viewModel.activeSheet = nil })
+                AddStationSheet(badge: requestBadge,
+                                userLocation: location.location,
+                                onShowStation: showStation,
+                                onClose: { viewModel.activeSheet = nil })
             case .stationList:
                 StationsListView(stations: viewModel.stations,
                                  userLocation: location.location,
                                  favorites: favorites,
                                  onRetry: { await viewModel.reload() })
+            case .filter:
+                FilterSheet()
             }
         }
         .errorAlert($viewModel.error)
+        .successToast($toast)
+    }
+
+    private var menuItems: [FloatingMenuItem] {
+        // Pořadí odspodu nahoru podle toho, jak často se to používá – nejčastější
+        // věc má být nejblíž palci, tedy hned nad hamburgerem.
+        [
+            FloatingMenuItem(id: "menu", systemImage: "ellipsis", title: "Další",
+                             pointSize: 24) {
+                viewModel.activeSheet = .menu
+            },
+            FloatingMenuItem(id: "add", systemImage: "plus", title: "Přidat benzínku",
+                             badge: requestBadge.hasUnread ? .dot : .none) {
+                viewModel.activeSheet = .addStation
+            },
+            FloatingMenuItem(id: "filter", systemImage: "line.3.horizontal.decrease",
+                             title: "Filtr",
+                             badge: .count(filterStore.filter.activeCount)) {
+                viewModel.activeSheet = .filter
+            },
+            FloatingMenuItem(id: "list", systemImage: "list.bullet", title: "Seznam benzínek") {
+                viewModel.activeSheet = .stationList
+            },
+        ]
+    }
+
+    /// Ze schválené žádosti se dá skočit rovnou na benzínku v mapě. Když ji filtr
+    /// zrovna schovává, zahodí se – jinak by klepnutí nic neudělalo a vypadalo
+    /// by to jako chyba. Že filtr zmizel, se ale musí říct nahlas; tiše zmizelý
+    /// filtr je horší než žádný.
+    private func showStation(id: Int) {
+        guard let station = viewModel.stations.first(where: { $0.id == id }) else { return }
+        viewModel.activeSheet = nil
+        if filterStore.result.keepingOnly([id]).isEmpty && !filterStore.filter.isEmpty {
+            filterStore.clearFilter()
+            toast = "Filtr jsme vypnuli, tahle benzínka mu neodpovídala."
+        }
+        viewModel.selectedStation = station
     }
 
     private var shouldStartLocation: Bool {
@@ -93,26 +149,6 @@ struct MapScreen: View {
         }
         .ignoresSafeArea(edges: .horizontal)
         .allowsHitTesting(false)
-    }
-
-    private var buttons: some View {
-        VStack(spacing: 10) {
-            FloatingMapButton(systemImage: "plus",
-                              accessibilityLabel: "Přidat benzínku") {
-                viewModel.activeSheet = .addStation
-            }
-            FloatingMapButton(systemImage: "list.bullet",
-                              pointSize: 26,
-                              accessibilityLabel: "Seznam benzínek") {
-                viewModel.activeSheet = .stationList
-            }
-            FloatingMapButton(systemImage: "ellipsis",
-                              pointSize: 30,
-                              accessibilityLabel: "Menu") {
-                viewModel.activeSheet = .menu
-            }
-        }
-        .shadow(radius: 3)
     }
 }
 

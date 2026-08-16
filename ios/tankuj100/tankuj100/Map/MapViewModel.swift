@@ -5,6 +5,7 @@ enum MapSheet: String, Identifiable {
     case menu
     case stationList
     case addStation
+    case filter
 
     var id: String { rawValue }
 }
@@ -29,14 +30,6 @@ final class MapViewModel: ObservableObject {
     /// alert by zavřel seznam, ve kterém uživatel na „Zkusit znovu“ klepnul.
     func reload() async {
         await load(reportingErrors: false)
-    }
-
-    /// Po přepnutí prostředí se stará data musí zahodit hned – kdyby nové načtení
-    /// selhalo, je lepší prázdná mapa než benzínky z jiného serveru.
-    func reloadAfterEnvironmentChange() async {
-        stations = []
-        selectedStation = nil
-        await load(reportingErrors: true)
     }
 
     private func load(reportingErrors: Bool) async {

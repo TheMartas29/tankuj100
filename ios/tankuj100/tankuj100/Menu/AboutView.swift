@@ -2,14 +2,6 @@ import SwiftUI
 
 struct AboutView: View {
 
-    /// Kolikrát je potřeba klepnout na verzi, než se prostředí přepne.
-    /// Sedm je zaběhaná konvence a náhodou se na to nepřijde.
-    private static let tapsToSwitch = 7
-
-    @ObservedObject private var environment = AppEnvironmentStore.shared
-    @State private var versionTaps = 0
-    @State private var toast: String?
-
     private var version: String {
         let info = Bundle.main.infoDictionary
         let short = info?["CFBundleShortVersionString"] as? String ?? "1.0"
@@ -30,11 +22,10 @@ struct AboutView: View {
                     Text("Verze \(version)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
-                        .contentShape(Rectangle())
-                        .onTapGesture(perform: countTap)
 
-                    if environment.current == .test {
-                        Text(environment.current.title.uppercased())
+                    // Testovací build to o sobě říká sám; ostrý tenhle odznak nemá.
+                    if AppEnvironment.isTest {
+                        Text(AppEnvironment.current.title.uppercased())
                             .font(.caption2).bold()
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
@@ -66,19 +57,5 @@ struct AboutView: View {
         }
         .navigationTitle("O aplikaci")
         .navigationBarTitleDisplayMode(.inline)
-        .successToast($toast)
-    }
-
-    /// Přepíná se jen souvislou sérií klepnutí – když uživatel mezi nimi odejde
-    /// jinam, počítadlo se vynuluje při dalším zobrazení obrazovky.
-    private func countTap() {
-        versionTaps += 1
-        guard versionTaps >= Self.tapsToSwitch else { return }
-        versionTaps = 0
-
-        let switched = environment.toggle()
-        toast = switched == .test
-            ? "Přepnuto na TEST – data z testovacího serveru"
-            : "Přepnuto zpět na produkci"
     }
 }

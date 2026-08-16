@@ -773,6 +773,8 @@ async function run(db) {
       'reviews', 'reviewsHidden', 'ratingAverage',
       'reportsNew', 'reportsInReview', 'reportsTotal',
       'fuelVotes', 'stationsWithE5', 'last7dReports', 'last7dReviews', 'mail_configured',
+      // Bez nich zůstane odznak „Žádosti“ v administraci navždy na nule.
+      'stationRequestsNew', 'stationRequestsTotal',
     ]) {
       check(`stats má ${key}`, key in (res.json || {}));
     }

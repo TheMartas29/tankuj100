@@ -22,6 +22,8 @@ const METRICS = {
   reportsInReview: "SELECT COUNT(*) AS c FROM report WHERE status = 'in_review'",
   reportsTotal: 'SELECT COUNT(*) AS c FROM report',
   fuelVotes: 'SELECT COUNT(*) AS c FROM fuel_vote',
+  stationRequestsNew: "SELECT COUNT(*) AS c FROM station_request WHERE status = 'new'",
+  stationRequestsTotal: 'SELECT COUNT(*) AS c FROM station_request',
   // Stejné rozhodovací pravidlo jako fuelVerdict(), jen spočítané nad všemi stanicemi.
   stationsWithE5: `
     SELECT COUNT(*) AS c FROM (

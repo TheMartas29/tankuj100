@@ -52,7 +52,7 @@ struct FloatingMapButton: View {
     }
 }
 
-private struct FloatingButtonBackground: ViewModifier {
+struct FloatingButtonBackground: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content.glassEffect(.clear.tint(Color.accentColor.opacity(0.2)))
@@ -60,6 +60,35 @@ private struct FloatingButtonBackground: ViewModifier {
             content
                 .background(.ultraThinMaterial, in: Circle())
                 .overlay(Circle().stroke(Color.accentColor.opacity(0.25), lineWidth: 1))
+        }
+    }
+}
+
+/// Obal pro skupinu skleněných tlačítek. Na iOS 26 díky němu sklo mezi sousedními
+/// tlačítky splývá a při rozbalování se přelévá místo toho, aby každé žilo samo za
+/// sebe. Níž je to průhledný kontejner, který nic nedělá.
+struct GlassGroup<Content: View>: View {
+    var spacing: CGFloat = 10
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: spacing) { content() }
+        } else {
+            content()
+        }
+    }
+}
+
+extension View {
+    /// Přiřadí prvku identitu ve skupině skla, aby si iOS 26 uměl při animaci
+    /// pohlídat, co se v co přelévá. Na starších verzích se neděje nic.
+    @ViewBuilder
+    func glassMorphID(_ id: some Hashable, in namespace: Namespace.ID) -> some View {
+        if #available(iOS 26.0, *) {
+            glassEffectID(id, in: namespace)
+        } else {
+            self
         }
     }
 }

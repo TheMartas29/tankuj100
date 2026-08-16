@@ -173,9 +173,13 @@ xcrun altool --upload-app -f ios/tankuj100/build/export/tankuj100.ipa -t ios --a
 Číslo buildu (`CURRENT_PROJECT_VERSION`) musí být u stejné verze pokaždé vyšší než
 u předchozího nahrání, jinak App Store Connect build odmítne.
 
-⚠️ Do poznámek pro App Review napiš, že aplikace obsahuje **skrytý přepínač
-prostředí** (7× klepnutí na verzi) a k čemu slouží. Skryté funkce jsou podle
-pravidla 2.3.1 důvod k zamítnutí; přiznaná vývojářská pomůcka problém není.
+Archivuje se **jen schéma `tankuj100`** – testovací schéma má jiné bundle ID a do
+App Storu nepatří.
+
+⚠️ **Backend musí být na produkci dřív než aplikace.** Verze 1.1 filtruje podle masek
+`f`/`s` z `/api/map/`; dokud je produkce neposílá, filtr na palivo ani na služby
+nic nenajde (masky jsou nula). Pořadí je tedy: nasadit backend na produkci → ověřit,
+že `/api/map/` masky vrací → teprve pak nahrát build.
 
 ## Testovací prostředí
 
@@ -193,22 +197,34 @@ Klíče se **nesmí** shodovat – jinak by přístup k testu otevřel i produkc
 Test je uzavřený právě tím klíčem: bez něj vrací `/api/*` 401. Nginx tam navíc
 posílá `X-Robots-Tag: noindex, nofollow`, ať se doména neobjeví ve vyhledávačích.
 
-### Přepnutí aplikace na test
+### Testovací aplikace: vlastní schéma, ne přepínač
 
-**Menu → O aplikaci → 7× klepnout na řádek s verzí.** Přepne se to tam a zpátky,
-potvrzeno toastem („Přepnuto na TEST…“ / „Přepnuto zpět na produkci“).
+Od verze 1.1 jsou to **dvě samostatné aplikace**, které jdou mít v telefonu vedle sebe:
 
-Dokud na mapě svítí oranžový pruh „TESTOVACÍ PROSTŘEDÍ“, mluví aplikace s testem;
-odznak je i pod verzí v „O aplikaci“. Po přepnutí se benzínky načtou znovu, aby na
-mapě nezůstala data z předchozího serveru.
+| schéma | konfigurace | bundle ID | název na ploše | prostředí |
+|--|--|--|--|--|
+| `tankuj100` | Debug / Release | `cz.silkroad.tankuj100` | tankuj100 | produkce |
+| `tankuj100 TEST` | Debug Test / Release Test | `cz.silkroad.tankuj100.test` | tankuj100 TEST | test |
 
-Adresa i klíč se mění naráz – jsou svázané v `AppEnvironment` (`baseURL` + `appKey`),
-takže nemůže nastat, že by aplikace klepala na test produkčním klíčem.
+Prostředí se určuje **při překladu** podle `TANKUJ_TEST`
+(`SWIFT_ACTIVE_COMPILATION_CONDITIONS`, nastaveno na úrovni projektu u konfigurací
+`… Test`), vyhodnocuje se v `AppEnvironment`. Za běhu se přepnout nedá.
 
-⚠️ **Oba klíče jsou v aplikaci natvrdo**, takže kdo si ji rozebere, dostane se i na
-test. Je to vědomý kompromis za pohodlí – test je klon bez skutečných uživatelských
-dat. Kdyby to někdy vadilo, vrátit se dá k variantě, kdy se testovací klíč zadává
-ručně a v binárce vůbec není (viz commit `8c312c9`).
+```bash
+xcodebuild -project tankuj100.xcodeproj -scheme 'tankuj100 TEST' -configuration 'Debug Test' -destination 'id=<UDID>' build
+```
+
+Testovací build o sobě dává vědět oranžovým pruhem „TESTOVACÍ PROSTŘEDÍ“ přes mapu
+a odznakem v „O aplikaci“.
+
+Dřív to řešil skrytý přepínač (7× klepnutí na verzi) a v binárce byly oba klíče.
+Rozdělení je lepší ve třech ohledech: **v každém buildu je jen jeho vlastní klíč**
+(kdo rozebere ostrou aplikaci, na test se nedostane), uživatel si prostředí nepřepne
+omylem, a odpadá skrytá nepopsaná funkce, kterou App Review zakazuje (2.3.1).
+
+⚠️ Pozor na `project.pbxproj`: je to starý formát plistu, kde **hodnota s mezerou
+musí být v uvozovkách** – `name = "Debug Test";`. Bez uvozovek Xcode projekt tiše
+odmítne otevřít. `plutil -lint` tenhle soubor neumí, kontroluj `xcodebuild -list`.
 
 Při výměně klíče se musí změnit **obě strany** – `APP_KEY` v `.env` daného prostředí
 i konstanta v `AppEnvironment.appKey` – a vydat novou verzi aplikace.
