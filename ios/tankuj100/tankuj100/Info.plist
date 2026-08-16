@@ -4,5 +4,11 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Polohu používáme k zobrazení benzínek ve vašem okolí a k vycentrování mapy na vaši pozici.</string>
+
+	<!-- Aplikace používá jen standardní HTTPS, což je z vývozních omezení vyjmuté.
+	     Bez tohohle klíče se App Store Connect ptá na export compliance u každého
+	     nahraného buildu a ten do té doby visí ve stavu „Missing Compliance". -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
