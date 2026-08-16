@@ -56,11 +56,17 @@ export const SCREEN_RATIO = 1320 / 2868; // bezelless iPhone screen (matches cap
 // simulator captures, so screenshots sit pixel-perfect behind the frame.
 export const FRAME_RATIO = 1470 / 3000;
 export const FRAME_SRC = "/frames/iphone-frame.png";
+// Pixel-exact mask of the glass opening (white=glass), derived from the frame's
+// alpha — clips the screenshot to the true squircle so corners match perfectly.
+export const FRAME_MASK_SRC = "/frames/iphone-glass-mask.png";
 export const FRAME_OPENING = {
   L: (75 / 1470) * 100,
   T: (66 / 3000) * 100,
   W: (1320 / 1470) * 100,
   H: (2868 / 3000) * 100,
+  // Glass corner radius ≈ 232px — clip the screenshot so its corners match the frame.
+  RX: (232 / 1320) * 100,
+  RY: (232 / 2868) * 100,
 };
 export const TAB_P_RATIO = 0.667;        // tablet portrait
 export const TAB_L_RATIO = 1.5;          // tablet landscape

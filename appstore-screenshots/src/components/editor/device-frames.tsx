@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { FRAME_RATIO, FRAME_SRC, FRAME_OPENING } from "@/lib/constants";
+import { FRAME_RATIO, FRAME_SRC, FRAME_MASK_SRC, FRAME_OPENING } from "@/lib/constants";
 import { img } from "@/lib/image-cache";
 
 type FrameProps = {
@@ -25,29 +25,41 @@ export function Phone({ src, alt = "", style, hideEmpty }: FrameProps) {
         ...style,
       }}
     >
-      {/* Screenshot behind the glass */}
+      {/* Screenshot clipped to the exact glass shape (squircle mask from the frame) */}
       <div
         style={{
           position: "absolute",
+          inset: 0,
           zIndex: 1,
-          overflow: "hidden",
-          left: `${FRAME_OPENING.L}%`,
-          top: `${FRAME_OPENING.T}%`,
-          width: `${FRAME_OPENING.W}%`,
-          height: `${FRAME_OPENING.H}%`,
-          background: "#000",
+          WebkitMaskImage: `url("${img(FRAME_MASK_SRC)}")`,
+          maskImage: `url("${img(FRAME_MASK_SRC)}")`,
+          WebkitMaskSize: "100% 100%",
+          maskSize: "100% 100%",
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
         }}
       >
-        {resolved ? (
-          <img
-            src={resolved}
-            alt={alt}
-            style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
-            draggable={false}
-          />
-        ) : hideEmpty ? null : (
-          <EmptySlot />
-        )}
+        <div
+          style={{
+            position: "absolute",
+            left: `${FRAME_OPENING.L}%`,
+            top: `${FRAME_OPENING.T}%`,
+            width: `${FRAME_OPENING.W}%`,
+            height: `${FRAME_OPENING.H}%`,
+            background: "#000",
+          }}
+        >
+          {resolved ? (
+            <img
+              src={resolved}
+              alt={alt}
+              style={{ display: "block", width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
+              draggable={false}
+            />
+          ) : hideEmpty ? null : (
+            <EmptySlot />
+          )}
+        </div>
       </div>
       {/* Frame on top */}
       <img

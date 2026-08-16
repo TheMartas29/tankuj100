@@ -16,20 +16,28 @@
         "id": "tj_01_map",
         "layout": "hero",
         "label": {
-          "cs": "TANKUJ100"
+          "cs": "100 OKTANŮ"
         },
         "headline": {
-          "cs": "Najdi 100 oktanů\nkousek od tebe."
+          "cs": "Prémiové palivo\nhned po ruce."
         },
         "screenshot": "/screenshots/apple/iphone/{locale}/01-map.png",
         "transforms": {
           "device": {
-            "x": 153.18224783861672,
-            "y": 998.5420740717617,
-            "width": 1013.6355043227666,
-            "height": 2202.3535048467384,
+            "x": 111.49075460585213,
+            "y": 814.7803586465902,
+            "width": 1104,
+            "height": 2252,
             "rotation": 0,
             "zIndex": 3
+          },
+          "caption": {
+            "x": 105.59999910617972,
+            "y": 258.12000856790587,
+            "width": 1109,
+            "height": 549,
+            "rotation": 0,
+            "zIndex": 4
           }
         }
       },
@@ -40,37 +48,47 @@
           "cs": "Nejbližší stanice"
         },
         "headline": {
-          "cs": "Prémiové pumpy\nhned po ruce."
+          "cs": "Oktany vidíš\nu každé pumpy."
         },
-        "screenshot": "/screenshots/apple/iphone/{locale}/04-list.png"
+        "screenshot": "/screenshots/apple/iphone/{locale}/04-list.png",
+        "transforms": {
+          "device": {
+            "x": 186.23538833981837,
+            "y": 780.1344240337164,
+            "width": 945,
+            "height": 1929,
+            "rotation": 0,
+            "zIndex": 3
+          },
+          "caption": {
+            "x": 105.5999685886016,
+            "y": 229.44000519692648,
+            "width": 1109,
+            "height": 551,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        }
       },
       {
         "id": "tj_03_detail",
         "layout": "device-top",
         "label": {
-          "cs": "Pro starší motory"
+          "cs": "Komunita řidičů"
         },
         "headline": {
-          "cs": "Zjisti, kde čepují\nE5 benzín."
+          "cs": "Přidej informace\na pomoz ostatním."
         },
         "screenshot": "/screenshots/apple/iphone/{locale}/02-detail.png",
         "inverted": true,
         "transforms": {
           "device": {
-            "x": 153.18224783861672,
-            "y": -286.8,
-            "width": 1013.6355043227666,
-            "height": 2202.3535048467384,
+            "x": 140.46952895786345,
+            "y": -360.534047549008,
+            "width": 1028,
+            "height": 2097,
             "rotation": 0,
             "zIndex": 3
-          },
-          "caption": {
-            "x": 110.68510638297872,
-            "y": 1970.9872340425522,
-            "width": 1108.8,
-            "height": 803.0400000000001,
-            "rotation": 0,
-            "zIndex": 4
           }
         }
       },
@@ -78,12 +96,22 @@
         "id": "tj_04_reviews",
         "layout": "device-bottom",
         "label": {
-          "cs": "Od řidičů"
+          "cs": "Recenze"
         },
         "headline": {
-          "cs": "Hodnocení a tipy\npřímo od pumpy."
+          "cs": "Hodnocení\nod řidičů."
         },
-        "screenshot": "/screenshots/apple/iphone/{locale}/03-reviews.png"
+        "screenshot": "/screenshots/apple/iphone/{locale}/03-reviews.png",
+        "transforms": {
+          "device": {
+            "x": 81.37362722002032,
+            "y": 803.4110237367445,
+            "width": 1157,
+            "height": 2361,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        }
       }
     ],
     "android": [],

@@ -239,6 +239,19 @@ function Caption({
   const unit = Math.min(cW, cH);
   return (
     <div style={{ textAlign: align, position: "relative", width: "100%" }}>
+      <img
+        src={img("/logo.png")}
+        alt=""
+        style={{
+          display: "block",
+          width: unit * 0.12,
+          height: "auto",
+          marginBottom: unit * 0.022,
+          marginLeft: align === "center" ? "auto" : 0,
+          marginRight: align === "center" ? "auto" : 0,
+        }}
+        draggable={false}
+      />
       <EditableText
         value={pickText(slide.label, locale)}
         editable={editable}

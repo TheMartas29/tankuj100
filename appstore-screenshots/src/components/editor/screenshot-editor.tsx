@@ -75,6 +75,7 @@ export function ScreenshotEditor() {
     const paths = new Set<string>();
     paths.add("/mockup.png");
     paths.add("/frames/iphone-frame.png");
+    paths.add("/frames/iphone-glass-mask.png");
     paths.add("/logo.png");
     if (state.appIcon) paths.add(state.appIcon);
     // Preload every locale variant so bulk export doesn't race image loads.
