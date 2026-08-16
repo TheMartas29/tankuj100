@@ -11,7 +11,7 @@ const FEATURES = [
   },
   {
     title: "Všechno o stanici",
-    text: "Nabídka paliv, adresa, otevírací doba, kontakt i služby. Navigaci do stanice spustíš jedním klepnutím přes Apple Mapy.",
+    text: "Nabídka paliv, adresa, otevírací doba, kontakt i služby. Navigaci do stanice spustíš jedním klepnutím.",
     tint: "from-amber-50 to-orange-100",
     icon: (
       <path d="M12 2.25c-3.87 0-7 3.02-7 6.75 0 4.87 6.06 12 6.32 12.3a.9.9 0 0 0 1.36 0C13.94 21 20 13.87 20 9c0-3.73-3.13-6.75-8-6.75Zm0 9.5a2.75 2.75 0 1 1 0-5.5 2.75 2.75 0 0 1 0 5.5Z" />

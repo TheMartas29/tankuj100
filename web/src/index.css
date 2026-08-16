@@ -71,6 +71,16 @@
     color: transparent;
   }
 
+  /* Vodorovný carousel má fungovat prstem, ale bez viditelné lišty. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Jemné nadechnutí obsahu při scrollu (respektuje systémové omezení pohybu). */
   .reveal {
     opacity: 0;

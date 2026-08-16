@@ -32,15 +32,18 @@ export default function FinalCta() {
               kde to za to stojí.
             </h2>
 
-            <p className="mx-auto mt-5 max-w-lg text-lg text-white/70">
+            <p className="mx-auto mt-5 max-w-xl text-lg text-white/70">
+              Zatím zdarma, bez účtu, bez reklam a bez jediné řádky sledovacího kódu.
               Stáhni si tankuj100 a měj mapu prémiových pump vždycky po ruce.
             </p>
 
             <div className="mt-9 flex justify-center">
-              <AppStoreBadge className="ring-white/25" />
+              <AppStoreBadge />
             </div>
 
-            <p className="mt-6 text-sm text-white/50">Pro iPhone s iOS 16 a novějším</p>
+            <p className="mt-6 text-sm text-white/50">
+              Stačí iOS 16 – rozjede se i na iPhonu z roku 2017
+            </p>
           </div>
         </div>
       </Reveal>

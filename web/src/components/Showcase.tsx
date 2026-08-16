@@ -15,7 +15,7 @@ const ROWS = [
     label: "Detail stanice",
     title: "Zastávku si ověříš předem",
     text: "Nabídka paliv, adresa, otevírací doba i kontakt pohromadě. Když sedí, spustíš navigaci jedním klepnutím. Když nesedí, nahlásíš to taky jedním klepnutím.",
-    points: ["Kompletní nabídka paliv", "Navigace přes Apple Mapy", "Nahlášení nesrovnalosti"],
+    points: ["Kompletní nabídka paliv", "Navigace jedním klepnutím", "Nahlášení nesrovnalosti"],
   },
   {
     image: "/devices/reviews.webp",

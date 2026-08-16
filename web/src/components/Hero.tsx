@@ -1,6 +1,18 @@
 import AppStoreBadge from "./AppStoreBadge";
 
-const TRUST = ["Zdarma", "Bez registrace", "Bez reklam"];
+const TRUST = ["Zatím zdarma", "Bez registrace", "Bez reklam"];
+
+// Pořadí odpovídá tomu, jak se s aplikací pracuje: mapa → seznam → detail → hodnocení.
+const SCREENS = [
+  { src: "/devices/map.webp", alt: "Mapa benzínek se 100 oktany po celé České republice" },
+  { src: "/devices/list.webp", alt: "Seznam nejbližších stanic seřazený podle vzdálenosti" },
+  { src: "/devices/detail.webp", alt: "Detail stanice s nabídkou paliv a otevírací dobou" },
+  { src: "/devices/reviews.webp", alt: "Hodnocení stanice od ostatních řidičů" },
+];
+
+// Na širokých displejích se telefony poskládají do mírného oblouku – krajní níž,
+// prostřední výš. Na mobilu se žádné posuny nedělají, tam se jen scrolluje.
+const ARC = ["lg:translate-y-10", "lg:translate-y-1", "lg:translate-y-1", "lg:translate-y-10"];
 
 export default function Hero() {
   return (
@@ -9,8 +21,8 @@ export default function Hero() {
       <div
         className="absolute inset-0 -z-20 bg-brand-gradient"
         style={{
-          maskImage: "linear-gradient(to bottom, black 0%, black 52%, transparent 88%)",
-          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 52%, transparent 88%)",
+          maskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 86%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 86%)",
         }}
         aria-hidden="true"
       />
@@ -26,33 +38,34 @@ export default function Hero() {
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur-sm">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-[0.8rem] font-medium text-white ring-1 ring-white/25 backdrop-blur-sm sm:px-4 sm:text-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-white" />
             Mapa prémiových paliv v Česku
           </span>
 
-          <h1 className="mt-6 text-[2.6rem] leading-[1.05] font-semibold text-white sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 text-[2.15rem] leading-[1.08] font-semibold text-white sm:mt-6 sm:text-5xl md:text-6xl lg:text-7xl">
             Benzínky se 100 oktany.
             <br />
             Všechny na jedné mapě.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-lg text-white/85 sm:text-xl">
+          <p className="mx-auto mt-5 max-w-xl text-base text-white/85 sm:mt-6 sm:text-lg md:text-xl">
             tankuj100 ti ukáže jen ty pumpy, kde skutečně natankuješ Natural 100 nebo 98.
             Žádné projíždění stanic, u kterých stejně zastavovat nechceš.
           </p>
 
-          <div className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          {/* Obě tlačítka mají shodnou výšku (h-14), ať vedle sebe sedí. */}
+          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-9 sm:flex-row sm:justify-center sm:gap-4">
             <AppStoreBadge />
             <a
               href="#funkce"
-              className="rounded-xl px-5 py-3 text-base font-medium text-white/90 ring-1 ring-white/30 transition hover:bg-white/10"
+              className="inline-flex h-14 items-center justify-center rounded-[12px] px-6 text-base font-medium text-white ring-1 ring-white/35 transition hover:bg-white/10"
             >
               Co appka umí
             </a>
           </div>
 
-          <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/75">
+          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/75 sm:mt-7 sm:gap-x-6">
             {TRUST.map((item) => (
               <li key={item} className="flex items-center gap-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden="true">
@@ -67,22 +80,48 @@ export default function Hero() {
             ))}
           </ul>
         </div>
+      </div>
 
-        {/* Telefon záměrně přesahuje přes rozhraní gradientu a bílé plochy. */}
-        <div className="relative mx-auto mt-14 w-[16rem] sm:mt-16 sm:w-[19rem]">
-          <div
-            className="absolute inset-x-4 top-10 -z-10 h-full rounded-[3rem] bg-brand-900/25 blur-3xl"
-            aria-hidden="true"
-          />
-          <img
-            src="/devices/map.webp"
-            width={1000}
-            height={2041}
-            alt="Aplikace tankuj100 s mapou benzínek se 100 oktany po celé České republice"
-            className="w-full drop-shadow-2xl"
-            fetchPriority="high"
-          />
+      {/*
+        Telefony záměrně přesahují přes rozhraní gradientu a světlé plochy.
+        Na mobilu je to vodorovný carousel se zarovnáním na střed (prst + snap),
+        od lg se vejdou všechny čtyři vedle sebe a scrollovat není potřeba.
+      */}
+      <div className="relative mt-12 sm:mt-14">
+        <div
+          className="absolute inset-x-8 top-16 -z-10 h-2/3 rounded-[4rem] bg-brand-900/25 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className={[
+            "no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto",
+            // Odsazení po stranách zarovná první a poslední telefon na střed obrazovky.
+            "scroll-px-5 px-[calc(50%-6.75rem)] pb-6 sm:px-[calc(50%-7.5rem)]",
+            "lg:snap-none lg:justify-center lg:overflow-visible lg:px-8 lg:pb-0",
+          ].join(" ")}
+        >
+          {SCREENS.map((screen, i) => (
+            <figure
+              key={screen.src}
+              className={`shrink-0 snap-center ${ARC[i]} w-[13.5rem] sm:w-[15rem] lg:w-[14.5rem] xl:w-[16rem]`}
+            >
+              <img
+                src={screen.src}
+                width={1000}
+                height={2041}
+                alt={screen.alt}
+                className="w-full drop-shadow-2xl"
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : "auto"}
+              />
+            </figure>
+          ))}
         </div>
+
+        {/* Nápověda jen tam, kde se opravdu scrolluje. */}
+        <p className="mt-1 text-center text-xs text-ink-muted lg:hidden">
+          Přejeď prstem a prohlédni si aplikaci
+        </p>
       </div>
     </section>
   );
