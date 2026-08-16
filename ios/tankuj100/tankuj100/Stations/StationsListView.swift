@@ -14,12 +14,15 @@ struct StationsListView: View {
     let stations: [GasStation]
     var userLocation: CLLocation?
     @ObservedObject var favorites: FavoritesStore
-    var onRetry: (() async -> Void)?
+    /// Vrací text chyby, nebo `nil` při úspěchu. Seznam ho ukáže u tlačítka –
+    /// bez toho vypadá neúspěšné zopakování stejně jako žádné klepnutí.
+    var onRetry: (() async -> String?)?
 
     @ObservedObject private var store = StationFilterStore.shared
     @Environment(\.dismiss) private var dismiss
     @State private var mode: Mode = .nearest
     @State private var isRetrying = false
+    @State private var loadFailure: String?
     @State private var showsFilter = false
     @State private var favoriteRows: [Int32] = []
     /// Ke kterému výsledku `favoriteRows` patří. Bez toho by po přestavbě indexu
@@ -69,6 +72,10 @@ struct StationsListView: View {
             store.setFavorites(favorites.ids)
             store.setOrigin(userLocation)
             await store.load(stations)
+            // Když mapa data ještě nemá, přivěsíme se na její dotaz. Bez toho by
+            // seznam otevřený během prvního načítání tvrdil „nenačetly se“ ve chvíli,
+            // kdy se benzínky po pomalé lince pořád ještě stahují.
+            if stations.isEmpty { await runRetry() }
         }
         .onValueChange(of: stations.count) { _ in
             Task { await store.load(stations) }
@@ -101,17 +108,25 @@ struct StationsListView: View {
 
     @ViewBuilder
     private var content: some View {
-        if stations.isEmpty {
+        if stations.isEmpty && isRetrying {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Načítám benzínky…")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if stations.isEmpty {
             EmptyStateView(
                 title: "Benzínky se nenačetly",
                 systemImage: "wifi.exclamationmark",
-                message: "Zkontrolujte připojení k internetu. Bez dat vám seznam nemáme co zobrazit."
+                // Konkrétní důvod je přednější než obecná rada: „server neodpovídá“
+                // a „nejste online“ vedou uživatele každé jinam.
+                message: loadFailure ?? "Zkontrolujte připojení k internetu. Bez dat vám seznam nemáme co zobrazit."
             ) {
-                Button(action: retry) {
-                    if isRetrying { ProgressView() } else { Text("Zkusit znovu") }
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(onRetry == nil || isRetrying)
+                Button("Zkusit znovu", action: retry)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(onRetry == nil)
             }
         } else if rows.isEmpty && store.isWorking {
             ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -166,11 +181,14 @@ struct StationsListView: View {
     }
 
     private func retry() {
+        Task { await runRetry() }
+    }
+
+    /// Mapa běžící dotaz nezdvojuje – když už jeden má, tohle si počká na jeho výsledek.
+    private func runRetry() async {
         guard let onRetry, !isRetrying else { return }
         isRetrying = true
-        Task {
-            await onRetry()
-            isRetrying = false
-        }
+        loadFailure = await onRetry()
+        isRetrying = false
     }
 }

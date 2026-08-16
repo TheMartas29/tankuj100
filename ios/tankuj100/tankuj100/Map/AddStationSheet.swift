@@ -182,6 +182,9 @@ struct AddStationSheet: View {
             try? await Task.sleep(nanoseconds: 700_000_000)
             guard !Task.isCancelled else { return }
             let found = await viewModel.lookUpAddress(at: pick.point)
+            // Po pomalé lince může odpověď dorazit až po posunutí špendlíku – to už
+            // je ale adresa úplně jiného místa a do formuláře nepatří.
+            guard !Task.isCancelled else { return }
             // Přepisujeme jen prázdná pole – co si uživatel napsal, je vždycky přednější.
             if city.isEmpty, let foundCity = found.city { city = foundCity }
             if address.isEmpty, let street = found.street { address = street }

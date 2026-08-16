@@ -82,8 +82,18 @@ final class StationRequestViewModel: ObservableObject {
         // Čeština natvrdo, ne podle jazyka telefonu: adresa jde do databáze českých
         // benzínek a admin ji schvaluje. Bez toho by z anglicky nastaveného iPhonu
         // přišlo „Prague 7“ a v datech by se mísily dva jazyky.
-        let placemarks = try? await geocoder.reverseGeocodeLocation(point.location,
-                                                                    preferredLocale: Locale(identifier: "cs_CZ"))
+        //
+        // Bez sítě geokodér prostě nic nevrátí a formulář se vyplní ručně – proto
+        // `try?` a žádný alert. Posunutí špendlíku ale musí rozdělaný dotaz opravdu
+        // zrušit: jeden `CLGeocoder` obslouží jen jeden dotaz naráz, takže by dotaz
+        // visící na mrtvé lince zablokoval i všechna další hledání.
+        let geocoder = self.geocoder
+        let placemarks = try? await withTaskCancellationHandler {
+            try await geocoder.reverseGeocodeLocation(point.location,
+                                                      preferredLocale: Locale(identifier: "cs_CZ"))
+        } onCancel: {
+            geocoder.cancelGeocode()
+        }
         guard let placemark = placemarks?.first else {
             return (nil, nil)
         }

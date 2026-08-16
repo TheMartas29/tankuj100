@@ -14,6 +14,66 @@ struct APIError: LocalizedError, Equatable {
 
     /// Do 150 m už stanice nebo nevyřízená žádost existuje (viz kontrakt, `409`).
     var isDuplicateStation: Bool { code == "duplicate_station" }
+
+    /// Ke serveru se to vůbec nedostalo. Odpověď serveru (byť chybová) tohle nemá –
+    /// podle toho se pozná, co má smysl zopakovat.
+    var isConnectionFailure: Bool { networkFailure != nil }
+
+    /// Telefon nemá kudy ven (letadlový režim, vypnutá data). Jen tenhle stav se
+    /// spraví sám tím, že se připojení vrátí – proto se na něj dá čekat.
+    var isOffline: Bool { networkFailure == .offline }
+
+    private var networkFailure: NetworkFailure? {
+        code.flatMap(NetworkFailure.init(rawValue:))
+    }
+}
+
+/// Rozpad chyby `URLSession` na to, co má smysl říct uživateli, a na kód, podle
+/// kterého se obrazovka rozhodne, jestli má načtení zopakovat sama.
+///
+/// „Nejste online“ a „server neodpovídá“ jsou pro uživatele dvě různé zprávy:
+/// v prvním případě má sáhnout po telefonu, v druhém nemá dělat nic než počkat.
+enum NetworkFailure: String {
+    /// Telefon nemá připojení – letadlový režim, vypnutá data, žádná síť.
+    case offline
+    /// Spojení stálo a nic se nevrátilo.
+    case timeout
+    /// Připojení se přerušilo uprostřed dotazu.
+    case connectionLost
+    /// Síť je, ale server na jejím konci není (DNS, odmítnuté spojení, TLS).
+    case unreachable
+
+    init(_ error: Error) {
+        guard let urlError = error as? URLError else {
+            self = .unreachable
+            return
+        }
+        switch urlError.code {
+        case .notConnectedToInternet, .dataNotAllowed, .internationalRoamingOff:
+            self = .offline
+        case .networkConnectionLost:
+            self = .connectionLost
+        case .timedOut:
+            self = .timeout
+        default:
+            // Sem spadá `cannotFindHost`, `cannotConnectToHost`, `dnsLookupFailed`
+            // i chyby TLS. Uživateli je to jedno – server prostě neodpovídá.
+            self = .unreachable
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .offline:
+            return "Nejste online. Zkontrolujte připojení a zkuste to znovu."
+        case .timeout:
+            return "Server neodpovídá. Zkuste to prosím znovu."
+        case .connectionLost:
+            return "Spojení se přerušilo. Zkuste to prosím znovu."
+        case .unreachable:
+            return "Nepodařilo se spojit se serverem. Zkuste to prosím znovu."
+        }
+    }
 }
 
 struct APIClient {
@@ -162,7 +222,10 @@ struct APIClient {
         case .success(let value):
             return .success(value)
         case .failure(let failure):
-            return .failure(CustomError.defaultError(message: failure.message))
+            // `APIError` projde dál beze změny. Text je stejný jako dřív, navíc si
+            // ale volající může sáhnout na kód a poznat výpadek spojení od odpovědi
+            // serveru – mapa podle toho ví, jestli má čekat na návrat sítě.
+            return .failure(failure)
         }
     }
 
@@ -231,8 +294,9 @@ struct APIClient {
             }
             return .success(data)
         } catch {
-            return .failure(APIError(status: 0, code: nil,
-                                     message: Self.networkMessage(for: error)))
+            let failure = NetworkFailure(error)
+            return .failure(APIError(status: 0, code: failure.rawValue,
+                                     message: failure.message))
         }
     }
 
@@ -255,18 +319,6 @@ struct APIClient {
     }
 
     static func networkMessage(for error: Error) -> String {
-        guard let urlError = error as? URLError else {
-            return "Nepodařilo se spojit se serverem. Zkuste to prosím znovu."
-        }
-        switch urlError.code {
-        case .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed:
-            return "Nejste online. Zkontrolujte připojení a zkuste to znovu."
-        case .timedOut:
-            return "Server neodpovídá. Zkuste to prosím znovu."
-        case .cancelled:
-            return "Požadavek byl zrušen."
-        default:
-            return "Nepodařilo se spojit se serverem. Zkuste to prosím znovu."
-        }
+        NetworkFailure(error).message
     }
 }
