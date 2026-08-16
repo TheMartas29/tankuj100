@@ -27,13 +27,27 @@ const listAll = () =>
 const listForMap = () =>
   db
     .prepare(
-      `SELECT s.id, s.lat, s.lon, s.brand_name,
+      `SELECT s.id, s.lat, s.lon, s.brand_name, s.worktime,
               ${publishedReviewAggregate('ROUND(AVG(r.rating), 2)')} AS rating_avg,
               ${publishedReviewAggregate('COUNT(*)')}                AS rating_count,
               ${PREMIUM_FUEL_COLUMNS}
          FROM station s`
     )
     .all();
+
+// Paliva a služby všech stanic naráz, ne poddotazem na každý řádek. Při stotisíci
+// stanicích je rozdíl mezi dvěma průchody tabulkou a stotisíci dotazy zásadní.
+const allFuelKeys = () => db.prepare('SELECT station_id, fuel_key FROM station_fuel').all();
+
+const FILTERABLE_TAGS = ['shop', 'car_wash', 'toilets'];
+
+const allServiceTags = () =>
+  db
+    .prepare(
+      `SELECT station_id, tag_key FROM station_tag
+        WHERE tag_key IN (${FILTERABLE_TAGS.map(() => '?').join(',')})`
+    )
+    .all(...FILTERABLE_TAGS);
 
 const findById = (id) => db.prepare('SELECT * FROM station WHERE id = ?').get(id);
 
@@ -58,4 +72,14 @@ const remove = (id) => db.prepare('DELETE FROM station WHERE id = ?').run(id);
 
 const upsert = (row) => upsertStatement.run(row);
 
-module.exports = { listAll, listForMap, findById, listFuelKeys, listServiceTags, remove, upsert };
+module.exports = {
+  listAll,
+  listForMap,
+  allFuelKeys,
+  allServiceTags,
+  findById,
+  listFuelKeys,
+  listServiceTags,
+  remove,
+  upsert,
+};

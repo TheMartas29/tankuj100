@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "appName": "tankuj100",
+  "themeId": "tankuj-red",
+  "connectedCanvas": false,
+  "locales": [
+    "cs"
+  ],
+  "locale": "cs",
+  "device": "iphone",
+  "orientation": "portrait",
+  "appIcon": "/app-icon.png",
+  "slidesByDevice": {
+    "iphone": [
+      {
+        "id": "tj_01_map",
+        "layout": "hero",
+        "label": {
+          "cs": "TANKUJ100"
+        },
+        "headline": {
+          "cs": "Najdi 100 oktanů\nkousek od tebe."
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/01-map.png",
+        "transforms": {
+          "device": {
+            "x": 153.18224783861672,
+            "y": 998.5420740717617,
+            "width": 1013.6355043227666,
+            "height": 2202.3535048467384,
+            "rotation": 0,
+            "zIndex": 3
+          }
+        }
+      },
+      {
+        "id": "tj_02_list",
+        "layout": "device-bottom",
+        "label": {
+          "cs": "Nejbližší stanice"
+        },
+        "headline": {
+          "cs": "Prémiové pumpy\nhned po ruce."
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/04-list.png"
+      },
+      {
+        "id": "tj_03_detail",
+        "layout": "device-top",
+        "label": {
+          "cs": "Pro starší motory"
+        },
+        "headline": {
+          "cs": "Zjisti, kde čepují\nE5 benzín."
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/02-detail.png",
+        "inverted": true,
+        "transforms": {
+          "device": {
+            "x": 153.18224783861672,
+            "y": -286.8,
+            "width": 1013.6355043227666,
+            "height": 2202.3535048467384,
+            "rotation": 0,
+            "zIndex": 3
+          },
+          "caption": {
+            "x": 110.68510638297872,
+            "y": 1970.9872340425522,
+            "width": 1108.8,
+            "height": 803.0400000000001,
+            "rotation": 0,
+            "zIndex": 4
+          }
+        }
+      },
+      {
+        "id": "tj_04_reviews",
+        "layout": "device-bottom",
+        "label": {
+          "cs": "Od řidičů"
+        },
+        "headline": {
+          "cs": "Hodnocení a tipy\npřímo od pumpy."
+        },
+        "screenshot": "/screenshots/apple/iphone/{locale}/03-reviews.png"
+      }
+    ],
+    "android": [],
+    "ipad": [],
+    "android-7": [],
+    "android-10": [],
+    "feature-graphic": []
+  },
+  "crossScreenMockupsByDevice": {
+    "iphone": [],
+    "ipad": [],
+    "android": [],
+    "android-7": [],
+    "android-10": [],
+    "feature-graphic": []
+  }
+}

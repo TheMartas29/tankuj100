@@ -1,6 +1,7 @@
 const stationRepo = require('../repositories/station.repo');
 const { MissingStationError, NotFoundError } = require('../errors');
 const { parseStationInput } = require('../validation/inputs');
+const { fuelMaskFor, serviceMaskFor } = require('../fuel-flags');
 const mapCache = require('./map-cache');
 
 function requireStation(stationId) {
@@ -9,17 +10,36 @@ function requireStation(stationId) {
   return station;
 }
 
-const buildMapMarkers = () =>
-  stationRepo.listForMap().map((row) => ({
+/** Seskupí `[{station_id, x}]` na `Map<station_id, x[]>` jedním průchodem. */
+function groupByStation(rows, valueOf) {
+  const grouped = new Map();
+  for (const row of rows) {
+    const existing = grouped.get(row.station_id);
+    if (existing) existing.push(valueOf(row));
+    else grouped.set(row.station_id, [valueOf(row)]);
+  }
+  return grouped;
+}
+
+function buildMapMarkers() {
+  const fuelsByStation = groupByStation(stationRepo.allFuelKeys(), (row) => row.fuel_key);
+  const tagsByStation = groupByStation(stationRepo.allServiceTags(), (row) => row.tag_key);
+
+  return stationRepo.listForMap().map((row) => ({
     id: row.id,
     lat: row.lat,
     lon: row.lon,
     brand_name: row.brand_name,
     rating_avg: row.rating_count ? row.rating_avg : null,
     rating_count: row.rating_count || 0,
+    // `has_98` a `has_100` zůstávají kvůli verzi 1.0, která je v App Storu a nová
+    // pole nezná. Odebrat je půjde, až vydané buildy bez `f` vymřou.
     has_98: row.has_98,
     has_100: row.has_100,
+    f: fuelMaskFor(fuelsByStation.get(row.id) || []),
+    s: serviceMaskFor(tagsByStation.get(row.id) || [], row.worktime),
   }));
+}
 
 /**
  * Rovnou jako řetězec, ne pole: uložený JSON se pak posílá tak, jak je, a nemusí
