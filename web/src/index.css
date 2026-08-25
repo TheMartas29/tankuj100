@@ -1,5 +1,25 @@
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
+
+/* Self-hosted Inter (variabilní, osa 100–900), oseknutý na česko-slovenské znaky.
+   Původních ~130 kB (latin + latin-ext) → ~52 kB. Rodina se jmenuje stejně
+   ("Inter Variable"), aby seděla s --font-sans níže. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-cz.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2212;
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/inter-latin-ext-cz.woff2") format("woff2");
+  unicode-range: U+0100-017F, U+0180-024F, U+1E00-1EFF, U+2C60-2C7F, U+A720-A7FF;
+}
 
 @theme {
   /* Značka – barvy odečtené přímo z ikony aplikace (oranžová nahoře → červená dole). */
@@ -84,13 +104,23 @@
   /* Jemné nadechnutí obsahu při scrollu (respektuje systémové omezení pohybu). */
   .reveal {
     opacity: 0;
-    transform: translateY(1.25rem);
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transform: translateY(0.75rem);
+    transition: opacity 0.45s ease-out, transform 0.45s ease-out;
   }
 
   .reveal.is-visible {
     opacity: 1;
     transform: none;
+  }
+
+  /* Na mobilu se reveal animace vypíná — obsah je hned vidět a rychlý flick-scroll
+     ho nikdy nepředběhne. Efekt zůstává jen na širších displejích (desktop). */
+  @media (max-width: 767px) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

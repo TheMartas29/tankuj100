@@ -1,13 +1,14 @@
 import AppStoreBadge from "./AppStoreBadge";
+import DeviceImage from "./DeviceImage";
 
 const TRUST = ["Zatím zdarma", "Bez registrace", "Bez reklam"];
 
 // Pořadí odpovídá tomu, jak se s aplikací pracuje: mapa → seznam → detail → hodnocení.
 const SCREENS = [
-  { src: "/devices/map.webp", alt: "Mapa benzínek se 100 oktany po celé České republice" },
-  { src: "/devices/list.webp", alt: "Seznam nejbližších stanic seřazený podle vzdálenosti" },
-  { src: "/devices/detail.webp", alt: "Detail stanice s nabídkou paliv a otevírací dobou" },
-  { src: "/devices/reviews.webp", alt: "Hodnocení stanice od ostatních řidičů" },
+  { name: "map", alt: "Mapa benzínek se 100 oktany po celé České republice" },
+  { name: "list", alt: "Seznam nejbližších stanic seřazený podle vzdálenosti" },
+  { name: "detail", alt: "Detail stanice s nabídkou paliv a otevírací dobou" },
+  { name: "reviews", alt: "Hodnocení stanice od ostatních řidičů" },
 ];
 
 // Na širokých displejích se telefony poskládají do mírného oblouku – krajní níž,
@@ -102,17 +103,15 @@ export default function Hero() {
         >
           {SCREENS.map((screen, i) => (
             <figure
-              key={screen.src}
+              key={screen.name}
               className={`shrink-0 snap-center ${ARC[i]} w-[13.5rem] sm:w-[15rem] lg:w-[14.5rem] xl:w-[16rem]`}
             >
-              <img
-                src={screen.src}
-                width={1000}
-                height={2041}
+              <DeviceImage
+                name={screen.name}
                 alt={screen.alt}
                 className="w-full drop-shadow-2xl"
                 loading={i === 0 ? "eager" : "lazy"}
-                fetchPriority={i === 0 ? "high" : "auto"}
+                priority={i === 0}
               />
             </figure>
           ))}

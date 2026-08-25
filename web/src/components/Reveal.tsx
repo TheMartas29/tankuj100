@@ -26,7 +26,9 @@ export default function Reveal({ children, delay = 0, className = "" }: Props) {
           observer.unobserve(el);
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
+      // Spustí se s velkým předstihem (400px pod viewportem), aby byl obsah
+      // naběhlý dřív, než k němu uživatel doscrolluje — i při rychlém flick-scrollu na mobilu.
+      { threshold: 0, rootMargin: "0px 0px 400px 0px" },
     );
 
     observer.observe(el);

@@ -51,23 +51,23 @@ export default function OlderCars() {
             <p className="mt-4 text-base text-white/75">
               Etanol se totiž chová jako rozpouštědlo: vymývá změkčovadla z hadiček a těsnění
               palivové soustavy, ta pak tvrdnou a praskají. Zároveň váže vzdušnou vlhkost,
-              takže při delším stání auta se na dně nádrže usazuje voda. Nejvíc to štve
-              vozy vyrobené zhruba do roku 2000, karburátorové motory a veterány — a právě
-              těm svědčí prémiová paliva se 100 oktany, která místo bioetanolu používají
-              šetrnější ETBE.
+              takže při delším stání auta se na dně nádrže usazuje voda. Nejcitlivější jsou
+              karburátorové motory a veteráni, ale dotýká se to i spousty běžných starších
+              aut — a právě jim svědčí prémiová paliva se 100 oktany, která místo bioetanolu
+              používají šetrnější ETBE.
             </p>
 
             <p className="mt-5 text-sm text-white/70">
-              Pěkně to rozebírá{" "}
+              Rozdíl mezi E5 a E10 a jeho vliv na starší motory pěkně rozebírá{" "}
               <a
-                href="https://www.fkhv.cz/2024/06/29/rozdil-paliv-s-oznacenim-e5-a-e10-a-jejich-mozny-vliv-na-provoz-historickeho-vozidla"
+                href="https://www.klik.cz/blog/benzin-e10/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-white underline decoration-white/40 underline-offset-4 transition hover:decoration-white"
               >
-                článek Federace klubů historických vozidel ČR
+                přehledný článek o benzínu E10
               </a>{" "}
-              o rozdílu paliv E5 a E10 a jejich vlivu na provoz historického vozidla.
+              — a rozhodně to není téma jen pro veterány.
             </p>
 
             <div className="mt-12 grid gap-4 text-left sm:grid-cols-3">

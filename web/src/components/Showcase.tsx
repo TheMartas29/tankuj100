@@ -1,8 +1,9 @@
 import Reveal from "./Reveal";
+import DeviceImage from "./DeviceImage";
 
 const ROWS = [
   {
-    image: "/devices/list.webp",
+    name: "list",
     alt: "Seznam nejbližších benzínek s údajem o vzdálenosti a dostupných oktanech",
     label: "Nejbližší stanice",
     title: "Oktany vidíš u každé pumpy",
@@ -10,7 +11,7 @@ const ROWS = [
     points: ["Řazení podle vzdálenosti", "Oblíbené stanice", "Vycentrování na tvoji polohu"],
   },
   {
-    image: "/devices/detail.webp",
+    name: "detail",
     alt: "Detail benzínky OMV s nabídkou paliv, adresou a tlačítkem Navigovat",
     label: "Detail stanice",
     title: "Zastávku si ověříš předem",
@@ -18,7 +19,7 @@ const ROWS = [
     points: ["Kompletní nabídka paliv", "Navigace jedním klepnutím", "Nahlášení nesrovnalosti"],
   },
   {
-    image: "/devices/reviews.webp",
+    name: "reviews",
     alt: "Hodnocení benzínky od ostatních řidičů s komentáři a hvězdičkami",
     label: "Hodnocení",
     title: "Zkušenosti ostatních řidičů",
@@ -44,10 +45,8 @@ export default function Showcase() {
                     className="absolute inset-x-6 top-12 -z-10 h-3/4 rounded-[3rem] bg-brand-500/25 blur-3xl"
                     aria-hidden="true"
                   />
-                  <img
-                    src={row.image}
-                    width={1000}
-                    height={2041}
+                  <DeviceImage
+                    name={row.name}
                     alt={row.alt}
                     loading="lazy"
                     className="w-full drop-shadow-2xl"
