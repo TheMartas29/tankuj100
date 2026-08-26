@@ -10,7 +10,9 @@ type Props = {
 
 /**
  * Telefonní screenshot v moderních formátech: AVIF → WebP fallback.
- * Zdroje leží v /public/devices/<name>.{avif,webp} (720px šířka, poměr 720×1469).
+ * Zdroje leží v /public/devices/<name>.{avif,webp} (460px šířka, poměr 460×939).
+ * Telefon je na stránce nejvíc 16 rem (256 CSS px) široký, takže 460px odpovídá
+ * ~2× hustotě – viz scripts/build-devices.py, kde se obrázky generují.
  * <picture> je display:contents, takže se layoutově chová jako samotný <img>.
  *
  * Obrázky mají průhledné pozadí (tvar telefonu se zaoblenými rohy), proto zde
@@ -30,8 +32,8 @@ export default function DeviceImage({
       <source srcSet={`/devices/${name}.webp`} type="image/webp" />
       <img
         src={`/devices/${name}.webp`}
-        width={720}
-        height={1469}
+        width={460}
+        height={939}
         alt={alt}
         className={className}
         loading={loading}
