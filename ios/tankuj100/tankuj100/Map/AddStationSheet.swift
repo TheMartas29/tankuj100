@@ -208,7 +208,12 @@ struct AddStationSheet: View {
         }
         .alert("Tuhle benzínku už známe", isPresented: showsDuplicate) {
             Button("Rozumím", role: .cancel) {}
-            Button("Zobrazit moje žádosti") { tab = .mine }
+            // Duplicitu může držet i někdo cizí – server nerozlišuje čí je. Nabídnout
+            // „moje žádosti“ tomu, kdo žádnou nemá, znamená poslat ho na prázdnou
+            // obrazovku; nabízí se proto jen tehdy, když tam opravdu něco je.
+            if !viewModel.requests.isEmpty {
+                Button("Zobrazit moje žádosti") { tab = .mine }
+            }
         } message: {
             Text(viewModel.duplicateMessage
                  ?? "Do 150 metrů od špendlíku už jedna benzínka nebo nevyřízená žádost je.")
