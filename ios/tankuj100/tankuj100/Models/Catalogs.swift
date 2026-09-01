@@ -120,6 +120,16 @@ enum ServiceCatalog {
         "yes": "ano",
     ]
 
+    /// Klíče, které do „Služeb“ nepatří: nejsou to služby benzínky, ale poznámka
+    /// o původu dat. `geocoded: nominatim` si zapisuje skript, který stanici doplnil
+    /// adresu – uživateli se to ukazovalo jako služba „Geocoded – Nominatim“.
+    ///
+    /// Server `osm:*` a `opening_hours` ze seznamu služeb vyhazuje sám, na `geocoded`
+    /// zapomněl (`be/src/repositories/station.repo.js`, `listServiceTags`). Opravit to
+    /// patří hlavně tam; tohle je pojistka, aby stará aplikace neukazovala nesmysly
+    /// a aby se příště nepropsal do seznamu další interní tag.
+    private static let internalKeys: Set<String> = ["geocoded"]
+
     private static func isAbsent(_ value: String) -> Bool {
         ["no", "false", "0", "none", ""].contains(value.trimmingCharacters(in: .whitespaces).lowercased())
     }
@@ -135,6 +145,7 @@ enum ServiceCatalog {
 
         for service in services where !isAbsent(service.value) {
             let key = service.key.lowercased()
+            guard !internalKeys.contains(key) else { continue }
             let value = service.value.trimmingCharacters(in: .whitespaces).lowercased()
 
             if key.hasPrefix("payment:") {
