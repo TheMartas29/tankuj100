@@ -170,7 +170,13 @@ struct StationsListView: View {
     /// tu zbyl jen pro případy, kdy opravdu není co ukázat.
     @ViewBuilder
     private var emptyResult: some View {
-        if mode == .favorites && store.filter.isEmpty {
+        // Rozhoduje **počet oblíbených**, ne filtr: kdo si zatím žádnou benzínku
+        // neuložil, má na téhle záložce prázdno bez ohledu na podmínky. Když se to
+        // vázalo na prázdný filtr, dostal místo toho „Filtru nic neodpovídá“
+        // s tlačítkem „Vymazat filtr“ – uživatel si po něm zahodil nastavené
+        // podmínky a seznam zůstal stejně prázdný. Filtr smí za prázdno jen tehdy,
+        // když nějaké oblíbené jsou a teprve on je odsud vyřadil.
+        if mode == .favorites && favorites.ids.isEmpty {
             EmptyStateView(title: "Žádné oblíbené",
                            systemImage: "heart",
                            message: "Benzínku si přidáte do oblíbených srdíčkem v detailu.")

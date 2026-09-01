@@ -28,6 +28,11 @@ struct AddStationSheet: View {
     @State private var address = ""
     @State private var fuels: Set<FuelFlag> = []
     @State private var note = ""
+    /// Co do obce a ulice doplnil geokodér. Slouží k rozlišení „tohle vyplnil
+    /// špendlík“ od „tohle napsal uživatel“ – rozepsanost formuláře se pozná jen
+    /// podle toho druhého.
+    @State private var filledCity = ""
+    @State private var filledAddress = ""
     @FocusState private var noteFocused: Bool
 
     private let noteLimit = 1000
@@ -190,12 +195,23 @@ struct AddStationSheet: View {
             // je ale adresa úplně jiného místa a do formuláře nepatří.
             guard !Task.isCancelled else { return }
             // Přepisujeme jen prázdná pole – co si uživatel napsal, je vždycky přednější.
-            if city.isEmpty, let foundCity = found.city { city = foundCity }
-            if address.isEmpty, let street = found.street { address = street }
+            if city.isEmpty, let foundCity = found.city {
+                city = foundCity
+                filledCity = foundCity
+            }
+            if address.isEmpty, let street = found.street {
+                address = street
+                filledAddress = street
+            }
         }
         .alert("Tuhle benzínku už známe", isPresented: showsDuplicate) {
             Button("Rozumím", role: .cancel) {}
-            Button("Zobrazit moje žádosti") { tab = .mine }
+            // Duplicitu může držet i někdo cizí – server nerozlišuje čí je. Nabídnout
+            // „moje žádosti“ tomu, kdo žádnou nemá, znamená poslat ho na prázdnou
+            // obrazovku; nabízí se proto jen tehdy, když tam opravdu něco je.
+            if !viewModel.requests.isEmpty {
+                Button("Zobrazit moje žádosti") { tab = .mine }
+            }
         } message: {
             Text(viewModel.duplicateMessage
                  ?? "Do 150 metrů od špendlíku už jedna benzínka nebo nevyřízená žádost je.")
@@ -227,8 +243,21 @@ struct AddStationSheet: View {
         pick.isPrecise && !fuels.isEmpty && !trimmedBrand.isEmpty
     }
 
+    /// Je ve formuláři něco, o co by uživatel přišel?
+    ///
+    /// Počítá se **jen to, co napsal sám**. Obec a ulice se pod rukou vyplňují ze
+    /// špendlíku, takže samy o sobě rozepsanost neznamenají – rozhoduje až to, že
+    /// se liší od doplněné hodnoty. Název naopak nikdo nedoplňuje, ten je vždycky
+    /// od uživatele; dokud tu chyběl, zavřelo se zatažením dolů i pole, do kterého
+    /// se právě psalo, a text byl bez ptaní pryč.
     private var hasDraft: Bool {
-        tab == .add && (!trimmedBrand.isEmpty || !fuels.isEmpty || !note.isEmpty)
+        guard tab == .add else { return false }
+        return !trimmedBrand.isEmpty
+            || !fuels.isEmpty
+            || !note.isEmpty
+            || !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || city != filledCity
+            || address != filledAddress
     }
 
     private var tabSelection: Binding<Tab> {
@@ -287,6 +316,10 @@ struct AddStationSheet: View {
         address = ""
         note = ""
         fuels = []
+        // Bez tohohle by prázdná obec neseděla na naposled doplněnou a čistý
+        // formulář by se tvářil jako rozepsaný.
+        filledCity = ""
+        filledAddress = ""
     }
 }
 
