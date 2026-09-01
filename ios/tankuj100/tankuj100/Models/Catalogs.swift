@@ -124,6 +124,11 @@ enum ServiceCatalog {
         ["no", "false", "0", "none", ""].contains(value.trimmingCharacters(in: .whitespaces).lowercased())
     }
 
+    /// Klíče, které nesou poznámku o původu dat, ne službu pro řidiče. Neznámý klíč
+    /// jinak propadne přes `prettify` do seznamu a mezi myčkou a toaletami vyskočí
+    /// „Geocoded – Nominatim“; na testovacích datech to potká skoro čtvrtinu benzínek.
+    private static let internalKeys: Set<String> = ["geocoded"]
+
     private static func prettify(_ raw: String) -> String {
         let readable = raw.replacingOccurrences(of: "_", with: " ")
         return readable.prefix(1).uppercased() + readable.dropFirst()
@@ -136,6 +141,8 @@ enum ServiceCatalog {
         for service in services where !isAbsent(service.value) {
             let key = service.key.lowercased()
             let value = service.value.trimmingCharacters(in: .whitespaces).lowercased()
+
+            if internalKeys.contains(key) { continue }
 
             if key.hasPrefix("payment:") {
                 let method = String(key.dropFirst("payment:".count))
