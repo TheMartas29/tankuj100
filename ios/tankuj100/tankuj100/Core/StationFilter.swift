@@ -131,7 +131,11 @@ final class StationFilterStore: ObservableObject {
 
         let built = await StationIndex.build(from: stations)
         index = built
-        filter.rebind(to: built)
+        // Prázdný index neznamená „značka z dat zmizela“, ale „data ještě nedorazila“ –
+        // mapa i seznam sem hned po startu chodí s prázdným polem, než doběhne stahování.
+        // Bez téhle podmínky si `rebind` uložené názvy značek pokaždé smazal a filtr
+        // po každém spuštění tiše přišel o vybrané značky.
+        if !built.brands.isEmpty { filter.rebind(to: built) }
         recompute()
     }
 
