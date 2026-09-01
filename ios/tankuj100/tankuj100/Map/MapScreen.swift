@@ -31,6 +31,12 @@ struct MapScreen: View {
         }
         .onAppear {
             viewModel.onAppear()
+            // Oblíbené jsou z disku načtené už v `init`, takže `onValueChange` níž
+            // se pro ně nikdy nespustí – `onChange` počáteční hodnotu přeskakuje.
+            // Bez tohohle předání znal sdílený filtr prázdnou množinu a „Jen
+            // oblíbené“ po startu schovalo úplně všechno, dokud uživatel neotevřel
+            // seznam nebo nepřeklikl nějaké srdíčko.
+            filterStore.setFavorites(favorites.ids)
             if shouldStartLocation { location.start() }
         }
         // Index se staví tady, ne až v seznamu: mapa kreslí to, co projde filtrem,
