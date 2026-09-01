@@ -25,3 +25,6 @@ ios/**/xcuserdata/
 ios/**/*.xcuserstate
 ios/**/DerivedData/
 build/
+
+# Scrapnutá data o místech z Google Maps – generovaná, mimo git (GDPR).
+be/data/place-data-staging/
