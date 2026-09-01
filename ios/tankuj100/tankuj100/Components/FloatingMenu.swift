@@ -143,8 +143,10 @@ struct FloatingMenu: View {
     ) -> some View {
         Color.clear
             .frame(width: diameter, height: diameter)
-            .overlay(alignment: .topTrailing, content: trailing)
-            .overlay(alignment: .topLeading, content: leading)
+            // Bez zarovnání: `position` uvnitř si vezme celou plochu kolečka a
+            // odznak si v ní najde svůj bod sám.
+            .overlay(content: trailing)
+            .overlay(content: leading)
     }
 
     private func itemButton(_ item: FloatingMenuItem) -> some View {
@@ -174,52 +176,67 @@ struct FloatingMenu: View {
         .modifier(FloatingButtonBackground())
     }
 
-    /// Jak daleko od rohu rámečku sedí střed odznaku, aby ležel na **obvodu kruhu**
-    /// a ne v prázdném rohu opsaného čtverce. Roh čtverce je od kruhu vzdálený
-    /// `r·(√2−1)`, tedy u šedesátibodového kolečka skoro devět bodů – přesně o to
-    /// odznak vypadal odlepeně a „za tlačítkem“.
-    ///
-    /// Bod na 45° leží v `r·(1−1/√2)` od hrany rámečku; pro odznak vysoký `h` z toho
-    /// po odečtení jeho poloviny vyjde tohle. U osmnáctibodového odznaku je to skoro
-    /// nula, proto se počítá a nehádá.
-    /// Ke kterému rohu kolečka odznak patří. Znaménko posunu si drží `badge` sám –
-    /// když ho přidával ještě volající, sečetly se dva posuny a tečka skončila
-    /// nad hamburgerem místo v levém horním rohu.
+    /// Ke kterému rohu kolečka odznak patří. Vodorovné vodítko si každá strana
+    /// posouvá opačným směrem; kdyby znaménko přidával ještě volající, sečetla by
+    /// se dvě posunutí a tečka by skončila nad hamburgerem místo v levém horním rohu.
     private enum BadgeCorner {
         case trailing
         case leading
 
-        var dx: CGFloat { self == .trailing ? -1 : 1 }
+        /// Vodorovná souřadnice bodu na 45° v rámečku širokém `diameter`.
+        func x(in diameter: CGFloat, inset: CGFloat) -> CGFloat {
+            self == .trailing ? diameter - inset : inset
+        }
     }
 
-    private func badgeInset(height: CGFloat) -> CGFloat {
-        let radius = diameter / 2
-        return radius * (1 - 1 / 2.squareRoot()) - height / 2
+    /// Jak hluboko pod rohem opsaného čtverce leží obvod kruhu. Bod na 45° je od
+    /// **obou** hran rámečku vzdálený `r·(1−1/√2)`, tedy u šedesátibodového kolečka
+    /// skoro devět bodů – přesně o to odznak vypadal odlepeně a „za tlačítkem“.
+    private var circumferenceInset: CGFloat {
+        diameter / 2 * (1 - 1 / 2.squareRoot())
     }
 
-    private var badgeInset: CGFloat { badgeInset(height: 12) }
+    /// Posadí **střed** odznaku na obvod kruhu.
+    ///
+    /// Schválně `position` a ne `offset` od rohu: posun od rohu se musí spočítat
+    /// z rozměru odznaku, jenže ten dopředu známý není. Kroužek s číslem je kvůli
+    /// `minWidth` a vodorovnému odsazení široký čtyřiadvacet bodů i pro jedinou
+    /// číslici a s druhou číslicí povyroste dál, takže dosazená výška ho pokaždé
+    /// zatáhla o kus hlouběj do tlačítka. `position` bere rovnou cílový bod, takže
+    /// stejný výpočet sedí tečce i „99“.
+    ///
+    /// Vodítka (`alignmentGuide`) by byla čitelnější, ale `overlay` je tu nebere –
+    /// odznak zůstal viset v rohu, jako by tam žádná nebyla.
+    private func onCircumference<V: View>(_ content: V, at corner: BadgeCorner) -> some View {
+        content.position(x: corner.x(in: diameter, inset: circumferenceInset),
+                         y: circumferenceInset)
+    }
 
     @ViewBuilder
     private func badge(_ badge: FloatingMenuBadge, at corner: BadgeCorner = .trailing) -> some View {
         if badge.isVisible {
             switch badge {
             case .count(let value):
-                Text("\(min(value, 99))")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(minWidth: 18, minHeight: 18)
-                    .padding(.horizontal, 3)
-                    .background(Color.red, in: Capsule())
-                    .modifier(BadgeLift())
-                    .offset(x: corner.dx * badgeInset(height: 18), y: badgeInset(height: 18))
-                    .accessibilityHidden(true)
+                onCircumference(
+                    Text("\(min(value, 99))")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(minWidth: 18, minHeight: 18)
+                        .padding(.horizontal, 3)
+                        .background(Color.red, in: Capsule())
+                        .modifier(BadgeLift()),
+                    at: corner
+                )
+                .accessibilityHidden(true)
             default:
-                Circle()
-                    .fill(Color.red)
-                    .frame(width: 12, height: 12)
-                    .modifier(BadgeLift())
-                    .offset(x: corner.dx * badgeInset, y: badgeInset)
-                    .accessibilityHidden(true)
+                onCircumference(
+                    Circle()
+                        .fill(Color.red)
+                        .frame(width: 12, height: 12)
+                        .modifier(BadgeLift()),
+                    at: corner
+                )
+                .accessibilityHidden(true)
             }
         }
     }
