@@ -31,6 +31,10 @@ struct StationMapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let map = MKMapView()
         map.delegate = context.coordinator
+        // Bod polohy uživatele si na iOS 15 bere odstín z mapy, a ten SwiftUI nastaví
+        // podle akcentní barvy – v mapě plné červených špendlíků by pak byl červený
+        // i uživatel. Od iOS 16 ho systém drží modrý sám, takže se tam nic nemění.
+        map.tintColor = .systemBlue
         map.showsCompass = false
         map.pointOfInterestFilter = .excludingAll
         map.setRegion(.czechia, animated: false)
@@ -65,6 +69,8 @@ struct StationMapView: UIViewRepresentable {
 
         let trackingSize: CGFloat = 44
         let tracking = MKUserTrackingButton(mapView: map)
+        // Šipka zůstává v barvě aplikace – odstín mapy je kvůli bodu polohy modrý.
+        tracking.tintColor = .brandAccent
         tracking.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
 
         // Zaoblení si tlačítko přepisuje samo, ořez proto musí zajistit až obal.
