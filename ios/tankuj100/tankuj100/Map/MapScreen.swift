@@ -47,7 +47,7 @@ struct MapScreen: View {
             Task { await requestBadge.refresh() }
         }
         .sheet(item: $viewModel.selectedStation) { station in
-            NavigationStack {
+            NavStack {
                 GasStationDetailView(gasStation: station,
                                      userLocation: location.location,
                                      favorites: favorites,

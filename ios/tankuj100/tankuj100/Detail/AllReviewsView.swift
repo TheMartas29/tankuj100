@@ -9,7 +9,7 @@ struct AllReviewsView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             List {
                 Section { RatingSummaryView(summary: summary) } header: { Text(stationTitle) }
                 Section {

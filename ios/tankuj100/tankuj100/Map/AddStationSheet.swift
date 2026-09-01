@@ -40,7 +40,7 @@ struct AddStationSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             content
                 .navigationTitle(tab == .add ? "Přidat benzínku" : "Moje žádosti")
                 .navigationBarTitleDisplayMode(.inline)
@@ -63,9 +63,10 @@ struct AddStationSheet: View {
                             if viewModel.isSubmitting {
                                 ProgressView()
                             } else {
-                                Button("Odeslat", action: submit)
-                                    .fontWeight(.semibold)
-                                    .disabled(!canSubmit)
+                                Button(action: submit) {
+                                    Text("Odeslat").fontWeight(.semibold)
+                                }
+                                .disabled(!canSubmit)
                             }
                         }
                     }
@@ -159,9 +160,10 @@ struct AddStationSheet: View {
             }
 
             Section {
-                TextField("Např. nová pumpa u sjezdu, otevřeli v květnu…", text: $note, axis: .vertical)
-                    .lineLimit(3...7)
-                    .focused($noteFocused)
+                MultilineTextField(title: "Např. nová pumpa u sjezdu, otevřeli v květnu…",
+                                   text: $note,
+                                   lines: 3...7,
+                                   isFocused: $noteFocused)
                     .onValueChange(of: note) { newValue in
                         if newValue.count > noteLimit { note = String(newValue.prefix(noteLimit)) }
                     }

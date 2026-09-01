@@ -16,7 +16,7 @@ struct ReportSheet: View {
     private let noteLimit = 1000
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             Form {
                 Section {
                     Picker("Co je špatně", selection: $type) {
@@ -48,9 +48,10 @@ struct ReportSheet: View {
                 }
 
                 Section {
-                    TextField("Popište, co jste na místě viděli…", text: $note, axis: .vertical)
-                        .lineLimit(3...7)
-                        .focused($isNoteFocused)
+                    MultilineTextField(title: "Popište, co jste na místě viděli…",
+                                       text: $note,
+                                       lines: 3...7,
+                                       isFocused: $isNoteFocused)
                         .onValueChange(of: note) { newValue in
                             if newValue.count > noteLimit { note = String(newValue.prefix(noteLimit)) }
                         }
@@ -78,9 +79,10 @@ struct ReportSheet: View {
                     if viewModel.isSubmitting {
                         ProgressView()
                     } else {
-                        Button("Odeslat") { submit() }
-                            .fontWeight(.semibold)
-                            .disabled(!canSubmit)
+                        Button { submit() } label: {
+                            Text("Odeslat").fontWeight(.semibold)
+                        }
+                        .disabled(!canSubmit)
                     }
                 }
             }

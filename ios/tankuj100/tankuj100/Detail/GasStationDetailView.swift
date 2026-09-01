@@ -122,8 +122,10 @@ struct GasStationDetailView: View {
             )
         }
         .toolbar {
-            if let onClose {
-                ToolbarItem(placement: .topBarLeading) {
+            // Podmínka musí být uvnitř položky – `ToolbarContentBuilder` uměl `if`
+            // až od iOS 16. Prázdná položka se nevykreslí.
+            ToolbarItem(placement: .topBarLeading) {
+                if let onClose {
                     Button { onClose() } label: { Image(systemName: "xmark") }
                 }
             }
@@ -145,7 +147,7 @@ struct GasStationDetailView: View {
 }
 
 #Preview {
-    NavigationStack {
+    NavStack {
         GasStationDetailView(
             gasStation: .init(id: 20, lat: 50.13, lon: 14.53, brandName: "OMV", brandId: 55, has98: true, has100: true),
             userLocation: CLLocation(latitude: 50.08, longitude: 14.42),

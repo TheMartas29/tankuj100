@@ -4,7 +4,7 @@ import UIKit
 extension View {
     /// Klepnutí mimo textové pole zavře klávesnici, stejně jako tažení po formuláři.
     func dismissesKeyboardOnTap() -> some View {
-        scrollDismissesKeyboard(.interactively)
+        interactiveKeyboardDismiss()
             .background(KeyboardDismissGesture())
     }
 }

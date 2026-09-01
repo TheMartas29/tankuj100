@@ -45,14 +45,12 @@ struct StationsListView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             content
                 .navigationTitle("Benzínky")
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(for: GasStation.self) { station in
-                    GasStationDetailView(gasStation: station,
-                                         userLocation: userLocation,
-                                         favorites: favorites)
+                .navigationDestinationBackport(for: GasStation.self) { station in
+                    detail(for: station)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) { filterButton }
@@ -136,15 +134,36 @@ struct StationsListView: View {
             // `List` je líný, takže i sto tisíc řádků vykreslí jen tolik, kolik je vidět.
             List {
                 ForEach(rows, id: \.self) { row in
-                    let station = store.result.station(forRow: row)
-                    NavigationLink(value: station) {
-                        StationRow(station: station,
-                                   distance: store.result.distance(forRow: row),
-                                   isFavorite: favorites.contains(station.id))
-                    }
+                    link(toRow: row)
                 }
             }
         }
+    }
+
+    /// Odkaz do detailu. Na iOS 16+ hodnotový – cíl se staví až při otevření a
+    /// registruje ho `navigationDestination`. Na patnáctce ta cesta neexistuje, tak
+    /// se cíl předává rovnou; `List` je líný, takže se stejně postaví jen pro řádky,
+    /// které jsou vidět.
+    @ViewBuilder
+    private func link(toRow row: Int32) -> some View {
+        let station = store.result.station(forRow: row)
+        if #available(iOS 16.0, *) {
+            NavigationLink(value: station) { rowLabel(station, row: row) }
+        } else {
+            NavigationLink { detail(for: station) } label: { rowLabel(station, row: row) }
+        }
+    }
+
+    private func rowLabel(_ station: GasStation, row: Int32) -> some View {
+        StationRow(station: station,
+                   distance: store.result.distance(forRow: row),
+                   isFavorite: favorites.contains(station.id))
+    }
+
+    private func detail(for station: GasStation) -> some View {
+        GasStationDetailView(gasStation: station,
+                             userLocation: userLocation,
+                             favorites: favorites)
     }
 
     /// Bez polohy se seznam **nezablokuje** – jen se řadí podle značky. Prázdný stav

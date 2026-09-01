@@ -17,7 +17,7 @@ struct FilterSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             List {
                 resetSection
                 fuelSection

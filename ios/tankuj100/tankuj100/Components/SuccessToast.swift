@@ -22,7 +22,7 @@ extension View {
             if let text = message.wrappedValue {
                 SuccessToast(message: text)
                     .task(id: text) {
-                        try? await Task.sleep(for: .seconds(2.5))
+                        try? await Task.sleep(nanoseconds: 2_500_000_000)
                         withAnimation { message.wrappedValue = nil }
                     }
             }

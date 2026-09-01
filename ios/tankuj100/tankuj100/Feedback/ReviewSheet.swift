@@ -19,7 +19,7 @@ struct ReviewSheet: View {
     private var isEditing: Bool { viewModel.myReview != nil }
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             Form {
                 Section {
                     VStack(spacing: 10) {
@@ -38,13 +38,12 @@ struct ReviewSheet: View {
                 }
 
                 Section {
-                    TextField(
-                        "Např. rychlá obsluha, čisté WC, dobré kafe…",
+                    MultilineTextField(
+                        title: "Např. rychlá obsluha, čisté WC, dobré kafe…",
                         text: $comment,
-                        axis: .vertical
+                        lines: 4...8,
+                        isFocused: $commentFocused
                     )
-                    .lineLimit(4...8)
-                    .focused($commentFocused)
                     .onValueChange(of: comment) { newValue in
                         if newValue.count > commentLimit { comment = String(newValue.prefix(commentLimit)) }
                     }
@@ -99,9 +98,11 @@ struct ReviewSheet: View {
                     if viewModel.isSubmitting {
                         ProgressView()
                     } else {
-                        Button(isEditing ? "Uložit" : "Odeslat") { submit() }
-                            .fontWeight(.semibold)
-                            .disabled(rating == 0)
+                        // `fontWeight` na tlačítku je iOS 16; na popisku jde odjakživa.
+                        Button { submit() } label: {
+                            Text(isEditing ? "Uložit" : "Odeslat").fontWeight(.semibold)
+                        }
+                        .disabled(rating == 0)
                     }
                 }
             }

@@ -106,3 +106,136 @@ extension UIColor {
     /// nenajde a vrátí systémovou modrou, proto ji bereme jménem.
     static let brandAccent = UIColor(named: "AccentColor") ?? .systemRed
 }
+
+// MARK: - iOS 15
+
+/// `NavigationStack` je až iOS 16. Níž ho zastoupí `NavigationView` ve stack stylu –
+/// výchozí styl by na velkém displeji udělal split view, což tahle aplikace nechce.
+///
+/// Díky obalu zůstává na iOS 16+ všechno přesně jako dřív; starou cestou projde jen
+/// ten, kdo je opravdu na patnáctce.
+struct NavStack<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            NavigationStack { content() }
+        } else {
+            NavigationView { content() }
+                .navigationViewStyle(.stack)
+        }
+    }
+}
+
+/// Sdílení odkazu. `ShareLink` je iOS 16, níž se otevře `UIActivityViewController`.
+struct ShareButton<Label: View>: View {
+    let item: URL
+    @ViewBuilder var label: () -> Label
+
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            ShareLink(item: item, label: label)
+                .buttonStyle(.plain)
+        } else {
+            Button(action: present, label: label)
+                .buttonStyle(.plain)
+        }
+    }
+
+    private func present() {
+        guard let presenter = Self.topViewController() else { return }
+        let sheet = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+        // Na iPadu by bez kotvy spadlo; aplikace je sice jen pro iPhone, ale stojí
+        // to jeden řádek.
+        sheet.popoverPresentationController?.sourceView = presenter.view
+        presenter.present(sheet, animated: true)
+    }
+
+    private static func topViewController() -> UIViewController? {
+        let scene = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+        var top = scene?.keyWindow?.rootViewController
+        while let presented = top?.presentedViewController { top = presented }
+        return top
+    }
+}
+
+extension View {
+
+    /// Tažení po formuláři zavře klávesnici. iOS 15 to neumí – tam zbude klepnutí
+    /// mimo pole, které si aplikace řeší vlastním rozpoznávačem.
+    @ViewBuilder
+    func interactiveKeyboardDismiss() -> some View {
+        if #available(iOS 16.0, *) {
+            scrollDismissesKeyboard(.interactively)
+        } else {
+            self
+        }
+    }
+
+    /// Sheet na půl obrazovky s úchytem. Na iOS 15 detenty nejsou a nic je
+    /// nenahradí, tak se ukáže přes celou výšku.
+    @ViewBuilder
+    func mediumSheet() -> some View {
+        if #available(iOS 16.0, *) {
+            presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        } else {
+            self
+        }
+    }
+
+    /// `navigationDestination(for:)` je iOS 16. Na patnáctce se cíl otevírá přímo
+    /// z `NavigationLink`, takže není co registrovat.
+    @ViewBuilder
+    func navigationDestinationBackport<D: Hashable, C: View>(
+        for data: D.Type, @ViewBuilder destination: @escaping (D) -> C
+    ) -> some View {
+        if #available(iOS 16.0, *) {
+            navigationDestination(for: data, destination: destination)
+        } else {
+            self
+        }
+    }
+}
+
+/// Víceřádkové pole, které roste s textem. `TextField(_:text:axis:)` i
+/// `lineLimit(_:)` s rozsahem jsou iOS 16; na patnáctce je zastoupí `TextEditor`
+/// s minimální výškou a vlastním popiskem – ten `TextEditor` sám nemá.
+///
+/// Zaměření se předává dovnitř, ne modifikátorem zvenčí: `focused` musí sedět na
+/// samotném poli, na obalu by se nechytlo.
+struct MultilineTextField: View {
+    let title: String
+    @Binding var text: String
+    var lines: ClosedRange<Int>
+    @FocusState.Binding var isFocused: Bool
+
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            TextField(title, text: $text, axis: .vertical)
+                .lineLimit(lines)
+                .focused($isFocused)
+        } else {
+            legacy
+        }
+    }
+
+    private var legacy: some View {
+        TextEditor(text: $text)
+            .focused($isFocused)
+            // Bez pevné výšky by `TextEditor` ve formuláři spadl na jeden řádek.
+            .frame(minHeight: CGFloat(lines.lowerBound) * 20,
+                   maxHeight: CGFloat(lines.upperBound) * 20)
+            .overlay(alignment: .topLeading) {
+                if text.isEmpty {
+                    Text(title)
+                        .foregroundColor(Color(.placeholderText))
+                        .padding(.top, 8)
+                        .padding(.leading, 5)
+                        .allowsHitTesting(false)
+                }
+            }
+    }
+}

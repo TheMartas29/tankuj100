@@ -28,9 +28,11 @@ struct StationInfoSection: View {
                         Spacer()
                         if let telURL = formatted.dialURL {
                             Link(destination: telURL) {
+                                // Pořadí není kosmetika: `underline` na Textu je
+                                // stará metoda, na Viewu až iOS 16.
                                 Text(formatted.display)
-                                    .foregroundStyle(.primary)
                                     .underline()
+                                    .foregroundStyle(.primary)
                             }
                         } else {
                             Text(formatted.display)

@@ -5,7 +5,7 @@ struct MenuSheet: View {
     private let shareURL = URL(string: "https://tankuj100.cz")!
 
     var body: some View {
-        NavigationStack {
+        NavStack {
             List {
                 NavigationLink {
                     AboutView()
@@ -13,17 +13,15 @@ struct MenuSheet: View {
                     MenuRow(icon: "info.circle", title: "O aplikaci")
                 }
 
-                ShareLink(item: shareURL) {
+                ShareButton(item: shareURL) {
                     MenuRow(icon: "person.2", title: "Doporučit přátelům")
                 }
-                .buttonStyle(.plain)
             }
             .tightListTop()
             .navigationTitle("Menu")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .mediumSheet()
         .sheetBackground(Color(.systemGroupedBackground))
     }
 }
