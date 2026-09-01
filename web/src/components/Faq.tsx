@@ -20,7 +20,7 @@ const QUESTIONS = [
   },
   {
     q: "Na jakém iPhonu aplikace poběží?",
-    a: "Stačí iOS 16, takže si ji pustíš i na iPhonu 8 nebo SE druhé generace – tedy na telefonech z roku 2017. Je to záměr: appka na hledání benzínky má fungovat i na starším telefonu, který vozíš v autě, a ne tě nutit kupovat nový.",
+    a: "Stačí iOS 15, takže si ji pustíš i na iPhonu 6s nebo SE první generace – tedy na telefonech z roku 2015. Je to záměr: appka na hledání benzínky má fungovat i na starším telefonu, který vozíš v autě, a ne tě nutit kupovat nový.",
   },
   {
     q: "Odkud jsou data o benzínkách?",

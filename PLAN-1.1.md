@@ -12,7 +12,8 @@ kdo na čem dělá a jak spolu části mluví. Po dokončení 1.1 ho smažeme.
   filtrovat lacino.
 - **Návrh musí unést stonásobek dat** (~100 tisíc stanic) bez sekání. Zatím zůstáváme
   u ČR, ale datové struktury a mapa se tomu musí přizpůsobit už teď.
-- Cíl je iOS 16.0. Novinky jen za `#available`, všechny na jednom místě v `Backport.swift`.
+- Cíl je iOS 15.0 (od verze 1.1; do 1.0 to bylo iOS 16.0). Novinky jen za `#available`,
+  všechny na jednom místě v `Backport.swift`.
 
 ---
 

@@ -42,7 +42,7 @@ export default function FinalCta() {
             </div>
 
             <p className="mt-6 text-sm text-white/50">
-              Stačí iOS 16 – rozjede se i na iPhonu z roku 2017
+              Stačí iOS 15 – rozjede se i na iPhonu z roku 2015
             </p>
           </div>
         </div>

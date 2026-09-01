@@ -82,4 +82,4 @@ binárce není ani testovací klíč.
 Hotové a ověřené (16. 8. 2026): HTTPS bez ATS výjimek, launch screen, ikona v Assets.car,
 `ITSAppUsesNonExemptEncryption = false` (jinak build visí v „Missing Compliance"),
 ladicí přepínače `-apiBaseURL` a `-openSheet` se do release buildu nedostanou,
-bundle `cz.silkroad.tankuj100`, tým `R5MFNT4B5A`, cíl iOS 16.0, jen iPhone.
+bundle `cz.silkroad.tankuj100`, tým `R5MFNT4B5A`, cíl iOS 15.0, jen iPhone.
