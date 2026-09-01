@@ -61,9 +61,13 @@ const listServiceTags = (id) =>
   db
     .prepare(
       // Otevírací doba jde ven zvlášť jako `worktime`; kdyby zůstala i mezi službami,
-      // aplikace by ji vypsala dvakrát. Interní tagy `osm:*` uživateli nepatří.
+      // aplikace by ji vypsala dvakrát. Interní tagy `osm:*` uživateli nepatří –
+      // a stejně tak `geocoded`, kam si skript zapisuje, odkud stanici dohledal
+      // adresu. Ten se sem propsal a aplikace ho vypisovala jako službu
+      // „Geocoded – Nominatim“ (ve vzorku 60 stanic u 13 z nich).
       `SELECT tag_key AS key, tag_value AS value FROM station_tag
-        WHERE station_id = ? AND tag_key NOT LIKE 'osm:%' AND tag_key <> 'opening_hours'
+        WHERE station_id = ? AND tag_key NOT LIKE 'osm:%'
+          AND tag_key NOT IN ('opening_hours', 'geocoded')
         ORDER BY tag_key`
     )
     .all(id);
