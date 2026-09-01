@@ -6,6 +6,8 @@ struct StationHeaderSection: View {
     let rating: RatingSummary
     @Binding var error: CustomError?
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     private var title: String {
         for candidate in [detail.brandName, detail.name] {
             if let candidate, !candidate.isEmpty { return candidate }
@@ -21,6 +23,45 @@ struct StationHeaderSection: View {
         return parts.isEmpty ? nil : parts.joined(separator: ", ")
     }
 
+    /// Vzdálenost a známka pod názvem.
+    ///
+    /// Obojí jsou krátké údaje, které se nemají kde zalomit, takže dostaly
+    /// `fixedSize`: na 320 bodech se do řádku vedle loga vejdou jen tak tak a bez
+    /// něj vzalo SwiftUI známku jako běžný text a naskládalo „3.6“ po znacích pod
+    /// sebe. Při přístupnostní velikosti písma se ale vedle sebe nevejdou ani tak
+    /// a `fixedSize` by nechal známku uplavat za okraj – tam proto jdou pod sebe.
+    @ViewBuilder
+    private var metrics: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 4) { distanceLabel; ratingLabel }
+        } else {
+            HStack(spacing: 10) { distanceLabel; ratingLabel }
+        }
+    }
+
+    @ViewBuilder
+    private var distanceLabel: some View {
+        if let distanceText {
+            Label(distanceText, systemImage: "location.fill")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize()
+        }
+    }
+
+    @ViewBuilder
+    private var ratingLabel: some View {
+        if rating.count > 0 {
+            HStack(spacing: 4) {
+                StarsView(rating: rating.average ?? 0, size: 10)
+                Text("\(rating.averageText)")
+                    .font(.footnote.weight(.medium))
+                    .monospacedDigit()
+            }
+            .fixedSize()
+        }
+    }
+
     var body: some View {
         Section {
             HStack(spacing: 14) {
@@ -28,21 +69,7 @@ struct StationHeaderSection: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
                         .font(.title2).bold()
-                    HStack(spacing: 10) {
-                        if let distanceText {
-                            Label(distanceText, systemImage: "location.fill")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        if rating.count > 0 {
-                            HStack(spacing: 4) {
-                                StarsView(rating: rating.average ?? 0, size: 10)
-                                Text("\(rating.averageText)")
-                                    .font(.footnote.weight(.medium))
-                                    .monospacedDigit()
-                            }
-                        }
-                    }
+                    metrics
                 }
                 Spacer()
             }
