@@ -51,10 +51,8 @@ struct ReportSheet: View {
                     MultilineTextField(title: "Popište, co jste na místě viděli…",
                                        text: $note,
                                        lines: 3...7,
+                                       limit: noteLimit,
                                        isFocused: $isNoteFocused)
-                        .onValueChange(of: note) { newValue in
-                            if newValue.count > noteLimit { note = String(newValue.prefix(noteLimit)) }
-                        }
                 } header: {
                     Text(type == .other ? "Popis" : "Poznámka (nepovinná)")
                 } footer: {

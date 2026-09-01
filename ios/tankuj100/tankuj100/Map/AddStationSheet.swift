@@ -163,10 +163,8 @@ struct AddStationSheet: View {
                 MultilineTextField(title: "Např. nová pumpa u sjezdu, otevřeli v květnu…",
                                    text: $note,
                                    lines: 3...7,
+                                   limit: noteLimit,
                                    isFocused: $noteFocused)
-                    .onValueChange(of: note) { newValue in
-                        if newValue.count > noteLimit { note = String(newValue.prefix(noteLimit)) }
-                    }
             } header: {
                 Text("Poznámka (nepovinná)")
             } footer: {
@@ -301,10 +299,7 @@ private struct LimitedTextField: View {
     var capitalization: TextInputAutocapitalization = .sentences
 
     var body: some View {
-        TextField(title, text: $text)
+        TextField(title, text: $text.limited(to: limit))
             .textInputAutocapitalization(capitalization)
-            .onValueChange(of: text) { newValue in
-                if newValue.count > limit { text = String(newValue.prefix(limit)) }
-            }
     }
 }

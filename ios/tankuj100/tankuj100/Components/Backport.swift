@@ -240,6 +240,23 @@ enum SymbolName {
     }
 }
 
+extension Binding where Value == String {
+
+    /// Ustřihne text už při zápisu, ne až po něm.
+    ///
+    /// Hlídat délku v `onChange` nestačí: `TextEditor` si na iOS 15 drží vlastní
+    /// kopii textu, a když se stav pod ním zkrátí, zapíše si tu svou zpátky. Pole
+    /// se pak ustálí **o jeden znak nad stropem** – ověřeno na poznámce, kde se
+    /// počitadlo zaseklo na „1 001/1 000“. Server má u poznámky i komentáře přesně
+    /// stejné číslo a delší text odmítá chybou, takže ten jeden znak stačil na
+    /// zahozenou žádost. V setteru se zkrácení stane dřív, než hodnota vůbec
+    /// vznikne, takže se přes strop nedostane ani na jeden snímek.
+    func limited(to limit: Int) -> Binding<String> {
+        Binding(get: { wrappedValue },
+                set: { new in wrappedValue = new.count > limit ? String(new.prefix(limit)) : new })
+    }
+}
+
 /// Víceřádkové pole, které roste s textem. `TextField(_:text:axis:)` i
 /// `lineLimit(_:)` s rozsahem jsou iOS 16; na patnáctce je zastoupí `TextEditor`
 /// s minimální výškou a vlastním popiskem – ten `TextEditor` sám nemá.
@@ -250,11 +267,16 @@ struct MultilineTextField: View {
     let title: String
     @Binding var text: String
     var lines: ClosedRange<Int>
+    /// Strop délky. Hlídá si ho samo pole, ať se na něj nedá zapomenout na místě,
+    /// kde se používá.
+    var limit: Int
     @FocusState.Binding var isFocused: Bool
+
+    private var capped: Binding<String> { $text.limited(to: limit) }
 
     var body: some View {
         if #available(iOS 16.0, *) {
-            TextField(title, text: $text, axis: .vertical)
+            TextField(title, text: capped, axis: .vertical)
                 .lineLimit(lines)
                 .focused($isFocused)
         } else {
@@ -267,7 +289,7 @@ struct MultilineTextField: View {
     private static let textInset: CGFloat = 5
 
     private var legacy: some View {
-        TextEditor(text: $text)
+        TextEditor(text: capped)
             .focused($isFocused)
             // Bez pevné výšky by `TextEditor` ve formuláři spadl na jeden řádek.
             .frame(minHeight: CGFloat(lines.lowerBound) * 20,

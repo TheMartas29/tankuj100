@@ -42,11 +42,9 @@ struct ReviewSheet: View {
                         title: "Např. rychlá obsluha, čisté WC, dobré kafe…",
                         text: $comment,
                         lines: 4...8,
+                        limit: commentLimit,
                         isFocused: $commentFocused
                     )
-                    .onValueChange(of: comment) { newValue in
-                        if newValue.count > commentLimit { comment = String(newValue.prefix(commentLimit)) }
-                    }
                 } header: {
                     Text("Komentář (nepovinný)")
                 } footer: {
@@ -61,11 +59,8 @@ struct ReviewSheet: View {
                 }
 
                 Section {
-                    TextField("Anonym", text: $author)
+                    TextField("Anonym", text: $author.limited(to: authorLimit))
                         .textInputAutocapitalization(.words)
-                        .onValueChange(of: author) { newValue in
-                            if newValue.count > authorLimit { author = String(newValue.prefix(authorLimit)) }
-                        }
                 } header: {
                     Text("Podpis (nepovinný)")
                 } footer: {
