@@ -4,9 +4,9 @@
  *
  * Doplněk k scrape-reviews.js: kde ten tahá recenze, tenhle tahá vše ostatní, co by
  * pro tankuj100 mohlo být užitečné – otevírací dobu, telefon, web, adresu, kategorii,
- * hodnocení (počet+průměr), atributy z „O podniku" (služby/vybavení/platby) a pokus
- * o ceny paliv, když je Google ukazuje. Je to PRŮZKUM: co půjde, uloží; ať je vidět,
- * co všechno se dá získat, a teprve pak se rozhodne, co nasadit do DB.
+ * hodnocení (počet+průměr) a atributy z „O podniku" (služby/vybavení/platby).
+ * Ceny paliv se záměrně netahají (uživatel je nechtěl). Typy paliv se do DB neberou
+ * z Googlu – ty zůstávají z OSM.
  *
  * POZOR: proti podmínkám Googlu. Pouštět lokálně, pomalu, NE souběžně s jiným
  * scraperem (riziko banu). Nic nezapisuje do DB – jen staging soubory.
@@ -135,14 +135,23 @@ async function pickBestPlace(page, station) {
 
 // --- extrakce dat o místě --------------------------------------------------
 
-/** Rozklikne otevírací dobu, ať se do DOMu načte týdenní tabulka. */
+/** Rozklikne otevírací dobu, ať se do DOMu načte týdenní tabulka (best effort, s retry). */
 async function expandHours(page) {
-  const toggle = page
-    .locator('button[aria-label*="Otevírací dobu"], button[data-item-id="oh"], img[aria-label*="Otevírací"]')
-    .first();
-  if (await toggle.count().catch(() => 0)) {
-    await toggle.click().catch(() => {});
-    await sleep(600);
+  const selectors = [
+    'button[data-item-id="oh"]',
+    'button[aria-label*="Otevírací dobu"]',
+    'button[aria-label*="Zobrazit otevírací"]',
+    'div[role="button"][aria-label*="hodin"]',
+    '[jsaction*="openhours"], [jsaction*="pane.openhours"]',
+  ];
+  for (const s of selectors) {
+    const el = page.locator(s).first();
+    if (await el.count().catch(() => 0)) {
+      await el.click().catch(() => {});
+      await sleep(800);
+      const rows = await page.locator('table tr').count().catch(() => 0);
+      if (rows >= 2) return;
+    }
   }
 }
 
@@ -210,15 +219,6 @@ async function extractPlace(page) {
       if (t) about.push(t);
     }
 
-    // Pokus o ceny paliv: elementy, jejichž text obsahuje palivo + cenu.
-    const fuelPrices = [];
-    for (const el of document.querySelectorAll('div, span, td')) {
-      const t = clean(el.textContent);
-      if (t && t.length < 40 && /(natural|diesel|nafta|benz|lpg|cng|adblue|e5|e10|95|98|100)/i.test(t) && /(kč|czk|€|\d[.,]\d{2})/i.test(t)) {
-        fuelPrices.push(t);
-      }
-    }
-
     return {
       title,
       category,
@@ -230,7 +230,6 @@ async function extractPlace(page) {
       ratingCount,
       hours,
       about: [...new Set(about)].slice(0, 60),
-      fuelPrices: [...new Set(fuelPrices)].slice(0, 20),
     };
   });
 }
@@ -303,11 +302,18 @@ async function scrapeStation(page, station) {
     return { stationId: station.id, station: { brand: station.brand_name, name: station.name, city: station.city }, placeUrl, reusedReviewsUrl: reused, resolved: false, scrapedAt: new Date().toISOString(), data: null };
   }
 
+  await sleep(1000);
   await expandHours(page);
   const base = await extractPlace(page);
   await openAbout(page);
-  const about = await extractPlace(page); // po otevření „O podniku" bývá atributů víc
-  const data = { ...base, about: [...new Set([...(base.about || []), ...(about.about || [])])].slice(0, 80) };
+  await sleep(500);
+  const about = await extractPlace(page); // po otevření „O podniku" bývá atributů i hodin víc
+  const data = {
+    ...base,
+    // Z obou průchodů vezmi bohatší otevírací dobu a sjednoť atributy.
+    hours: (about.hours || []).length > (base.hours || []).length ? about.hours : base.hours,
+    about: [...new Set([...(base.about || []), ...(about.about || [])])].slice(0, 80),
+  };
 
   const coords = coordsFromUrl(placeUrl);
   return {
@@ -354,7 +360,7 @@ async function main() {
       try {
         const result = await scrapeStation(page, station);
         fs.writeFileSync(target, JSON.stringify(result, null, 2));
-        if (result.resolved) { ok += 1; const d = result.data; console.log(`OK ${result.reusedReviewsUrl ? '(reuse)' : ''} – hodin:${d.hours.length} atrib:${d.about.length} ceny:${d.fuelPrices.length} tel:${d.phone ? 'ano' : 'ne'} web:${d.website ? 'ano' : 'ne'}`); }
+        if (result.resolved) { ok += 1; const d = result.data; console.log(`OK ${result.reusedReviewsUrl ? '(reuse)' : ''} – hodin:${d.hours.length} atrib:${d.about.length} tel:${d.phone ? 'ano' : 'ne'} web:${d.website ? 'ano' : 'ne'}`); }
         else { unresolved += 1; console.log('nenalezeno místo'); }
         done = true;
       } catch (err) {
