@@ -76,7 +76,7 @@ enum ServiceCatalog {
     private static let titles: [String: (title: String, symbol: String)] = [
         "shop": ("Obchod", "cart"),
         "car_wash": ("Myčka", "car"),
-        "toilets": ("Toalety", "toilet"),
+        "toilets": ("Toalety", SymbolName.toiletsRow),
         "compressed_air": ("Huštění pneumatik", "wind"),
         "wheelchair": ("Bezbariérový přístup", "figure.roll"),
         "self_service": ("Samoobsluha", "hand.tap"),

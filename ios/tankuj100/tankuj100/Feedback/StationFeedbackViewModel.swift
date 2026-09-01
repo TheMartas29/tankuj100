@@ -4,7 +4,8 @@ import SwiftUI
 @MainActor
 final class StationFeedbackViewModel: ObservableObject {
 
-    enum LoadState: Equatable {
+    /// `Hashable` kvůli `listRowRedraw(on:)` – stav slouží jako identita řádku.
+    enum LoadState: Hashable {
         case loading
         case loaded
         case failed(String)

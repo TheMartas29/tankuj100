@@ -5,22 +5,28 @@ struct StationFuelKindSection: View {
 
     var body: some View {
         Section {
-            switch feedback.state {
-            case .loading:
-                HStack { ProgressView(); Text("Zjišťuji…").foregroundStyle(.secondary) }
-            case .failed:
-                unavailableRow
-            case .loaded:
-                FuelKindCard(
-                    report: feedback.fuel.report,
-                    myVote: feedback.myFuelKind,
-                    isSubmitting: feedback.isSubmitting
-                ) { kind in
-                    Task { await feedback.vote(kind) }
-                }
-            }
+            content
+                .listRowRedraw(on: feedback.state)
         } header: {
             Text("Benzín pro starší auta")
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch feedback.state {
+        case .loading:
+            HStack { ProgressView(); Text("Zjišťuji…").foregroundStyle(.secondary) }
+        case .failed:
+            unavailableRow
+        case .loaded:
+            FuelKindCard(
+                report: feedback.fuel.report,
+                myVote: feedback.myFuelKind,
+                isSubmitting: feedback.isSubmitting
+            ) { kind in
+                Task { await feedback.vote(kind) }
+            }
         }
     }
 

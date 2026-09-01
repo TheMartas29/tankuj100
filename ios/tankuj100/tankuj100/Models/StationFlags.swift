@@ -62,7 +62,7 @@ enum ServiceFlag: UInt32, CaseIterable, Identifiable {
         switch self {
         case .shop: "cart"
         case .carWash: "car"
-        case .toilets: "figure.dress.line.vertical.figure"
+        case .toilets: SymbolName.toiletsBadge
         case .nonstop: "clock"
         }
     }

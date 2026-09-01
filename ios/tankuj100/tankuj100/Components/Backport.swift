@@ -186,6 +186,22 @@ extension View {
         }
     }
 
+    /// Vynutí, aby řádek `List` vznikl znovu.
+    ///
+    /// iOS 15 si obsah řádku pamatuje a nepřekreslí ho, když se uvnitř jen prohodí
+    /// větev `switch` a počet řádků zůstane stejný. Ověřeno na detailu benzínky:
+    /// hodnocení už bylo načtené, ale sekce „Benzín pro starší auta“ visela na
+    /// „Zjišťuji…“ – obě přitom čtou tentýž stav. Vlastní identita řádek zahodí
+    /// a postaví nový. Od iOS 16 se překresluje sám, takže se tam nemění nic.
+    @ViewBuilder
+    func listRowRedraw(on value: some Hashable) -> some View {
+        if #available(iOS 16.0, *) {
+            self
+        } else {
+            id(value)
+        }
+    }
+
     /// `navigationDestination(for:)` je iOS 16. Na patnáctce se cíl otevírá přímo
     /// z `NavigationLink`, takže není co registrovat.
     @ViewBuilder
@@ -197,6 +213,30 @@ extension View {
         } else {
             self
         }
+    }
+}
+
+/// Jména symbolů, která na patnáctce ještě neexistují.
+///
+/// `Image(systemName:)` u neznámého jména nenakreslí **nic** – po ikoně zbude
+/// v řádku prázdné místo. Chybějící symbol se tedy neohlásí, musí se najít předem
+/// a náhrada vybrat ručně.
+enum SymbolName {
+
+    /// Toalety v detailu benzínky. Mísa (`toilet`) přišla s SF Symbols 4 (iOS 16).
+    static let toiletsRow = ios16("toilet", or: legacyToilets)
+
+    /// Toalety jako odznak ve filtru. Dvojice postav s dělicí čarou
+    /// (`figure.dress.line.vertical.figure`) je taky až SF Symbols 4.
+    static let toiletsBadge = ios16("figure.dress.line.vertical.figure", or: legacyToilets)
+
+    /// Nejbližší, co patnáctka umí: dvojice stojících postav. Není to piktogram
+    /// z dveří záchodů, ale čte se jako „lidi“ a hlavně je vidět.
+    private static let legacyToilets = "figure.stand.line.dotted.figure.stand"
+
+    private static func ios16(_ modern: String, or legacy: String) -> String {
+        if #available(iOS 16.0, *) { return modern }
+        return legacy
     }
 }
 
@@ -222,18 +262,24 @@ struct MultilineTextField: View {
         }
     }
 
+    /// O kolik `UITextView` odsazuje text od svého okraje (`lineFragmentPadding`).
+    /// Bez vyrovnání začíná poznámka o kus vpravo než ostatní pole ve formuláři.
+    private static let textInset: CGFloat = 5
+
     private var legacy: some View {
         TextEditor(text: $text)
             .focused($isFocused)
             // Bez pevné výšky by `TextEditor` ve formuláři spadl na jeden řádek.
             .frame(minHeight: CGFloat(lines.lowerBound) * 20,
                    maxHeight: CGFloat(lines.upperBound) * 20)
+            // Záporné odsazení posune celé pole tak, aby jeho text seděl na stejné
+            // svislici jako `TextField` v sousedních řádcích.
+            .padding(.horizontal, -Self.textInset)
             .overlay(alignment: .topLeading) {
                 if text.isEmpty {
                     Text(title)
                         .foregroundColor(Color(.placeholderText))
                         .padding(.top, 8)
-                        .padding(.leading, 5)
                         .allowsHitTesting(false)
                 }
             }
