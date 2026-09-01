@@ -30,9 +30,14 @@ struct StationInfoSection: View {
                             Link(destination: telURL) {
                                 // Pořadí není kosmetika: `underline` na Textu je
                                 // stará metoda, na Viewu až iOS 16.
+                                //
+                                // Barvu schválně nenastavujeme: `.primary` je
+                                // hierarchický styl a uvnitř `Link` se stejně
+                                // rozpustí do jeho odstínu. Akcentní barva je
+                                // u telefonního odkazu správně, jen to dřív
+                                // vypadalo, že kód říká něco jiného.
                                 Text(formatted.display)
                                     .underline()
-                                    .foregroundStyle(.primary)
                             }
                         } else {
                             Text(formatted.display)

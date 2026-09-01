@@ -128,7 +128,7 @@ struct FloatingMenu: View {
                     badge(collapsedCount)
                 } leading: {
                     // Tečka na druhé straně, aby si s číslem nelezly do cesty.
-                    if collapsedHasNews { badge(.dot).offset(x: badgeInset, y: badgeInset) }
+                    if collapsedHasNews { badge(.dot, at: .leading) }
                 }
             }
         }
@@ -182,6 +182,16 @@ struct FloatingMenu: View {
     /// Bod na 45° leží v `r·(1−1/√2)` od hrany rámečku; pro odznak vysoký `h` z toho
     /// po odečtení jeho poloviny vyjde tohle. U osmnáctibodového odznaku je to skoro
     /// nula, proto se počítá a nehádá.
+    /// Ke kterému rohu kolečka odznak patří. Znaménko posunu si drží `badge` sám –
+    /// když ho přidával ještě volající, sečetly se dva posuny a tečka skončila
+    /// nad hamburgerem místo v levém horním rohu.
+    private enum BadgeCorner {
+        case trailing
+        case leading
+
+        var dx: CGFloat { self == .trailing ? -1 : 1 }
+    }
+
     private func badgeInset(height: CGFloat) -> CGFloat {
         let radius = diameter / 2
         return radius * (1 - 1 / 2.squareRoot()) - height / 2
@@ -190,7 +200,7 @@ struct FloatingMenu: View {
     private var badgeInset: CGFloat { badgeInset(height: 12) }
 
     @ViewBuilder
-    private func badge(_ badge: FloatingMenuBadge) -> some View {
+    private func badge(_ badge: FloatingMenuBadge, at corner: BadgeCorner = .trailing) -> some View {
         if badge.isVisible {
             switch badge {
             case .count(let value):
@@ -201,14 +211,14 @@ struct FloatingMenu: View {
                     .padding(.horizontal, 3)
                     .background(Color.red, in: Capsule())
                     .modifier(BadgeLift())
-                    .offset(x: -badgeInset(height: 18), y: badgeInset(height: 18))
+                    .offset(x: corner.dx * badgeInset(height: 18), y: badgeInset(height: 18))
                     .accessibilityHidden(true)
             default:
                 Circle()
                     .fill(Color.red)
                     .frame(width: 12, height: 12)
                     .modifier(BadgeLift())
-                    .offset(x: -badgeInset, y: badgeInset)
+                    .offset(x: corner.dx * badgeInset, y: badgeInset)
                     .accessibilityHidden(true)
             }
         }
