@@ -57,8 +57,13 @@ private struct StationRequestRow: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(request.title)
                     .font(.headline)
+                    // Ustoupit má název, ne stav: „Čeká na k…“ neřekne nic, kdežto
+                    // zkrácená značka je pořád poznat. Na 320 bodech se jinak
+                    // ořízne odznak.
+                    .lineLimit(1)
                 Spacer(minLength: 8)
                 statusChip
+                    .fixedSize()
             }
 
             if let place = request.placeText {

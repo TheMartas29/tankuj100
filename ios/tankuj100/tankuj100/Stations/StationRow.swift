@@ -29,6 +29,9 @@ struct StationRow: View {
                             Text("(\(count))")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
+                                // Na 320 bodech si SwiftUI vyloží závorku s číslem
+                                // jako lámatelný text a rozseká „(1)“ na dva řádky.
+                                .fixedSize()
                         }
                     }
                 }
