@@ -15,32 +15,16 @@ struct StationRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 titleLine
 
-                HStack(spacing: 10) {
-                    if let distance {
-                        Text(DistanceFormatter.text(for: distance))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    if let average = station.ratingAvg, let count = station.ratingCount, count > 0 {
-                        HStack(spacing: 3) {
-                            StarsView(rating: average, size: 9)
-                            Text("(\(count))")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                                // Na 320 bodech si SwiftUI vyloží závorku s číslem
-                                // jako lámatelný text a rozseká „(1)“ na dva řádky.
-                                .fixedSize()
-                        }
-                    }
-                }
+                metaLine
             }
 
             Spacer()
 
-            if isFavorite {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(.accentColor)
-                    .font(.footnote)
+            // Při přístupnostní velikosti písma se srdíčko stěhuje dovnitř k odznaku,
+            // viz `titleLine` – na konci řádku ubíralo názvu tolik místa, že se
+            // „MOL“ zlomilo doprostřed slova.
+            if isFavorite, !typeSize.isAccessibilitySize {
+                heart
             }
         }
     }
@@ -55,7 +39,10 @@ struct StationRow: View {
         if typeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: 3) {
                 name
-                HStack(spacing: 6) { octaneBadges }
+                HStack(spacing: 6) {
+                    octaneBadges
+                    if isFavorite { heart }
+                }
             }
         } else {
             HStack(spacing: 6) {
@@ -63,6 +50,55 @@ struct StationRow: View {
                 octaneBadges
             }
         }
+    }
+
+    /// Vzdálenost a hodnocení. Hvězdičky i počet v závorce mají pevnou šířku, takže
+    /// při zvětšeném písmu ukously celé místo a vzdálenost se smrskla na nulu –
+    /// u oblíbené benzínky, kde řádek zužuje ještě srdíčko, zmizela úplně. Stejné
+    /// řešení jako u značky: co se vedle sebe nevejde, jde pod sebe.
+    @ViewBuilder
+    private var metaLine: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 3) {
+                distanceText
+                ratingText
+            }
+        } else {
+            HStack(spacing: 10) {
+                distanceText
+                ratingText
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var distanceText: some View {
+        if let distance {
+            Text(DistanceFormatter.text(for: distance))
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var ratingText: some View {
+        if let average = station.ratingAvg, let count = station.ratingCount, count > 0 {
+            HStack(spacing: 3) {
+                StarsView(rating: average, size: 9)
+                Text("(\(count))")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    // Na 320 bodech si SwiftUI vyloží závorku s číslem
+                    // jako lámatelný text a rozseká „(1)“ na dva řádky.
+                    .fixedSize()
+            }
+        }
+    }
+
+    private var heart: some View {
+        Image(systemName: "heart.fill")
+            .foregroundColor(.accentColor)
+            .font(.footnote)
     }
 
     private var name: some View {
