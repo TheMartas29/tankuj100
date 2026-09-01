@@ -62,8 +62,9 @@ private struct StationRequestRow: View {
                     // ořízne odznak.
                     .lineLimit(1)
                 Spacer(minLength: 8)
+                // Ustoupit má název, ne stav – odznak si drží svou šířku.
                 statusChip
-                    .fixedSize()
+                    .fixedSize(horizontal: true, vertical: false)
             }
 
             if let place = request.placeText {
@@ -81,13 +82,23 @@ private struct StationRequestRow: View {
         .padding(.vertical, 4)
     }
 
+    /// Ikona a text schválně ručně, ne `Label`. `Label` si na iOS 26 pod
+    /// `fixedSize(horizontal:)` spočítal ideální šířku skoro na nulu: text se
+    /// zalomil po jednom znaku na řádek, nevykreslil se a z kapsle zbyl prázdný
+    /// svislý sloup přes půl obrazovky. Vlastní `HStack` má ideální šířku, jakou
+    /// čekáme, takže odznak zůstane na jednom řádku a ustoupí místo něj název.
     private var statusChip: some View {
-        Label(request.status.label, systemImage: request.status.symbol)
-            .font(.caption.weight(.semibold))
-            .foregroundColor(request.status.tint)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(request.status.tint.opacity(0.12), in: Capsule())
+        HStack(spacing: 4) {
+            Image(systemName: request.status.symbol)
+            Text(request.status.label).lineLimit(1)
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundColor(request.status.tint)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(request.status.tint.opacity(0.12), in: Capsule())
+        // Do hlasového výstupu jako jeden údaj, ne dvě samostatná zastavení.
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder

@@ -82,7 +82,10 @@ struct AddStationSheet: View {
         .task {
             await viewModel.load()
             badge?.apply(viewModel.requests)
-            if !didSwitchTabByHand, !viewModel.requests.isEmpty { tab = .mine }
+            // Rozepsaný formulář drží záložku stejně jako ruční přepnutí. Samotné
+            // `didSwitchTabByHand` na to nestačilo: kdo začal vyplňovat a přepínače
+            // se nedotkl, tomu pomalu doběhlé žádosti záložku pod rukama přehodily.
+            if !didSwitchTabByHand, !hasDraft, !viewModel.requests.isEmpty { tab = .mine }
             if tab == .mine { badge?.markSeen() }
         }
         .onValueChange(of: tab) { newTab in

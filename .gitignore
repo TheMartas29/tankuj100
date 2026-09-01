@@ -26,6 +26,6 @@ ios/**/*.xcuserstate
 ios/**/DerivedData/
 build/
 # Vlastní -derivedDataPath při překladu z příkazové řádky. Když si ho někdo
-# odloží do pracovního stromu, jinak se celá vyrovnávací paměť překladu svede
+# odloží do pracovního stromu, svede se jinak celá vyrovnávací paměť překladu
 # do commitu.
 dd/
