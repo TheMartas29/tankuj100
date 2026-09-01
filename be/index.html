@@ -60,6 +60,11 @@
   .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
   .card .value { font-size: 26px; font-weight: 650; margin-top: 4px; letter-spacing: -0.5px; }
   .card .value small { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .note {
+    margin: -6px 0 18px; font-size: 13px; line-height: 1.5; color: var(--muted);
+    max-width: 70ch;
+  }
+  .note strong { color: var(--text); font-weight: 600; }
   .card[data-goto] { cursor: pointer; }
   .card[data-goto]:hover { border-color: var(--accent); }
   .card.attention { border-color: #f0c5cb; background: var(--accent-soft); }
@@ -162,6 +167,12 @@
 
 <main>
   <section class="cards" id="cards"></section>
+  <p class="note" id="devicesNote" hidden>
+    <strong>Přispěvatelé</strong> = zařízení, která někdy odeslala hodnocení, hlas o palivu,
+    hlášení nebo žádost. Kdo appku jen otevře a najde benzínku, se sem nedostane –
+    při spuštění o sobě aplikace nic neposílá. Počet instalací a skutečně aktivních
+    uživatelů najdeš v App Store Connectu → Analytics.
+  </p>
 
   <nav class="tabs" id="tabs">
     <button data-tab="reports" class="active">Hlášení <span class="badge hidden" id="reportsBadge">0</span></button>
@@ -305,6 +316,12 @@ async function loadStats() {
     // Starší backend pole `stationRequestsNew` ještě nemusí posílat – bez `?? 0`
     // by se celý přehled utrhl na `undefined`.
     const requestsNew = s.stationRequestsNew ?? 0;
+    // Zařízení, ne lidé, a jen ti, kdo něco poslali – proto „Přispěvatelé“ a ne
+    // „Uživatelé“. Kolik lidí appku doopravdy používá, ví jedině App Store Connect;
+    // aplikace se serverem při pouhém spuštění nemluví o tom, kdo je.
+    const devices = s.devicesTotal ?? 0;
+    const devices30 = s.devicesLast30d ?? 0;
+    const devicesBack = s.devicesReturning ?? 0;
     $('cards').innerHTML = `
       ${card('K vyřízení', needsAttention, needsAttention > 0 ? 'attention' : '', `${s.reportsNew} nových`)}
       ${card('Žádosti', requestsNew, requestsNew > 0 ? 'attention' : '', 'nevyřízených', 'requests')}
@@ -313,7 +330,10 @@ async function loadStats() {
       ${card('Hodnocení', s.reviews, '', s.ratingAverage ? `⌀ ${s.ratingAverage} ★` : 'bez hodnocení')}
       ${card('Hlášení celkem', s.reportsTotal, '', `${s.last7dReports} za 7 dní`)}
       ${card('Potvrzené E5', s.stationsWithE5, '', `${s.fuelVotes} hlasů`, 'fuel')}
+      ${card('Přispěvatelé', devices, '', `${devices30} za 30 dní`)}
+      ${card('Vracející se', devicesBack, '', 'po 90+ dnech')}
     `;
+    $('devicesNote').hidden = false;
     $('reportsBadge').textContent = s.reportsNew;
     $('reportsBadge').classList.toggle('hidden', s.reportsNew === 0);
     $('requestsBadge').textContent = requestsNew;

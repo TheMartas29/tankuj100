@@ -9,6 +9,30 @@ function averageRating() {
   return row.a ? Number(row.a.toFixed(2)) : null;
 }
 
+/**
+ * Veškerá aktivita zařízení na jedné hromadě. `device_id` je anonymní UUID z Keychainu
+ * telefonu; posílá se **jen** s tím, co uživatel sám odešle, nikdy při pouhém spuštění.
+ *
+ * Proto tohle **nejsou aktivní uživatelé aplikace**, ale jen ti, kdo něco přispěli –
+ * bývá to pár procent. Kdo appku denně používá a nikdy nic nenapsal, tady není vůbec
+ * a nikdy nebude, dokud by se neposílal signál i bez příspěvku. Instalace a skutečné
+ * aktivní zařízení umí říct jedině App Store Connect.
+ *
+ * U hodnocení a hlasů se bere pozdější z `created_at`/`updated_at`: úprava vlastního
+ * hodnocení je taky aktivita a bez toho by se člověk, který se po půl roce vrátil
+ * a hodnocení přepsal, počítal podle původního data.
+ */
+const DEVICE_ACTIVITY = `
+  WITH activity(device_id, at) AS (
+    SELECT device_id, MAX(created_at, updated_at) FROM review
+    UNION ALL
+    SELECT device_id, created_at FROM report
+    UNION ALL
+    SELECT device_id, MAX(created_at, updated_at) FROM fuel_vote
+    UNION ALL
+    SELECT device_id, created_at FROM station_request
+  )`;
+
 const METRICS = {
   stations: 'SELECT COUNT(*) AS c FROM station',
   stations98: `SELECT COUNT(*) AS c FROM station_fuel WHERE fuel_key = '${OCTANE_98}'`,
@@ -35,6 +59,24 @@ const METRICS = {
         AND CAST(e5 AS REAL) / (e5 + e10) >= ${MAJORITY_RATIO}`,
   last7dReports: "SELECT COUNT(*) AS c FROM report WHERE datetime(created_at) > datetime('now','-7 day')",
   last7dReviews: "SELECT COUNT(*) AS c FROM review WHERE datetime(created_at) > datetime('now','-7 day')",
+
+  // Zařízení, která kdy něco přispěla. Přeinstalace appky ID nemění (leží v Keychainu),
+  // ale reset telefonu nebo druhý telefon téhož člověka ano – je to počet zařízení,
+  // ne lidí, a spíš podhodnocený.
+  devicesTotal: `${DEVICE_ACTIVITY}
+    SELECT COUNT(DISTINCT device_id) AS c FROM activity WHERE device_id <> ''`,
+  devicesLast30d: `${DEVICE_ACTIVITY}
+    SELECT COUNT(DISTINCT device_id) AS c FROM activity
+      WHERE device_id <> '' AND datetime(at) > datetime('now','-30 day')`,
+  // Vracející se: první příspěvek starší než 90 dní a zároveň něco za poslední měsíc.
+  // Jednorázový přispěvatel ani nováček se sem nedostanou – tohle je to číslo, které
+  // říká, jestli si appku lidi nechávají.
+  devicesReturning: `${DEVICE_ACTIVITY}
+    SELECT COUNT(*) AS c FROM (
+      SELECT device_id, MIN(at) AS first_at, MAX(at) AS last_at
+        FROM activity WHERE device_id <> '' GROUP BY device_id
+    ) WHERE datetime(first_at) < datetime('now','-90 day')
+        AND datetime(last_at) > datetime('now','-30 day')`,
 };
 
 function overview() {
