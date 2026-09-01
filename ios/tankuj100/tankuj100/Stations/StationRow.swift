@@ -6,16 +6,14 @@ struct StationRow: View {
     var distance: CLLocationDistance?
     var isFavorite: Bool
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         HStack(spacing: 12) {
             BrandLogoView(brandName: station.brandName, size: 34)
 
             VStack(alignment: .leading, spacing: 3) {
-                HStack(spacing: 6) {
-                    Text(station.brandName ?? "Benzínka").fontWeight(.medium)
-                    if station.has100 { OctaneBadge(octane: 100) }
-                    if station.has98 { OctaneBadge(octane: 98) }
-                }
+                titleLine
 
                 HStack(spacing: 10) {
                     if let distance {
@@ -45,5 +43,35 @@ struct StationRow: View {
                     .font(.footnote)
             }
         }
+    }
+
+    /// Značka a odznaky paliv. Vedle sebe se vejdou jen při běžné velikosti písma.
+    /// Odznak si drží pevnou šířku, takže při zvětšeném písmu na značku nezbylo nic
+    /// a zmizela úplně – ze seznamu pak byly řádky „100 oktanů, 1,3 km“, které od
+    /// sebe nešly rozeznat. Značka je to hlavní, podle čeho se benzínka pozná,
+    /// proto při velkém písmu ustoupí odznak pod ni.
+    @ViewBuilder
+    private var titleLine: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 3) {
+                name
+                HStack(spacing: 6) { octaneBadges }
+            }
+        } else {
+            HStack(spacing: 6) {
+                name
+                octaneBadges
+            }
+        }
+    }
+
+    private var name: some View {
+        Text(station.brandName ?? "Benzínka").fontWeight(.medium)
+    }
+
+    @ViewBuilder
+    private var octaneBadges: some View {
+        if station.has100 { OctaneBadge(octane: 100) }
+        if station.has98 { OctaneBadge(octane: 98) }
     }
 }
