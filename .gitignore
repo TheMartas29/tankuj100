@@ -9,7 +9,13 @@ npm-debug.log*
 be/db/tankuj100db.sqlite
 be/db/tankuj100db.sqlite-wal
 be/db/tankuj100db.sqlite-shm
+be/db/tankuj100db-test.sqlite
+be/db/tankuj100db-test.sqlite-wal
+be/db/tankuj100db-test.sqlite-shm
 be/db/_backups/
+
+# Scrapnutá hodnocení z Google Maps – generovaná, mimo git (i kvůli GDPR).
+be/data/reviews-staging/
 
 # === macOS ===
 .DS_Store

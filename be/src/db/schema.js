@@ -102,6 +102,9 @@ const ADDED_COLUMNS = [
   ['report', 'review_id', 'INTEGER'],
   ['station', 'osm_id', 'TEXT'],
   ['station', 'data_source', 'TEXT'],
+  // Původ hodnocení: 'user' píše aplikace, 'gmaps' scripts/import-reviews.js.
+  // Díky tomu jdou scrapnuté recenze v administraci odlišit i hromadně smazat.
+  ['review', 'source', "TEXT NOT NULL DEFAULT 'user'"],
 ];
 
 function addColumnIfMissing(db, table, column, definition) {
