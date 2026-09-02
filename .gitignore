@@ -29,3 +29,9 @@ build/
 # odloží do pracovního stromu, svede se jinak celá vyrovnávací paměť překladu
 # do commitu.
 dd/
+
+# Scrapnutá data o místech z Google Maps – generovaná, mimo git (GDPR).
+be/data/place-data-staging/
+
+# Generované SQL pro import dat o místech.
+be/data/place-data-import.sql
