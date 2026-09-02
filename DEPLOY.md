@@ -188,7 +188,7 @@ nic nenajde (masky jsou nula). Pořadí je tedy: nasadit backend na produkci →
 | doména | tankuj100.silkroadbrand.eu | tankuj100-test.silkroadbrand.eu |
 | stroj | VPS `root@80.211.200.128` | `roman@192.168.0.73` (ven přes duckdns) |
 | složka | `/root/projects/tankuj100` | `/var/www/tankuj100-test` |
-| `APP_KEY_MODE` | `soft` (do vydání verze s klíčem) | **`hard`** |
+| `APP_KEY_MODE` | `hard` | `hard` |
 | `APP_KEY` | jiný než na testu | jiný než na produkci |
 | e-maily | EmailJS | vypnuté (jen do logu) |
 | `ADMIN_URL` | tankuj100… | **tankuj100-test…** |
@@ -203,8 +203,9 @@ administrace a EmailJS dostane produkční origin.
 
 Klíče se **nesmí** shodovat – jinak by přístup k testu otevřel i produkci.
 
-Test je uzavřený právě tím klíčem: bez něj vrací `/api/*` 401. Nginx tam navíc
-posílá `X-Robots-Tag: noindex, nofollow`, ať se doména neobjeví ve vyhledávačích.
+Obě prostředí jsou dnes uzavřená klíčem (`APP_KEY_MODE=hard`): bez něj vrací
+`/api/*` 401. Na testu navíc nginx posílá `X-Robots-Tag: noindex, nofollow`, ať se
+doména neobjeví ve vyhledávačích.
 
 ### Testovací aplikace: vlastní schéma, ne přepínač
 
