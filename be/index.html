@@ -65,6 +65,15 @@
     max-width: 70ch;
   }
   .note strong { color: var(--text); font-weight: 600; }
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px 28px; }
+  .split h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted);
+              margin: 0 0 10px; font-weight: 600; }
+  .bar { display: grid; grid-template-columns: 1fr 90px 34px; align-items: center; gap: 10px;
+         font-size: 13px; padding: 3px 0; }
+  .bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { background: var(--line); border-radius: 3px; height: 6px; overflow: hidden; }
+  .bar-fill { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+  .bar-count { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
   .card[data-goto] { cursor: pointer; }
   .card[data-goto]:hover { border-color: var(--accent); }
   .card.attention { border-color: #f0c5cb; background: var(--accent-soft); }
@@ -180,6 +189,7 @@
     <button data-tab="reviews">Hodnocení</button>
     <button data-tab="fuel">Paliva</button>
     <button data-tab="stations">Benzínky</button>
+    <button data-tab="visits">Odkaz</button>
   </nav>
 
   <!-- ------------------------------------------------------ hlášení -->
@@ -205,6 +215,10 @@
   </section>
 
   <!-- ------------------------------------------------------ benzínky -->
+  <section id="tab-visits" class="hidden">
+    <div id="visitsBody"></div>
+  </section>
+
   <section id="tab-stations" class="hidden">
     <div class="toolbar">
       <input type="search" id="stationSearch" placeholder="Hledat značku, město, adresu, OSM ID…" oninput="renderStations()">
@@ -351,6 +365,50 @@ function card(label, value, cls = '', sub = '', goesTo = '') {
     <div class="label">${esc(label)}</div>
     <div class="value">${value ?? '–'}${sub ? ` <small>${esc(sub)}</small>` : ''}</div>
   </div>`;
+}
+
+// ============================================================ odkaz z kampaní
+
+async function loadVisits() {
+  try {
+    const v = await api('/api/admin/visits');
+    const bars = (rows) => {
+      if (!rows.length) return '<div class="empty"><strong>Zatím nic</strong>Na odkaz ještě nikdo nepřišel.</div>';
+      const max = Math.max(...rows.map((r) => r.count));
+      return rows.map((r) => `
+        <div class="bar">
+          <span class="bar-label">${esc(r.label)}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${Math.round((r.count / max) * 100)}%"></span></span>
+          <span class="bar-count">${r.count}</span>
+        </div>`).join('');
+    };
+
+    $('visitsBody').innerHTML = `
+      <section class="cards" style="margin-bottom:18px">
+        ${card('Celkem', v.hitsTotal, '', 'od spuštění')}
+        ${card('Za 30 dní', v.hits30d, '', `${v.visitors30d} lidí`)}
+        ${card('Za 7 dní', v.hits7d, '', 'návštěv')}
+      </section>
+
+      <p class="note">
+        Odkaz <strong>tankuj100.cz${esc(v.path)}</strong> vede na normální web – návštěvník
+        pozná jen adresu, nic jiného. „Návštěvy“ jsou načtení stránky, „lidí“ je odhad
+        po dnech: kdo přijde třikrát za den, počítá se jednou, ale kdo přijde ve třech
+        dnech, počítá se třikrát. Přesněji to bez trvalého sledování nejde a to tady
+        schválně není – neukládá se žádná cookie ani IP adresa.
+      </p>
+
+      <div class="split">
+        <div><h3>Zařízení</h3>${bars(v.devices)}</div>
+        <div><h3>Systém</h3>${bars(v.systems)}</div>
+        <div><h3>Prohlížeč</h3>${bars(v.browsers)}</div>
+        <div><h3>Odkud přišli</h3>${bars(v.referrers)}</div>
+      </div>
+      <p class="note">Rozpady jsou za posledních 30 dní.</p>
+    `;
+  } catch (err) {
+    $('visitsBody').innerHTML = errorState(err.message, 'loadVisits()');
+  }
 }
 
 // ============================================================ hlášení
@@ -929,7 +987,7 @@ function fuelItem(r) {
 
 const LOADERS = {
   reports: loadReports, requests: loadRequests, reviews: loadReviews,
-  fuel: loadFuelVotes, stations: loadStations,
+  fuel: loadFuelVotes, stations: loadStations, visits: loadVisits,
 };
 
 $('cards').addEventListener('click', (event) => {

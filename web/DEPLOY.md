@@ -130,3 +130,45 @@ free -m
 ```
 
 a pusť ho znovu, až je klid.
+
+## Kampaňová adresa /stahnout
+
+`tankuj100.cz/stahnout` je odkaz do reklamních kampaní. Servíruje **stejnou stránku
+jako `/`**, takže návštěvník nepozná nic zvláštního – jen jinou adresu bez parametrů.
+Kolik lidí na něj přišlo, se ukazuje v administraci backendu na záložce **Odkaz**.
+
+### Jak to funguje
+
+nginx doručí `index.html` a **vedle toho** (`mirror`) pošle požadavek na backend, který
+návštěvu započítá. Mirror běží mimo odpověď návštěvníkovi: když backend leží, stránka
+se doručí normálně a jen se ta jedna návštěva nezapočítá.
+
+Do prohlížeče se **neukládá nic** – žádná cookie, žádné ID. IP adresa se neukládá,
+vstupuje jen do jednosměrného otisku osoleného datem, který rozliší opakované načtení
+od druhého člověka. Protože se na zařízení nic neukládá, web nepotřebuje cookie lištu.
+
+Důsledek pro čtení čísel: **„lidé“ jsou odhad po dnech.** Kdo přijde třikrát za jeden
+den, počítá se jednou; kdo přijde ve třech dnech, počítá se třikrát. Sůl se totiž
+každý den mění a napříč dny se otisky spojit nedají – schválně.
+
+### Nastavení (jednou)
+
+1. Do `be/.env` na serveru doplň tajemství, kterým se nginx prokazuje backendu:
+
+   ```
+   VISIT_TOKEN=<náhodný řetězec, např. openssl rand -hex 24>
+   ```
+
+   Bez něj se **nepočítá vůbec nic** – radši žádná data než smyšlená.
+
+2. V `/etc/nginx/sites-available/tankuj100.cz` použij bloky `location = /stahnout`
+   a `location = /__visit` z `web/nginx.tankuj100.cz.conf.example` a nahraď
+   `ZDE_VISIT_TOKEN` stejnou hodnotou jako v `.env`.
+
+3. `sudo nginx -t && sudo systemctl reload nginx`
+
+### Další kampaňová adresa
+
+Přidat další znamená dvě změny: cestu do `COUNTED_PATHS` v
+`be/src/routes/visit.routes.js` (jinak ji backend odmítne) a kopii obou `location`
+bloků v nginxu s novou cestou. Cesta v `proxy_pass` musí sedět s tou v `location`.

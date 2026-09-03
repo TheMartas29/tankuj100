@@ -96,6 +96,26 @@ const TABLES = `
     PRIMARY KEY (station_id, tag_key)
   );
   CREATE INDEX IF NOT EXISTS idx_station_tag_key ON station_tag (tag_key);
+  -- Návštěvy kampaňových adres (např. /stahnout). Záměrně tu NENÍ nic, čím by šel
+  -- návštěvník poznat: sloupec visitor je otisk z IP a prohlížeče osolený dnešním datem,
+  -- takže druhý den má tentýž člověk jiný otisk a napříč dny se spojit nedá. Slouží
+  -- jen k tomu, aby se deset načtení jedné stránky nepočítalo jako deset lidí.
+  --
+  -- IP se neukládá vůbec a na zařízení se nic neukládá (žádná cookie), proto na tohle
+  -- není potřeba souhlas ani cookie lišta.
+  CREATE TABLE IF NOT EXISTS visit (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    path       TEXT    NOT NULL,
+    visitor    TEXT    NOT NULL,
+    device     TEXT    NOT NULL,
+    os         TEXT    NOT NULL,
+    browser    TEXT    NOT NULL,
+    referrer   TEXT,
+    created_at TEXT    NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_visit_path ON visit (path, created_at DESC);
+
 `;
 
 const ADDED_COLUMNS = [

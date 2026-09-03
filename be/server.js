@@ -7,6 +7,7 @@ const { requireAdmin, sameOriginOnly } = require('./src/http/admin-auth');
 const { apiNotFound, errorHandler } = require('./src/http/error-handler');
 const publicRoutes = require('./src/routes/public.routes');
 const adminRoutes = require('./src/routes/admin.routes');
+const visitRoutes = require('./src/routes/visit.routes');
 const { isConfigured: mailConfigured } = require('./src/mailer');
 
 const JSON_BODY_LIMIT = '64kb';
@@ -63,6 +64,11 @@ for (const adminPath of ['/', '/admin']) {
     res.sendFile(page('index.html'));
   });
 }
+
+// Počítadlo návštěv stojí mimo `publicRoutes` schválně: ten router vyžaduje klíč
+// aplikace, a tenhle požadavek neposílá aplikace, ale nginx při doručení stránky.
+// Místo klíče se prokazuje vlastním tajemstvím z konfigurace.
+app.use('/api/visit', visitRoutes);
 
 app.use('/api', publicRoutes);
 app.use('/api', apiNotFound);

@@ -53,6 +53,11 @@ module.exports = {
     password: adminPassword,
     enabled: Boolean(adminUsername && adminPassword),
   },
+  // Sdílené tajemství mezi nginxem a backendem. Endpoint pro počítání návštěv je
+  // veřejně dostupný stejně jako zbytek /api, takže bez něj by kdokoli mohl čísla
+  // nafouknout obyčejným `curl` v cyklu. Když není nastavené, počítání je vypnuté –
+  // radši žádná data než smyšlená.
+  visitToken: process.env.VISIT_TOKEN || '',
   appKey: {
     value: appKeyValue,
     // Bez klíče nemá smysl nic vynucovat, jinak by server odmítal úplně všechno.

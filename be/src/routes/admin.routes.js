@@ -14,6 +14,7 @@ const stationService = require('../services/station.service');
 const reviewService = require('../services/review.service');
 const reportService = require('../services/report.service');
 const statsService = require('../services/stats.service');
+const visitRepo = require('../repositories/visit.repo');
 const fuelVoteService = require('../services/fuel-vote.service');
 const stationRequestService = require('../services/station-request.service');
 const { isConfigured, sendNotification } = require('../mailer');
@@ -32,6 +33,30 @@ router.get(
   '/stats',
   asyncHandler((req, res) => {
     res.json(statsService.adminOverview());
+  })
+);
+
+/**
+ * Návštěvy kampaňové adresy. Odpověď je poskládaná rovnou k vykreslení, ať admin
+ * nemusí nic dopočítávat – je to jediné místo, kde se tahle čísla ukazují.
+ */
+router.get(
+  '/visits',
+  asyncHandler((req, res) => {
+    const path = typeof req.query.path === 'string' && req.query.path ? req.query.path : '/stahnout';
+    res.json({
+      path,
+      paths: visitRepo.paths(),
+      hitsTotal: visitRepo.hits(path),
+      hits7d: visitRepo.hits(path, 7),
+      hits30d: visitRepo.hits(path, 30),
+      visitors30d: visitRepo.visitors(path, 30),
+      devices: visitRepo.breakdown(path, 'device'),
+      systems: visitRepo.breakdown(path, 'os'),
+      browsers: visitRepo.breakdown(path, 'browser'),
+      referrers: visitRepo.referrers(path),
+      daily: visitRepo.daily(path),
+    });
   })
 );
 

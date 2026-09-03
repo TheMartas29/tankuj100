@@ -65,6 +65,49 @@ server {
         default_type "text/plain";
     }
 
+    # --- Kampaňová adresa ---------------------------------------------------
+    #
+    # tankuj100.cz/stahnout servíruje **stejnou stránku jako /**. Návštěvník tedy
+    # vidí normální web a v adresním řádku čistou adresu bez parametrů; nikam se
+    # nepřesměrovává. Vedle toho nginx pošle `mirror` požadavek na backend, který
+    # návštěvu započítá.
+    #
+    # `mirror` běží **mimo** odpověď návštěvníkovi: nečeká se na něj a jeho výsledek
+    # se zahazuje. Když backend leží nebo je pomalý, stránka se doručí normálně –
+    # jen se ta návštěva nezapočítá. To je záměr: měření nesmí shodit web.
+    #
+    # POZOR: `add_header` uvnitř `location` ruší dědění hlaviček ze serverového
+    # bloku, proto se tu ty bezpečnostní opakují. Bez toho by tahle jediná adresa
+    # tiše přišla o nosniff, X-Frame-Options i Referrer-Policy.
+    location = /stahnout {
+        mirror /__visit;
+
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-Frame-Options DENY always;
+        add_header Referrer-Policy strict-origin-when-cross-origin always;
+        add_header Permissions-Policy "geolocation=(), camera=(), microphone=()" always;
+        add_header Cache-Control "no-cache" always;
+        # Je to obsahově tatáž stránka jako `/`, takže ať si ji Google neindexuje
+        # podruhé jako duplicitu. `follow` znamená, že odkazy z ní pořád sleduje.
+        add_header X-Robots-Tag "noindex, follow" always;
+
+        try_files /index.html =404;
+    }
+
+    # Interní: zvenčí se sem nedá dostat. Token musí sedět s VISIT_TOKEN v be/.env,
+    # jinak backend návštěvu zahodí (a bez tokenu v .env se nepočítá vůbec).
+    location = /__visit {
+        internal;
+        proxy_pass http://127.0.0.1:3000/api/visit/?path=/stahnout;
+        proxy_set_header X-Visit-Token "ZDE_VISIT_TOKEN";
+        proxy_set_header User-Agent $http_user_agent;
+        proxy_set_header Referer $http_referer;
+        # Backend má `trust proxy`, takže z tohohle přečte skutečnou IP návštěvníka.
+        # Neukládá ji – používá ji jen jako vstup do denního otisku.
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+    }
+
     # Web je jednostránkový a nemá klientský router, takže se tu záměrně
     # NEDĚLÁ SPA fallback na index.html – neexistující adresa musí vrátit
     # poctivou 404. Kdyby vracela obsah se stavem 200, Google to bere jako
