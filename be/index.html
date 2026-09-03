@@ -369,6 +369,34 @@ function card(label, value, cls = '', sub = '', goesTo = '') {
 
 // ============================================================ odkaz z kampaní
 
+/** České skloňování po číslovce: 1 návštěva, 2–4 návštěvy, 5+ návštěv. */
+function plural(count, one, few, many) {
+  if (count === 1) return `${count} ${one}`;
+  if (count >= 2 && count <= 4) return `${count} ${few}`;
+  return `${count} ${many}`;
+}
+
+/** Řádky výpisu návštěv. Prázdný stav řeší volající, tady stačí prázdný tbody. */
+function visitRows(rows) {
+  if (!rows.length) {
+    return '<tr><td colspan="6" style="color:var(--muted);padding:22px;text-align:center">Zatím žádná návštěva.</td></tr>';
+  }
+  return rows.map((r) => {
+    const when = new Date(r.created_at);
+    // Čas ze serveru je v UTC; prohlížeč ho ukáže v místním čase, což je to,
+    // co člověk u obrazovky očekává.
+    const stamp = when.toLocaleString('cs-CZ', { dateStyle: 'short', timeStyle: 'short' });
+    return `<tr>
+      <td>${esc(stamp)}</td>
+      <td><code style="font-size:12px;color:var(--muted)">${esc(r.visitor.slice(0, 8))}</code></td>
+      <td>${esc(r.device)}</td>
+      <td>${esc(r.os)}</td>
+      <td>${esc(r.browser)}</td>
+      <td>${esc(r.referrer || 'přímo / bez odkazu')}</td>
+    </tr>`;
+  }).join('');
+}
+
 async function loadVisits() {
   try {
     const v = await api('/api/admin/visits');
@@ -386,8 +414,8 @@ async function loadVisits() {
     $('visitsBody').innerHTML = `
       <section class="cards" style="margin-bottom:18px">
         ${card('Celkem', v.hitsTotal, '', 'od spuštění')}
-        ${card('Za 30 dní', v.hits30d, '', `${v.visitors30d} lidí`)}
-        ${card('Za 7 dní', v.hits7d, '', 'návštěv')}
+        ${card('Za 30 dní', v.hits30d, '', plural(v.visitors30d, 'člověk', 'lidé', 'lidí'))}
+        ${card('Za 7 dní', v.hits7d, '', 'za týden')}
       </section>
 
       <p class="note">
@@ -405,6 +433,24 @@ async function loadVisits() {
         <div><h3>Odkud přišli</h3>${bars(v.referrers)}</div>
       </div>
       <p class="note">Rozpady jsou za posledních 30 dní.</p>
+
+      <h3 style="margin:26px 0 10px">Jednotlivé návštěvy</h3>
+      <p class="note" style="margin-top:0">
+        Vypsáno ${plural(v.recent.length, 'návštěva', 'návštěvy', 'návštěv')}, od nejnovější.${
+          v.recent.length === v.recentLimit ? ` Starší se nevypisují – strop je ${v.recentLimit}.` : ''
+        }
+        Sloupec <strong>návštěvník</strong> je pseudonym platný <strong>jeden den</strong>: podle
+        stejné hodnoty poznáš, že se někdo v ten den vrátil, ale zítra má tentýž člověk jinou.
+        Kdo to je ani odkud se připojil (IP adresa) v datech není – neukládá se to.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Kdy</th><th>Návštěvník</th><th>Zařízení</th><th>Systém</th><th>Prohlížeč</th><th>Odkud</th>
+          </tr></thead>
+          <tbody>${visitRows(v.recent)}</tbody>
+        </table>
+      </div>
     `;
   } catch (err) {
     $('visitsBody').innerHTML = errorState(err.message, 'loadVisits()');

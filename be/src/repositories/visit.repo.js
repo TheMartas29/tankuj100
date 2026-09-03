@@ -76,8 +76,25 @@ function daily(path, days = 30) {
     .all(path, `-${days} day`);
 }
 
+/**
+ * Poslední návštěvy, jedna po druhé. `visitor` je **pseudonym platný jeden den** –
+ * dá se podle něj poznat, že dvě dnešní návštěvy jsou od téhož člověka, ale zítra
+ * má tentýž člověk jiný, takže napříč dny ho spojit nejde. Identita ani IP adresa
+ * v datech nejsou vůbec.
+ */
+const recent = (path, limit = 200) =>
+  db
+    .prepare(
+      `SELECT created_at, visitor, device, os, browser, referrer
+         FROM visit
+        WHERE path = ?
+        ORDER BY id DESC
+        LIMIT ?`
+    )
+    .all(path, limit);
+
 /** Které cesty se vůbec kdy zaznamenaly – admin se tak nemusí ptát na konkrétní. */
 const paths = () =>
   db.prepare('SELECT DISTINCT path FROM visit ORDER BY path').all().map((r) => r.path);
 
-module.exports = { insert, hits, visitors, breakdown, referrers, daily, paths };
+module.exports = { insert, hits, visitors, breakdown, referrers, daily, paths, recent };

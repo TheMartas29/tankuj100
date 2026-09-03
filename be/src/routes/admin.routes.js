@@ -36,6 +36,9 @@ router.get(
   })
 );
 
+/** Kolik posledních návštěv se vypisuje pod statistikou. */
+const RECENT_VISITS = 200;
+
 /**
  * Návštěvy kampaňové adresy. Odpověď je poskládaná rovnou k vykreslení, ať admin
  * nemusí nic dopočítávat – je to jediné místo, kde se tahle čísla ukazují.
@@ -56,6 +59,8 @@ router.get(
       browsers: visitRepo.breakdown(path, 'browser'),
       referrers: visitRepo.referrers(path),
       daily: visitRepo.daily(path),
+      recent: visitRepo.recent(path, RECENT_VISITS),
+      recentLimit: RECENT_VISITS,
     });
   })
 );
